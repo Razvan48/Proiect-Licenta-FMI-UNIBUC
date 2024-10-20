@@ -6,6 +6,8 @@ https://anggo.ro/note/untracking-files-after-modifying-gitignore
 
 GLFW download:
 https://www.glfw.org/download.html
+GLFW setup tutorial:
+https://www.youtube.com/watch?v=HzFatL3WT6g
 user32.lib
 gdi32.lib
 shell32.lib
@@ -24,8 +26,11 @@ https://github.com/g-truc/glm
 
 FreeType download:
 https://freetype.org/download.html
-FreeType tutorial setup:
+FreeType setup tutorial:
 https://www.youtube.com/watch?v=qW_8Dyq2asc
+
+
+
 
 
 

@@ -22,14 +22,13 @@ int main()
         return -1;
     }
 
-    /*
     FT_Face face;
-    if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
+    //path-ul e relativ la proiect, nu la sln! trebuie un pas inapoi
+    if (FT_New_Face(ft, "../assets/fonts/arial.ttf", 0, &face))
     {
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         return -1;
     }
-    */
 
 	return 0;
 }
