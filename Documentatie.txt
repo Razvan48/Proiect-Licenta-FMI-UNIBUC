@@ -29,6 +29,9 @@ https://freetype.org/download.html
 FreeType setup tutorial:
 https://www.youtube.com/watch?v=qW_8Dyq2asc
 
+Irrklang download:
+https://www.ambiera.com/irrklang/downloads.html
+
 
 
 
