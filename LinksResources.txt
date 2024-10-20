@@ -1,8 +1,31 @@
 .gitignore link:
 https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-Setup GLFW:
-https://learnopengl.com/Getting-started/Creating-a-window
+Useful for when updating .gitignore file:
+https://anggo.ro/note/untracking-files-after-modifying-gitignore
+
+GLFW download:
+https://www.glfw.org/download.html
+
+GLEW download:
+https://glew.sourceforge.net
+
+ENet download:
+http://enet.bespin.org/Downloads.html
+
+stb_image.h download:
+https://github.com/nothings/stb/blob/master/stb_image.h
+
+GLM download:
+https://github.com/g-truc/glm
+
+
+
+
+
+
+
+
 
 
 
