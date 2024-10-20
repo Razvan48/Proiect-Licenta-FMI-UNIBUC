@@ -6,6 +6,9 @@ https://anggo.ro/note/untracking-files-after-modifying-gitignore
 
 GLFW download:
 https://www.glfw.org/download.html
+user32.lib
+gdi32.lib
+shell32.lib
 
 GLEW download:
 https://glew.sourceforge.net
@@ -18,6 +21,18 @@ https://github.com/nothings/stb/blob/master/stb_image.h
 
 GLM download:
 https://github.com/g-truc/glm
+
+FreeType download:
+https://freetype.org/download.html
+FreeType tutorial setup:
+https://www.youtube.com/watch?v=qW_8Dyq2asc
+
+
+
+
+
+
+
 
 
 
