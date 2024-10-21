@@ -11,7 +11,9 @@
 #include <stb_image.h>
 
 #include <ft2build.h>
-#include FT_FREETYPE_H  
+#include FT_FREETYPE_H
+
+#include <irrKlang.h>
 
 int main()
 {
@@ -29,6 +31,13 @@ int main()
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         return -1;
     }
+
+
+    irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+    soundEngine->play2D("../assets/sounds/test.mp3", false);
+
+    char junk;
+    std::cin >> junk;
 
 	return 0;
 }
