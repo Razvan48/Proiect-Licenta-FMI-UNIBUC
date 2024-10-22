@@ -18,6 +18,25 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\AssetManager\AssetManager.cpp" />
+    <ClCompile Include="source\Game\Game.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\RandomGenerator\RandomGenerator.cpp" />
+    <ClCompile Include="source\Renderer\Renderer.cpp" />
+    <ClCompile Include="source\WindowManager\WindowManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\AssetManager\AssetManager.h" />
+    <ClInclude Include="source\Game\Game.h" />
+    <ClInclude Include="source\RandomGenerator\RandomGenerator.h" />
+    <ClInclude Include="source\Renderer\Renderer.h" />
+    <ClInclude Include="source\WindowManager\WindowManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="shaders\fragmentShader.txt" />
+    <Text Include="shaders\vertexShader.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -138,9 +157,6 @@
       <AdditionalDependencies>enet64.lib;ws2_32.lib;winmm.lib;opengl32.lib;glew32.lib;glfw3.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="BoardGameBattle.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
