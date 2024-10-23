@@ -47,8 +47,6 @@ int main()
 
     Game::get().start();
 
-    // TODO: assets manager load resources + definit struct-ul de textura in assets manager
-    // TODO: de calculat matricea de proiectie (rotatie + ortogonala)
     // TODO: de testat daca pot desena
     // TODO: trebuie GlobalClock sa mai implementez? voi avea animatii vreodata?
     // TODO: de implementat Entity, TexturableEntity care mosteneste Entity

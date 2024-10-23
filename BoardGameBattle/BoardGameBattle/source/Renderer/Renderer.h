@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -30,15 +31,18 @@ private:
 	GLuint VBO;
 	GLuint EBO;
 
-	GLint projectionMatrixLocation;
+	GLint transformationMatrixLocation;
 	GLint textureSampler2DLocation;
 	GLint colorLocation;
 	GLint blendFactorLocation;
 
+	std::vector<GLfloat> coordinates;
+	std::vector<GLuint> indices;
+
 public:
 	static Renderer& get();
 
-	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color);
+	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor);
 
 	inline const std::string& getVertexShaderPath() const { return this->VERTEX_SHADER_PATH; }
 	inline const std::string& getFragmentShaderPath() const { return this->FRAGMENT_SHADER_PATH; }

@@ -1,6 +1,10 @@
 #include "Game.h"
 
+#include <iostream>
+
 #include "../WindowManager/WindowManager.h"
+#include "../AssetManager/AssetManager.h"
+#include "../Renderer/Renderer.h"
 
 Game::Game()
 {
@@ -18,20 +22,20 @@ Game& Game::get()
 	return instance;
 }
 
-#include "../Renderer/Renderer.h" // TODO: de sters, doar test
-
 void Game::loadResources()
 {
 	WindowManager::get();
-	Renderer::get(); // TODO: de sters, doar test
+	AssetManager::get().loadResources();
 }
 
 void Game::run()
 {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	while (!glfwWindowShouldClose(WindowManager::get().getWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		Renderer::get().draw(400.0f, 400.0f, 80.0f, 80.0f, 90.0f, "test", glm::vec3(0.5f, 0.0f, 0.0f), 0.0f);
 
 		this->update();
 
