@@ -11,7 +11,10 @@ out vec4 fragmentColor;
 void main()
 {
     vec4 textureColor = texture(textureSampler2D, textureCoord);
-    // fragmentColor = mix(textureColor, color, blendFactor);
-    fragmentColor = textureColor;
+    fragmentColor = mix(textureColor, color, blendFactor);
+    // fragmentColor = textureColor;
+    // fragmentColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+    //if (fragmentColor == vec4(0.0f, 0.0f, 0.0f, 1.0f))
+	//	discard;
 }
 

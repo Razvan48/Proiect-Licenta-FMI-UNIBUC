@@ -38,7 +38,9 @@ Renderer::Renderer()
 
 	this->transformationMatrixLocation = glGetUniformLocation(this->shaderProgram, "transformationMatrix");
 	this->textureSampler2DLocation = glGetUniformLocation(this->shaderProgram, "textureSampler2D");
+	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); // nu ar fi necesar?
+	std::cout << "Texture Sampler 2D Location: " << this->textureSampler2DLocation << std::endl;
 	glUniform1i(this->textureSampler2DLocation, 0);
 	this->colorLocation = glGetUniformLocation(this->shaderProgram, "color");
 	this->blendFactorLocation = glGetUniformLocation(this->shaderProgram, "blendFactor");
@@ -73,12 +75,14 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(1);
 
 	// nu ar fi necesare?
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer()
 {
+	// TODO: unbind
+
 	glDeleteBuffers(1, &this->EBO);
 	glDeleteBuffers(1, &this->VBO);
 	glDeleteVertexArrays(1, &this->VAO);
@@ -94,12 +98,13 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 {
 	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in setup-ul shader-ului
 	glBindTexture(GL_TEXTURE_2D, AssetManager::get().getTexture(textureName2D));
+	glEnable(GL_TEXTURE_2D); // nu stiu daca e necesar
 
 	// glUseProgram(this->shaderProgram); // Nu schimbam shader-ul, deoarece avem doar unul
 
 	glm::mat4 transformationMatrix = 
-		glm::ortho(0.0f, (GLfloat)WindowManager::get().getWindowWidth(), 0.0f, (GLfloat)WindowManager::get().getWindowHeight())
-		* glm::translate(glm::mat4(1.0f), glm::vec3(posCenterX, posCenterY, 0.0f))
+		//glm::ortho(0.0f, (GLfloat)WindowManager::get().getWindowWidth(), 0.0f, (GLfloat)WindowManager::get().getWindowHeight())
+		glm::translate(glm::mat4(1.0f), glm::vec3(posCenterX, posCenterY, 0.0f))
 		* glm::rotate(glm::mat4(1.0f), glm::radians(rotateAngle), glm::vec3(0.0f, 0.0f, 1.0f))
 		* glm::scale(glm::mat4(1.0f), glm::vec3(width, height, 1.0f));
 

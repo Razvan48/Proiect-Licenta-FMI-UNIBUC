@@ -25,6 +25,7 @@ Game& Game::get()
 void Game::loadResources()
 {
 	WindowManager::get();
+	Renderer::get();
 	AssetManager::get().loadResources();
 }
 
@@ -35,7 +36,7 @@ void Game::run()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Renderer::get().draw(400.0f, 400.0f, 80.0f, 80.0f, 90.0f, "test", glm::vec3(0.5f, 0.0f, 0.0f), 0.0f);
+		Renderer::get().draw(0.0f, 0.0f, 0.25f, 0.25f, 90.0f, "test", glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
 
 		this->update();
 

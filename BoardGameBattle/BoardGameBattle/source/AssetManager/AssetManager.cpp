@@ -3,7 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #include <irrKlang.h>
@@ -33,15 +32,18 @@ void AssetManager::loadTexture(const std::string& textureName, const std::string
 	else
 		this->textures[textureName] = AssetManager::Texture();
 
+	glEnable(GL_TEXTURE_2D); // TODO: nu cred ca e necesar
 	glGenTextures(1, &this->textures[textureName].texture);
 	glBindTexture(GL_TEXTURE_2D, this->textures[textureName].texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	this->textures[textureName] = AssetManager::Texture();
 	unsigned char* textureData = stbi_load(texturePath.c_str(),
@@ -78,7 +80,7 @@ void AssetManager::loadSound(const std::string& soundName, const std::string& so
 void AssetManager::loadResources()
 {
 	this->loadTexture("test", "assets/textures/test.png");
-	this->loadTexture("test2", "assets/textures/test2.jpg");
+	//this->loadTexture("test2", "assets/textures/test2.jpg");
 
 	this->loadSound("test", "assets/sounds/test.mp3");
 }

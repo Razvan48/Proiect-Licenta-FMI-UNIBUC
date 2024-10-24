@@ -1,4 +1,3 @@
-/*
 #include <iostream>
 
 #include <GL/glew.h>
@@ -15,7 +14,6 @@
 #include FT_FREETYPE_H
 
 #include <irrKlang.h>
-*/
 
 #include "Game/Game.h"
 
