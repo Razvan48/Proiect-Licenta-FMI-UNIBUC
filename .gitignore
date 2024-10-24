@@ -399,3 +399,14 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+
+!BoardGameBattle/dependencies/glew-2.1.0/lib/x64/
+!BoardGameBattle/dependencies/glew-2.1.0/lib/Win32/
+
+
+
+
+
+
+
+
