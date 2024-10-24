@@ -1,9 +1,5 @@
 #include "Renderer.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -13,7 +9,7 @@
 
 Renderer::Renderer()
 	: VERTEX_SHADER_PATH("shaders/vertexShader.txt"), FRAGMENT_SHADER_PATH("shaders/fragmentShader.txt")
-	, vertexShaderSource(readShader(VERTEX_SHADER_PATH)), fragmentShaderSource(readShader(FRAGMENT_SHADER_PATH))
+	, vertexShaderSource(this->readShader(VERTEX_SHADER_PATH)), fragmentShaderSource(this->readShader(FRAGMENT_SHADER_PATH))
 {
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -38,9 +34,7 @@ Renderer::Renderer()
 
 	this->transformationMatrixLocation = glGetUniformLocation(this->shaderProgram, "transformationMatrix");
 	this->textureSampler2DLocation = glGetUniformLocation(this->shaderProgram, "textureSampler2D");
-	glEnable(GL_TEXTURE_2D);
-	glActiveTexture(GL_TEXTURE0); // nu ar fi necesar?
-	std::cout << "Texture Sampler 2D Location: " << this->textureSampler2DLocation << std::endl;
+	// glActiveTexture(GL_TEXTURE0); // este scrisa in metoda draw()
 	glUniform1i(this->textureSampler2DLocation, 0);
 	this->colorLocation = glGetUniformLocation(this->shaderProgram, "color");
 	this->blendFactorLocation = glGetUniformLocation(this->shaderProgram, "blendFactor");
@@ -73,10 +67,6 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
-
-	// nu ar fi necesare?
-	glDisable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer()
@@ -96,15 +86,14 @@ Renderer& Renderer::get()
 
 void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor)
 {
-	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in setup-ul shader-ului
+	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in constructor-ul clasei
 	glBindTexture(GL_TEXTURE_2D, AssetManager::get().getTexture(textureName2D));
-	glEnable(GL_TEXTURE_2D); // nu stiu daca e necesar
 
 	// glUseProgram(this->shaderProgram); // Nu schimbam shader-ul, deoarece avem doar unul
 
 	glm::mat4 transformationMatrix = 
-		//glm::ortho(0.0f, (GLfloat)WindowManager::get().getWindowWidth(), 0.0f, (GLfloat)WindowManager::get().getWindowHeight())
-		glm::translate(glm::mat4(1.0f), glm::vec3(posCenterX, posCenterY, 0.0f))
+		glm::ortho(0.0f, (GLfloat)WindowManager::get().getWindowWidth(), 0.0f, (GLfloat)WindowManager::get().getWindowHeight())
+		* glm::translate(glm::mat4(1.0f), glm::vec3(posCenterX, posCenterY, 0.0f))
 		* glm::rotate(glm::mat4(1.0f), glm::radians(rotateAngle), glm::vec3(0.0f, 0.0f, 1.0f))
 		* glm::scale(glm::mat4(1.0f), glm::vec3(width, height, 1.0f));
 

@@ -10,6 +10,6 @@ out vec2 textureCoord;
 void main()
 {
     textureCoord = inTextureCoord;
-    gl_Position = transformationMatrix * vec4(vertexCoord, 0.0, 1.0);
+    gl_Position = transformationMatrix * vec4(vertexCoord, 0.0f, 1.0f);
 }
 

@@ -1,7 +1,5 @@
 #include "WindowManager.h"
 
-#include <iostream>
-
 WindowManager::WindowManager()
 	: WINDOW_WIDTH(1024), WINDOW_HEIGHT(1024), WINDOW_TITLE("BoardGameBattle")
 {

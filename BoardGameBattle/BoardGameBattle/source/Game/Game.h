@@ -10,11 +10,11 @@ private:
 	Game(const Game&& other) = delete;
 	Game& operator= (const Game&& other) = delete;
 
-	void run();
 	void loadResources();
+	void run();
+	void update();
 
 public:
 	static Game& get();
 	void start();
-	void update();
 };

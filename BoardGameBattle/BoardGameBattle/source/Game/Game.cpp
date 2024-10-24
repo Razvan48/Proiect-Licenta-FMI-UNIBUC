@@ -1,7 +1,5 @@
 #include "Game.h"
 
-#include <iostream>
-
 #include "../WindowManager/WindowManager.h"
 #include "../AssetManager/AssetManager.h"
 #include "../Renderer/Renderer.h"
@@ -24,19 +22,18 @@ Game& Game::get()
 
 void Game::loadResources()
 {
-	WindowManager::get();
-	Renderer::get();
+	WindowManager::get(); // Asigura setup-ul la OpenGL
 	AssetManager::get().loadResources();
 }
 
 void Game::run()
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(WindowManager::get().getWindow()))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Renderer::get().draw(0.0f, 0.0f, 0.25f, 0.25f, 90.0f, "test", glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
+		Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 0.0f, "test2", glm::vec3(1.0f, 1.0f, 1.0f), 0.9f);
 
 		this->update();
 
@@ -45,13 +42,13 @@ void Game::run()
 	}
 }
 
+void Game::update()
+{
+
+}
+
 void Game::start()
 {
 	this->loadResources();
 	this->run();
-}
-
-void Game::update()
-{
-
 }
