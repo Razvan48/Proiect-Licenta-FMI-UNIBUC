@@ -31,6 +31,12 @@
     <Filter Include="Source Files\AssetManager">
       <UniqueIdentifier>{89914817-19fe-470a-91df-f2273e27def8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{c6327716-a817-425a-ba4a-2aa90545d4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\TexturableEntity">
+      <UniqueIdentifier>{36f6bda1-63cc-4fd5-9690-a9c494128e80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -51,6 +57,12 @@
     <ClCompile Include="source\AssetManager\AssetManager.cpp">
       <Filter>Source Files\AssetManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Entity\Entity.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp">
+      <Filter>Source Files\Entity\TexturableEntity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -67,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="source\AssetManager\AssetManager.h">
       <Filter>Source Files\AssetManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\Entity.h">
+      <Filter>Source Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h">
+      <Filter>Source Files\Entity\TexturableEntity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -67,11 +67,15 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+	glBindVertexArray(0);
 }
 
 Renderer::~Renderer()
 {
-	// TODO: unbind
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	glDeleteBuffers(1, &this->EBO);
 	glDeleteBuffers(1, &this->VBO);
@@ -104,6 +108,9 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 std::string Renderer::readShader(const std::string& shaderPath)

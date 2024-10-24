@@ -47,9 +47,8 @@ int main()
 
     Game::get().start();
 
-    // TODO: de testat daca pot desena
+    // TODO: de testat daca pot desena text cu font
     // TODO: trebuie GlobalClock sa mai implementez? voi avea animatii vreodata?
-    // TODO: de implementat Entity, TexturableEntity care mosteneste Entity
     // TODO: de vazut cum iau coordonatele la cursor
     // TODO: texturable entity ar trb sa aiba ceva update unde se schimba culoarea la buton in functie de situatie
     // TODO: un boolean global care spune daca player-ul a eliberat click-ul frame-ul anterior
