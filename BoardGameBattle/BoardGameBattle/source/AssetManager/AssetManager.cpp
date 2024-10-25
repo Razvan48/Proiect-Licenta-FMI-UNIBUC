@@ -92,9 +92,9 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 		else
 			this->fonts[fontName] = std::vector<Character>();
 
-		FT_Set_Pixel_Sizes(freeTypeFace, 0, this->FONT_SIZE); // setam inaltimea, latimea se seteaza automat
+		FT_Set_Pixel_Sizes(freeTypeFace, 0, this->FONT_SIZE); // Setam inaltimea, latimea se seteaza automat
 
-		for (unsigned char character = 0; character < 128; character++)
+		for (unsigned char character = 0; character < 128; character++) // Cu primele 128 de caractere din tabela ascii putem desena cam orice text
 		{
 			if (FT_Load_Char(freeTypeFace, character, FT_LOAD_RENDER)) // Incarcare caracter
 			{

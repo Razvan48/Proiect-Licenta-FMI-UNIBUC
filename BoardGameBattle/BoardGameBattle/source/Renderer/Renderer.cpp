@@ -73,6 +73,9 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -80,6 +83,9 @@ Renderer::~Renderer()
 	glDeleteBuffers(1, &this->EBO);
 	glDeleteBuffers(1, &this->VBO);
 	glDeleteVertexArrays(1, &this->VAO);
+
+	glUseProgram(0);
+	glDeleteProgram(this->shaderProgram);
 }
 
 Renderer& Renderer::get()

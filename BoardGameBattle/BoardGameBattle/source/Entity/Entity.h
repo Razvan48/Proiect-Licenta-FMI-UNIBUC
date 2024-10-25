@@ -2,7 +2,7 @@
 
 class Entity
 {
-private:
+protected:
 	float posCenterX;
 	float posCenterY;
 	float width;

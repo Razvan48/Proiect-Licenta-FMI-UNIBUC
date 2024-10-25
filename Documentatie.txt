@@ -1,3 +1,6 @@
+Toate dependintele au fost integrate doar pe 64-bit.
+Build-ul proiectului este doar pe 64-bit.
+
 .gitignore link:
 https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
