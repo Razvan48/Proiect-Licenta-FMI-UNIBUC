@@ -90,7 +90,7 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 		if (this->fonts.find(fontName) != this->fonts.end())
 			std::cout << "Warning: Font " + fontName + " already loaded" << std::endl;
 		else
-			this->fonts[fontName] = std::vector<Character>();
+			this->fonts[fontName] = std::vector<AssetManager::Character>();
 
 		FT_Set_Pixel_Sizes(freeTypeFace, 0, this->FONT_SIZE); // Setam inaltimea, latimea se seteaza automat
 
@@ -147,6 +147,17 @@ GLuint AssetManager::getTexture(const std::string& textureName)
 	}
 
 	return this->textures[textureName].texture;
+}
+
+std::vector<AssetManager::Character>& AssetManager::getFont(const std::string& fontName)
+{
+	if (this->fonts.find(fontName) == this->fonts.end())
+	{
+		std::cout << "Error: Font " + fontName + " not found" << std::endl;
+		return this->fonts.end()->second;
+	}
+
+	return this->fonts[fontName];
 }
 
 void AssetManager::playSound(const std::string& soundName, bool loop)

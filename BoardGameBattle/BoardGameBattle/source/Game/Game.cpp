@@ -34,6 +34,7 @@ void Game::run()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "test2", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f);
+		Renderer::get().drawText(500.0f, 500.0f, 300.0f, "arial", "Hello World", glm::vec3(1.0f, 0.0f, 1.0f), 1.0f);
 
 		this->update();
 

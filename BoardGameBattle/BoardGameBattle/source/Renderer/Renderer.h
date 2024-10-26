@@ -45,6 +45,7 @@ public:
 	static Renderer& get();
 
 	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor);
+	void drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, const std::string& fontName, const std::string& text, glm::vec3 color, float blendFactor);
 
 	inline const std::string& getVertexShaderPath() const { return this->VERTEX_SHADER_PATH; }
 	inline const std::string& getFragmentShaderPath() const { return this->FRAGMENT_SHADER_PATH; }

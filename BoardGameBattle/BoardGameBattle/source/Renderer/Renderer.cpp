@@ -69,6 +69,10 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
+
+	// Pentru desenare de text, freetype
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer()
@@ -117,6 +121,40 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 	glBindVertexArray(0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, const std::string& fontName, const std::string& text, glm::vec3 color, float blendFactor)
+{
+	std::vector<AssetManager::Character>& font = AssetManager::get().getFont(fontName);
+
+	GLfloat actualWidth = 0.0f;
+	for (int i = 0; i < text.size(); ++i)
+	{
+		actualWidth += (font[text[i]].advance >> 6); // .advance masoara o unitate pentru fiecare 1/64 pixel, (64 de unitati pentru un pixel) => impartim prin 64
+	}
+
+	GLfloat scale = width / actualWidth;
+
+	GLfloat currentPosX = posCenterX - width / 2.0f;
+	GLfloat currentPosY = posCenterY;
+
+	for (int i = 0; i < text.size(); ++i)
+	{
+		AssetManager::Character& character = font[text[i]];
+
+		GLfloat posCenterCharacterX = currentPosX + character.bearing.x * scale;
+		GLfloat posCenterCharacterY = currentPosY - (character.size.y - character.bearing.y) * scale;
+
+		GLfloat characterWidth = character.size.x * scale;
+		GLfloat characterHeight = character.size.y * scale;
+
+		this->draw(posCenterCharacterX + characterWidth / 2.0f,
+			posCenterCharacterY + characterHeight / 2.0f,
+			characterWidth, characterHeight, 0.0f,
+			"textureForFont" + text[i], color, blendFactor);
+
+		currentPosX += (character.advance >> 6) * scale;
+	}
 }
 
 std::string Renderer::readShader(const std::string& shaderPath)

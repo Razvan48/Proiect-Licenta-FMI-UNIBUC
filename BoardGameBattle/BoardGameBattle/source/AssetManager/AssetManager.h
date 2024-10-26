@@ -18,6 +18,15 @@
 
 class AssetManager
 {
+public:
+	struct Character
+	{
+		GLuint texture;
+		glm::ivec2 size;
+		glm::ivec2 bearing;
+		GLuint advance;
+	};
+
 private:
 	AssetManager();
 	~AssetManager();
@@ -46,18 +55,12 @@ private:
 
 	FT_Library freeType;
 
-	struct Character
-	{
-		GLuint texture;
-		glm::ivec2 size;
-		glm::ivec2 bearing;
-		GLuint advance;
-	};
-	std::map<std::string, std::vector<Character>> fonts;
+	std::map<std::string, std::vector<AssetManager::Character>> fonts;
 
 public:
 	static AssetManager& get();
 	void loadResources();
 	GLuint getTexture(const std::string& textureName);
+	std::vector<AssetManager::Character>& getFont(const std::string& fontName);
 	void playSound(const std::string& soundName, bool loop);
 };
