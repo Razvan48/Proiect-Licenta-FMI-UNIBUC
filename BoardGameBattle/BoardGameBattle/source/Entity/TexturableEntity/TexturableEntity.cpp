@@ -2,9 +2,9 @@
 
 #include "../../Renderer/Renderer.h"
 
-TexturableEntity::TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const std::string& textureName, const glm::vec3& color = glm::vec3(1.0f, 1.0f, 1.0f), float blendFactor = 0.0f)
+TexturableEntity::TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
-	, textureName(textureName), color(color), blendFactor(blendFactor)
+	, textureName(textureName), color(color), textureBlendFactor(textureBlendFactor), backgroundBlendFactor(backgroundBlendFactor)
 {
 
 }
@@ -24,7 +24,8 @@ void TexturableEntity::draw()
 		this->rotateAngle,
 		this->textureName,
 		this->color,
-		this->blendFactor,
+		this->textureBlendFactor,
+		this->backgroundBlendFactor,
 		false
 	);
 }
