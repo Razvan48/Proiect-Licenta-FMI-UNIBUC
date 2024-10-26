@@ -24,7 +24,8 @@ void TexturableEntity::draw()
 		this->rotateAngle,
 		this->textureName,
 		this->color,
-		this->blendFactor
+		this->blendFactor,
+		false
 	);
 }
 

@@ -37,6 +37,7 @@ private:
 	GLint textureSampler2DLocation;
 	GLint colorLocation;
 	GLint blendFactorLocation;
+	GLint isDrawingTextLocation;
 
 	std::vector<GLfloat> coordinates;
 	std::vector<GLuint> indices;
@@ -44,7 +45,8 @@ private:
 public:
 	static Renderer& get();
 
-	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor);
+	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor, bool isDrawingText);
+	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, GLuint& texture, glm::vec3 color, float blendFactor, bool isDrawingText);
 	void drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, const std::string& fontName, const std::string& text, glm::vec3 color, float blendFactor);
 
 	inline const std::string& getVertexShaderPath() const { return this->VERTEX_SHADER_PATH; }

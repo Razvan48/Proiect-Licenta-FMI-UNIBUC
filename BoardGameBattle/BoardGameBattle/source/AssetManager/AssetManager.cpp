@@ -130,6 +130,8 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 
 void AssetManager::loadResources()
 {
+	this->loadTexture("font", "assets/textures/font.png");
+
 	this->loadTexture("test", "assets/textures/test.png");
 	this->loadTexture("test2", "assets/textures/test2.png");
 

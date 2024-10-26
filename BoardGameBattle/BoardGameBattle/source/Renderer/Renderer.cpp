@@ -38,6 +38,7 @@ Renderer::Renderer()
 	glUniform1i(this->textureSampler2DLocation, 0);
 	this->colorLocation = glGetUniformLocation(this->shaderProgram, "color");
 	this->blendFactorLocation = glGetUniformLocation(this->shaderProgram, "blendFactor");
+	this->isDrawingTextLocation = glGetUniformLocation(this->shaderProgram, "isDrawingText");
 
 	this->coordinates = {
 		// positions            // texture coords
@@ -70,9 +71,9 @@ Renderer::Renderer()
 
 	glBindVertexArray(0);
 
-	// Pentru desenare de text, freetype
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// Pentru desenare de text, freetype (pare sa mearga si fara)
+	// glEnable(GL_BLEND);
+	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer()
@@ -98,7 +99,7 @@ Renderer& Renderer::get()
 	return instance;
 }
 
-void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor)
+void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float blendFactor, bool isDrawingText)
 {
 	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in constructor-ul clasei
 	glBindTexture(GL_TEXTURE_2D, AssetManager::get().getTexture(textureName2D));
@@ -115,6 +116,33 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 
 	glUniform4f(this->colorLocation, color.x, color.y, color.z, 1.0f);
 	glUniform1f(this->blendFactorLocation, blendFactor);
+	glUniform1i(this->isDrawingTextLocation, isDrawingText);
+
+	glBindVertexArray(this->VAO);
+	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, GLuint& texture, glm::vec3 color, float blendFactor, bool isDrawingText)
+{
+	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in constructor-ul clasei
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// glUseProgram(this->shaderProgram); // Nu schimbam shader-ul, deoarece avem doar unul
+
+	glm::mat4 transformationMatrix =
+		glm::ortho(0.0f, (GLfloat)WindowManager::get().getWindowWidth(), 0.0f, (GLfloat)WindowManager::get().getWindowHeight())
+		* glm::translate(glm::mat4(1.0f), glm::vec3(posCenterX, posCenterY, 0.0f))
+		* glm::rotate(glm::mat4(1.0f), glm::radians(rotateAngle), glm::vec3(0.0f, 0.0f, 1.0f))
+		* glm::scale(glm::mat4(1.0f), glm::vec3(width, height, 1.0f));
+
+	glUniformMatrix4fv(this->transformationMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+
+	glUniform4f(this->colorLocation, color.x, color.y, color.z, 1.0f);
+	glUniform1f(this->blendFactorLocation, blendFactor);
+	glUniform1i(this->isDrawingTextLocation, isDrawingText);
 
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
@@ -151,7 +179,7 @@ void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, c
 		this->draw(posCenterCharacterX + characterWidth / 2.0f,
 			posCenterCharacterY + characterHeight / 2.0f,
 			characterWidth, characterHeight, 0.0f,
-			"textureForFont" + text[i], color, blendFactor);
+			font[text[i]].texture, color, blendFactor, true);
 
 		currentPosX += (character.advance >> 6) * scale;
 	}

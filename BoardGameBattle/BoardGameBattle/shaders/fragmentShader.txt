@@ -5,16 +5,29 @@ in vec2 textureCoord;
 uniform sampler2D textureSampler2D;
 uniform vec4 color;
 uniform float blendFactor;
+uniform bool isDrawingText;
 
 out vec4 fragmentColor;
 
 void main()
 {
-    vec4 textureColor = texture(textureSampler2D, textureCoord);
+    if (isDrawingText)
+    {
+        vec4 textureColor = texture(textureSampler2D, vec2(textureCoord.x, 1.0f - textureCoord.y));
 
-    if (textureColor.a == 0.0) // canalul alpha rgba
-		discard;
+        if (textureColor.r == 0.0f)
+            discard;
 
-    fragmentColor = mix(textureColor, color, blendFactor);
+        fragmentColor = mix(textureColor, color, blendFactor);
+    }
+    else
+    {
+        vec4 textureColor = texture(textureSampler2D, textureCoord);
+
+        if (textureColor.a == 0.0f) // canalul alpha rgba
+	        discard;
+
+        fragmentColor = mix(textureColor, color, blendFactor);
+    }
 }
 
