@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Entity\TexturableEntity">
       <UniqueIdentifier>{36f6bda1-63cc-4fd5-9690-a9c494128e80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\InputManager">
+      <UniqueIdentifier>{66456ee8-8e35-43f1-92a6-58ed13c0570b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -63,6 +66,9 @@
     <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp">
       <Filter>Source Files\Entity\TexturableEntity</Filter>
     </ClCompile>
+    <ClCompile Include="source\InputManager\InputManager.cpp">
+      <Filter>Source Files\InputManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -85,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h">
       <Filter>Source Files\Entity\TexturableEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\InputManager\InputManager.h">
+      <Filter>Source Files\InputManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@ private:
 
 public:
 	TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor);
-	~TexturableEntity();
+	virtual ~TexturableEntity();
 
 	virtual void draw() override;
 	virtual void update() override;

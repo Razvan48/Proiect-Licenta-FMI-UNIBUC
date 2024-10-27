@@ -3,6 +3,7 @@
 #include "../WindowManager/WindowManager.h"
 #include "../AssetManager/AssetManager.h"
 #include "../Renderer/Renderer.h"
+#include "../InputManager/InputManager.h"
 
 Game::Game()
 {
@@ -45,7 +46,9 @@ void Game::run()
 
 void Game::update()
 {
+	// Aici update pentru restul
 
+	InputManager::get().update(); // Trebuie sa fie ultimul update, deoarece curata ce butoane s-au apasat.
 }
 
 void Game::start()
