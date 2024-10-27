@@ -14,7 +14,7 @@ Clonare Repository:
 git clone https://github.com/Razvan48/Proiect-Licenta-FMI-UNIBUC
 ```
 
-&emsp; Proiectul poate fi rulat doar pe 64bits, in debug/release, folosind Visual Studio 2022.
+&emsp; Proiectul poate fi construit si rulat doar in release/debug pe 64 de bits, folosind Visual Studio 2022.
 
 <br/>
 <br/>
