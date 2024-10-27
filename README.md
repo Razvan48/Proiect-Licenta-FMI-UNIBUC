@@ -7,3 +7,16 @@
 <br/>
 <br/>
 
+
+## Setup  
+1. Clonare Repository
+```sh
+git clone https://github.com/Razvan48/Proiect-Licenta-FMI-UNIBUC
+```
+
+
+<br/>
+<br/>
+<br/>
+
+
