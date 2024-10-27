@@ -5,9 +5,10 @@
 #include "../Renderer/Renderer.h"
 #include "../InputManager/InputManager.h"
 
-Game::Game()
+Game::Game(Game::Status status)
+	: status(status)
 {
-
+	this->visualInterfaces[Game::Status::IN_MAIN_MENU] = VisualInterface();
 }
 
 Game::~Game()
@@ -17,7 +18,7 @@ Game::~Game()
 
 Game& Game::get()
 {
-	static Game instance;
+	static Game instance(Game::Status::IN_MAIN_MENU);
 	return instance;
 }
 
@@ -37,6 +38,7 @@ void Game::run()
 		Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "test2", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, false);
 		Renderer::get().drawText(500.0f, 500.0f, 500.0f, 10.0f * ((int)glfwGetTime() % 365), "arial", "Hello world!", glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.5f);
 
+		this->draw();
 		this->update();
 
 		glfwSwapBuffers(WindowManager::get().getWindow());
@@ -44,9 +46,14 @@ void Game::run()
 	}
 }
 
+void Game::draw()
+{
+	this->visualInterfaces[this->status].draw();
+}
+
 void Game::update()
 {
-	// Aici update pentru restul
+	this->visualInterfaces[this->status].update();
 
 	InputManager::get().update(); // Trebuie sa fie ultimul update, deoarece curata ce butoane s-au apasat.
 }

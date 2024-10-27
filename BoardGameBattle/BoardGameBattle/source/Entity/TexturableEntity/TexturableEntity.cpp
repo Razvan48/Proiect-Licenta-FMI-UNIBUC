@@ -2,8 +2,8 @@
 
 #include "../../Renderer/Renderer.h"
 
-TexturableEntity::TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor)
-	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
+TexturableEntity::TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, bool requestedDeletion, bool requestedToBeHidden, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor)
+	: Entity(centerPosX, centerPosY, width, height, rotateAngle, requestedDeletion, requestedToBeHidden)
 	, textureName(textureName), color(color), textureBlendFactor(textureBlendFactor), backgroundBlendFactor(backgroundBlendFactor)
 {
 
