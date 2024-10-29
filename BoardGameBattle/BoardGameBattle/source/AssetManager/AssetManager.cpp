@@ -133,6 +133,22 @@ void AssetManager::loadResources()
 	this->loadTexture("backgroundTexture", "assets/textures/backgroundTexture.png");
 	this->loadTexture("fontTexture", "assets/textures/fontTexture.png");
 
+	this->loadTexture("whitePawnTexture", "assets/textures/whitePawnTexture.png");
+	this->loadTexture("whiteRookTexture", "assets/textures/whiteRookTexture.png");
+	this->loadTexture("whiteKnightTexture", "assets/textures/whiteKnightTexture.png");
+	this->loadTexture("whiteBishopTexture", "assets/textures/whiteBishopTexture.png");
+	this->loadTexture("whiteQueenTexture", "assets/textures/whiteQueenTexture.png");
+	this->loadTexture("whiteKingTexture", "assets/textures/whiteKingTexture.png");
+
+	this->loadTexture("blackPawnTexture", "assets/textures/blackPawnTexture.png");
+	this->loadTexture("blackRookTexture", "assets/textures/blackRookTexture.png");
+	this->loadTexture("blackKnightTexture", "assets/textures/blackKnightTexture.png");
+	this->loadTexture("blackBishopTexture", "assets/textures/blackBishopTexture.png");
+	this->loadTexture("blackQueenTexture", "assets/textures/blackQueenTexture.png");
+	this->loadTexture("blackKingTexture", "assets/textures/blackKingTexture.png");
+
+	this->loadTexture("buttonTexture", "assets/textures/buttonTexture.png");
+
 	this->loadTexture("testTexture", "assets/textures/testTexture.png");
 	this->loadTexture("test1Texture", "assets/textures/test1Texture.png");
 

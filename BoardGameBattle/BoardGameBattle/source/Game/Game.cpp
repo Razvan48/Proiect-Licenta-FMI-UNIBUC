@@ -60,8 +60,8 @@ void Game::run()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// TEST:
-		// Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "test1Texture", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, false);
-		// Renderer::get().drawText(500.0f, 500.0f, 500.0f, 10.0f * ((int)glfwGetTime() % 365), "arialFont", "Hello, world!", glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.5f);
+		Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "whiteBishopTexture", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, false);
+		Renderer::get().drawText(500.0f, 500.0f, 500.0f, 10.0f * ((int)glfwGetTime() % 365), "arialFont", "Hello, world!", glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.5f);
 
 		this->draw();
 		this->update();
@@ -76,7 +76,7 @@ void Game::draw()
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
-		visualInterface->second.draw();
+		//visualInterface->second.draw();
 	}
 	else
 	{
