@@ -5,12 +5,14 @@
 
 class Button : virtual public TextEntity
 {
-protected:
+public:
 	enum class Status
 	{
 		RELEASED,
 		PRESSED,
 	};
+
+protected:
 	Button::Status status;
 
 	Game::Status gameStatusWhenPressed;

@@ -19,4 +19,6 @@ public:
 
 	void draw();
 	void update();
+
+	inline void addEntity(const std::shared_ptr<Entity>& entity) { this->entities.push_back(entity); }
 };

@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include "../Game/Game.h"
+
 AssetManager::AssetManager()
 	: FONT_SIZE(48)
 {
@@ -187,5 +189,12 @@ void AssetManager::playSound(const std::string& soundName, bool loop)
 		return;
 	}
 
-	this->soundEngine->play2D(this->sounds[soundName].c_str(), loop);
+	if (Game::get().getSoundEnabled())
+	{
+		this->soundEngine->play2D(this->sounds[soundName].c_str(), loop);
+	}
+	else
+	{
+		std::cout << "Info: Sound " + soundName + " was not played because sound is disabled" << std::endl;
+	}
 }
