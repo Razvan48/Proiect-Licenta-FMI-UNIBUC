@@ -1,6 +1,10 @@
 #include "VisualInterface.h"
 
-VisualInterface::VisualInterface()
+#include "../InputManager/InputManager.h"
+#include "../Game/Game.h"
+
+VisualInterface::VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey)
+	: backgroundEntity(backgroundEntity), respondsToEscapeKey(respondsToEscapeKey)
 {
 
 }
@@ -12,6 +16,8 @@ VisualInterface::~VisualInterface()
 
 void VisualInterface::draw()
 {
+	this->backgroundEntity.draw(); // mai intai fundalul
+
 	for (int i = 0; i < this->entities.size(); ++i)
 	{
 		if (this->entities[i]->getRequestedToBeHidden())
@@ -36,5 +42,10 @@ void VisualInterface::update()
 	for (int i = 0; i < this->entities.size(); ++i)
 	{
 		this->entities[i]->update();
+	}
+
+	if (this->respondsToEscapeKey && InputManager::get().isKeyReleased(GLFW_KEY_ESCAPE))
+	{
+		Game::get().setStatus(Game::Status::EXITING);
 	}
 }

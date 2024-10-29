@@ -4,14 +4,17 @@
 #include <memory>
 
 #include "../Entity/Entity.h"
+#include "../Entity/TexturableEntity/TexturableEntity.h"
 
 class VisualInterface
 {
 private:
+	TexturableEntity backgroundEntity;
 	std::vector<std::shared_ptr<Entity>> entities;
+	bool respondsToEscapeKey;
 
 public:
-	VisualInterface();
+	VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);
 	~VisualInterface();
 
 	void draw();

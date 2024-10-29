@@ -130,14 +130,15 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 
 void AssetManager::loadResources()
 {
-	this->loadTexture("font", "assets/textures/font.png");
+	this->loadTexture("backgroundTexture", "assets/textures/backgroundTexture.png");
+	this->loadTexture("fontTexture", "assets/textures/fontTexture.png");
 
-	this->loadTexture("test", "assets/textures/test.png");
-	this->loadTexture("test2", "assets/textures/test2.png");
+	this->loadTexture("testTexture", "assets/textures/testTexture.png");
+	this->loadTexture("test1Texture", "assets/textures/test1Texture.png");
 
-	this->loadSound("test", "assets/sounds/test.mp3");
+	this->loadSound("testSound", "assets/sounds/testSound.mp3");
 
-	this->loadFont("arial", "assets/fonts/arial.ttf");
+	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");
 }
 
 GLuint AssetManager::getTexture(const std::string& textureName)

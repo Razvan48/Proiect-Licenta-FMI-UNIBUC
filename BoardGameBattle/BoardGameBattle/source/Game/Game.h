@@ -9,8 +9,8 @@ class Game
 public:
 	enum class Status
 	{
+		EXITING,
 		IN_MAIN_MENU,
-		IN_GAME,
 		// etc..
 	};
 private:

@@ -5,10 +5,34 @@
 #include "../Renderer/Renderer.h"
 #include "../InputManager/InputManager.h"
 
+#include "../Entity/TexturableEntity/TexturableEntity.h"
+
+#include <iostream>
+
 Game::Game(Game::Status status)
 	: status(status)
 {
-	this->visualInterfaces[Game::Status::IN_MAIN_MENU] = VisualInterface();
+	this->visualInterfaces.insert(
+		{ 
+			Game::Status::IN_MAIN_MENU,
+
+			VisualInterface(TexturableEntity(
+			WindowManager::get().getWindowWidth() / 2.0f,
+			WindowManager::get().getWindowHeight() / 2.0f,
+
+			1.0f * WindowManager::get().getWindowWidth(),
+			1.0f * WindowManager::get().getWindowHeight(),
+
+			0.0f,
+			false,
+			false,
+			"backgroundTexture",
+			glm::vec3(245.0f / 255.0f, 245.0f / 255.0f, 220.0f / 255.0f),
+			1.0f,
+			1.0f
+			), true)
+		}
+	);
 }
 
 Game::~Game()
@@ -35,8 +59,9 @@ void Game::run()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "test2", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, false);
-		Renderer::get().drawText(500.0f, 500.0f, 500.0f, 10.0f * ((int)glfwGetTime() % 365), "arial", "Hello world!", glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.5f);
+		// TEST:
+		// Renderer::get().draw(500.0f, 500.0f, 100.0f, 100.0f, 25.0f, "test1Texture", glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, false);
+		// Renderer::get().drawText(500.0f, 500.0f, 500.0f, 10.0f * ((int)glfwGetTime() % 365), "arialFont", "Hello, world!", glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.5f);
 
 		this->draw();
 		this->update();
@@ -48,14 +73,35 @@ void Game::run()
 
 void Game::draw()
 {
-	this->visualInterfaces[this->status].draw();
+	const auto& visualInterface = this->visualInterfaces.find(this->status);
+	if (visualInterface != this->visualInterfaces.end())
+	{
+		visualInterface->second.draw();
+	}
+	else
+	{
+		std::cout << "Error: Game Status " << (int)visualInterface->first << " requested for drawing not found in Visual Interfaces Map." << std::endl;
+	}
 }
 
 void Game::update()
 {
-	this->visualInterfaces[this->status].update();
+	const auto& visualInterface = this->visualInterfaces.find(this->status);
+	if (visualInterface != this->visualInterfaces.end())
+	{
+		visualInterface->second.update();
+	}
+	else
+	{
+		std::cout << "Error: Game Status " << (int)visualInterface->first << " requested for updating not found in Visual Interfaces Map." << std::endl;
+	}
 
 	InputManager::get().update(); // Trebuie sa fie ultimul update, deoarece curata ce butoane s-au apasat.
+
+	if (this->status == Game::Status::EXITING)
+	{
+		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
+	}
 }
 
 void Game::start()
