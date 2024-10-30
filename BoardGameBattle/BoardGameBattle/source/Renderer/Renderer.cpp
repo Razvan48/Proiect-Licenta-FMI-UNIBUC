@@ -154,7 +154,7 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor)
+void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor)
 {
 	std::vector<AssetManager::Character>& font = AssetManager::get().getFont(fontName);
 	if (font.empty())
@@ -165,20 +165,22 @@ void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, G
 
 	GLfloat actualWidth = 0.0f;
 	GLfloat actualBearingY = 0.0f;
+	GLfloat actualHeight = 0.0f;
 	for (int i = 0; i < text.size(); ++i)
 	{
 		actualWidth += (font[text[i]].advance >> 6); // .advance masoara o unitate pentru fiecare 1/64 pixel, (64 de unitati pentru un pixel) => impartim prin 64
 		actualBearingY = std::max(actualBearingY, (GLfloat)font[text[i]].bearing.y);
+		actualHeight = std::max(actualHeight, (GLfloat)font[text[i]].size.y);
 	}
 
-	GLfloat scale = width / actualWidth;
+	GLfloat scale = std::min(width / actualWidth, height / actualHeight);
 
 	GLfloat currentPosX = posCenterX
-		- glm::cos(glm::radians(rotateAngle)) * width / 2.0f
+		- glm::cos(glm::radians(rotateAngle)) * (actualWidth / 2.0f) * scale;
 		+ glm::sin(glm::radians(rotateAngle)) * (actualBearingY / 2.0f) * scale;
 	GLfloat currentPosY = posCenterY
 		- glm::cos(glm::radians(rotateAngle)) * (actualBearingY / 2.0f) * scale
-		- glm::sin(glm::radians(rotateAngle)) * width / 2.0f;
+		- glm::sin(glm::radians(rotateAngle)) * (actualWidth / 2.0f) * scale;
 
 	for (int i = 0; i < text.size(); ++i)
 	{

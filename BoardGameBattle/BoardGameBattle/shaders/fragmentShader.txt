@@ -21,6 +21,12 @@ void main()
 
         fragmentColor = mix(textureColor, color, textureBlendFactor);
         fragmentColor.a = backgroundBlendFactor;
+
+        //
+
+        fragmentColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+        vec4 culoare = vec4(1.0f, 1.0f, 1.0f, textureColor.r);
+        fragmentColor = vec4(color.xyz, textureColor.r);
     }
     else
     {

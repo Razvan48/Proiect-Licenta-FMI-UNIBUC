@@ -22,7 +22,8 @@ void TextEntity::draw()
 	Renderer::get().drawText(
 		this->posCenterX,
 		this->posCenterY,
-		this->width,
+		0.8 * this->width,
+		0.8 * this->height,
 		this->rotateAngle,
 		this->fontName,
 		this->text,

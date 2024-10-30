@@ -48,7 +48,7 @@ public:
 
 	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor, bool isDrawingText);
 	void draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, GLuint& texture, glm::vec3 color, float textureBlendFactor, float backGroundBlendFactor, bool isDrawingText);
-	void drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor);
+	void drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor);
 
 	inline const std::string& getVertexShaderPath() const { return this->VERTEX_SHADER_PATH; }
 	inline const std::string& getFragmentShaderPath() const { return this->FRAGMENT_SHADER_PATH; }
