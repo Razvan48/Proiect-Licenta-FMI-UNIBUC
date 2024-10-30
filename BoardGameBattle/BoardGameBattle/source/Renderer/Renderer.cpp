@@ -37,9 +37,8 @@ Renderer::Renderer()
 	// glActiveTexture(GL_TEXTURE0); // este scrisa in metoda draw()
 	glUniform1i(this->textureSampler2DLocation, 0);
 	this->colorLocation = glGetUniformLocation(this->shaderProgram, "color");
-	this->textureBlendFactorLocation = glGetUniformLocation(this->shaderProgram, "textureBlendFactor");
-	this->backgroundBlendFactorLocation = glGetUniformLocation(this->shaderProgram, "backgroundBlendFactor");
 	this->isDrawingTextLocation = glGetUniformLocation(this->shaderProgram, "isDrawingText");
+	glUniform1i(this->isDrawingTextLocation, false);
 
 	this->coordinates = {
 		// positions            // texture coords
@@ -100,7 +99,7 @@ Renderer& Renderer::get()
 	return instance;
 }
 
-void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor, bool isDrawingText)
+void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& textureName2D)
 {
 	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in constructor-ul clasei
 	glBindTexture(GL_TEXTURE_2D, AssetManager::get().getTexture(textureName2D));
@@ -115,10 +114,7 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 
 	glUniformMatrix4fv(this->transformationMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
 
-	glUniform4f(this->colorLocation, color.x, color.y, color.z, 1.0f);
-	glUniform1f(this->textureBlendFactorLocation, textureBlendFactor);
-	glUniform1f(this->backgroundBlendFactorLocation, backgroundBlendFactor);
-	glUniform1i(this->isDrawingTextLocation, isDrawingText);
+	glUniform1i(this->isDrawingTextLocation, false);
 
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
@@ -127,7 +123,7 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, GLuint& texture, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor, bool isDrawingText)
+void Renderer::drawCharacter(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, GLuint& texture, glm::vec3 color)
 {
 	glActiveTexture(GL_TEXTURE0); // Din cauza ca shader-ul contine o singura textura, am putea sa mutam aceasta linie in constructor-ul clasei
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -143,9 +139,7 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 	glUniformMatrix4fv(this->transformationMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
 
 	glUniform4f(this->colorLocation, color.x, color.y, color.z, 1.0f);
-	glUniform1f(this->textureBlendFactorLocation, textureBlendFactor);
-	glUniform1f(this->backgroundBlendFactorLocation, backgroundBlendFactor);
-	glUniform1i(this->isDrawingTextLocation, isDrawingText);
+	glUniform1i(this->isDrawingTextLocation, true);
 
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
@@ -154,7 +148,7 @@ void Renderer::draw(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLflo
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color, float textureBlendFactor, float backgroundBlendFactor)
+void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, GLfloat height, GLfloat rotateAngle, const std::string& fontName, const std::string& text, glm::vec3 color)
 {
 	std::vector<AssetManager::Character>& font = AssetManager::get().getFont(fontName);
 	if (font.empty())
@@ -198,10 +192,10 @@ void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, G
 		GLfloat characterWidth = character.size.x * scale;
 		GLfloat characterHeight = character.size.y * scale;
 
-		this->draw(posCharacterX + glm::cos(glm::radians(rotateAngle)) * (characterWidth / 2.0f) - glm::sin(glm::radians(rotateAngle)) * (characterHeight / 2.0f),
+		this->drawCharacter(posCharacterX + glm::cos(glm::radians(rotateAngle)) * (characterWidth / 2.0f) - glm::sin(glm::radians(rotateAngle)) * (characterHeight / 2.0f),
 			posCharacterY + glm::cos(glm::radians(rotateAngle)) * (characterHeight / 2.0f) + glm::sin(glm::radians(rotateAngle)) * (characterWidth / 2.0f),
 			characterWidth, characterHeight, rotateAngle,
-			font[text[i]].texture, color, textureBlendFactor, backgroundBlendFactor, true);
+			font[text[i]].texture, color);
 
 		currentPosX += glm::cos(glm::radians(rotateAngle)) * (character.advance >> 6) * scale;
 		currentPosY += glm::sin(glm::radians(rotateAngle)) * (character.advance >> 6) * scale;

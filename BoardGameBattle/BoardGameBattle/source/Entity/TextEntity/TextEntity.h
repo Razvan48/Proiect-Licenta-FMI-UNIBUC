@@ -2,16 +2,24 @@
 
 #include <string>
 
-#include "../TexturableEntity/TexturableEntity.h"
+#include "../Entity.h"
 
-class TextEntity : virtual public TexturableEntity
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+class TextEntity : virtual public Entity
 {
 protected:
+	glm::vec3 color;
 	std::string fontName;
 	std::string text;
 
+	static const float TEXT_PADDING_0;
+	static const float TEXT_PADDING_1;
+
 public:
-	TextEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, bool requestedDeletion, bool requestedToBeHidden, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor, const std::string& fontName, const std::string& text);
+	TextEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text);
 	virtual ~TextEntity();
 
 	virtual void draw() override;

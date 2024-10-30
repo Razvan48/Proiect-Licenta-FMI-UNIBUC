@@ -4,8 +4,6 @@ in vec2 textureCoord;
 
 uniform sampler2D textureSampler2D;
 uniform vec4 color;
-uniform float textureBlendFactor;
-uniform float backgroundBlendFactor;
 uniform bool isDrawingText;
 
 out vec4 fragmentColor;
@@ -19,13 +17,6 @@ void main()
         if (textureColor.r == 0.0f)
             discard;
 
-        fragmentColor = mix(textureColor, color, textureBlendFactor);
-        fragmentColor.a = backgroundBlendFactor;
-
-        //
-
-        fragmentColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-        vec4 culoare = vec4(1.0f, 1.0f, 1.0f, textureColor.r);
         fragmentColor = vec4(color.xyz, textureColor.r);
     }
     else
@@ -35,8 +26,7 @@ void main()
         if (textureColor.a == 0.0f) // canalul alpha rgba
 	        discard;
 
-        fragmentColor = mix(textureColor, color, textureBlendFactor);
-        fragmentColor.a = backgroundBlendFactor;
+        fragmentColor = textureColor;
     }
 }
 

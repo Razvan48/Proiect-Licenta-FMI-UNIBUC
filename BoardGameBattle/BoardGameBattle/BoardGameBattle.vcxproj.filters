@@ -43,17 +43,17 @@
     <Filter Include="Source Files\Entity\TextEntity">
       <UniqueIdentifier>{e5be71b3-1347-4069-bb30-0a86b52a663c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entity\InputButton">
-      <UniqueIdentifier>{ac175626-c700-4e32-b2d9-72154fdc207f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Entity\Button">
       <UniqueIdentifier>{c9b177fd-c9f9-408d-8481-9fb17d6bb8d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entity\GamePiece">
-      <UniqueIdentifier>{5836977d-5d0d-4d70-a73e-bc5d5aa20494}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\VisualInterface">
       <UniqueIdentifier>{52eedeeb-0d7f-483b-b834-fd435a06414a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\TextOnBackground">
+      <UniqueIdentifier>{4885f520-2ec5-4f76-8213-98c2193bd1c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\BoardTile">
+      <UniqueIdentifier>{91a29d9b-e9f0-4044-a389-99a41dd80383}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,17 +87,17 @@
     <ClCompile Include="source\Entity\TextEntity\TextEntity.cpp">
       <Filter>Source Files\Entity\TextEntity</Filter>
     </ClCompile>
-    <ClCompile Include="source\Entity\InputButton\InputButton.cpp">
-      <Filter>Source Files\Entity\InputButton</Filter>
-    </ClCompile>
     <ClCompile Include="source\Entity\Button\Button.cpp">
       <Filter>Source Files\Entity\Button</Filter>
     </ClCompile>
-    <ClCompile Include="source\Entity\GamePiece\GamePiece.cpp">
-      <Filter>Source Files\Entity\GamePiece</Filter>
-    </ClCompile>
     <ClCompile Include="source\VisualInterface\VisualInterface.cpp">
       <Filter>Source Files\VisualInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.cpp">
+      <Filter>Source Files\Entity\TextOnBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp">
+      <Filter>Source Files\Entity\BoardTile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,17 +128,17 @@
     <ClInclude Include="source\Entity\TextEntity\TextEntity.h">
       <Filter>Source Files\Entity\TextEntity</Filter>
     </ClInclude>
-    <ClInclude Include="source\Entity\InputButton\InputButton.h">
-      <Filter>Source Files\Entity\InputButton</Filter>
-    </ClInclude>
     <ClInclude Include="source\Entity\Button\Button.h">
       <Filter>Source Files\Entity\Button</Filter>
     </ClInclude>
-    <ClInclude Include="source\Entity\GamePiece\GamePiece.h">
-      <Filter>Source Files\Entity\GamePiece</Filter>
-    </ClInclude>
     <ClInclude Include="source\VisualInterface\VisualInterface.h">
       <Filter>Source Files\VisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.h">
+      <Filter>Source Files\Entity\TextOnBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\BoardTile\BoardTile.h">
+      <Filter>Source Files\Entity\BoardTile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

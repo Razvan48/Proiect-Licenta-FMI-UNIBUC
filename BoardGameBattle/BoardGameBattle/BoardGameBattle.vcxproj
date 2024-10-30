@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AssetManager\AssetManager.cpp" />
+    <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
-    <ClCompile Include="source\Entity\GamePiece\GamePiece.cpp" />
-    <ClCompile Include="source\Entity\InputButton\InputButton.cpp" />
     <ClCompile Include="source\Entity\TextEntity\TextEntity.cpp" />
+    <ClCompile Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.cpp" />
     <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp" />
     <ClCompile Include="source\Game\Game.cpp" />
     <ClCompile Include="source\InputManager\InputManager.cpp" />
@@ -36,11 +36,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AssetManager\AssetManager.h" />
+    <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />
     <ClInclude Include="source\Entity\Entity.h" />
-    <ClInclude Include="source\Entity\GamePiece\GamePiece.h" />
-    <ClInclude Include="source\Entity\InputButton\InputButton.h" />
     <ClInclude Include="source\Entity\TextEntity\TextEntity.h" />
+    <ClInclude Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.h" />
     <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h" />
     <ClInclude Include="source\Game\Game.h" />
     <ClInclude Include="source\InputManager\InputManager.h" />

@@ -16,7 +16,10 @@ VisualInterface::~VisualInterface()
 
 void VisualInterface::draw()
 {
-	this->backgroundEntity.draw(); // mai intai fundalul
+	if (!this->backgroundEntity.getRequestedToBeHidden())
+	{
+		this->backgroundEntity.draw(); // mai intai fundalul
+	}
 
 	for (int i = 0; i < this->entities.size(); ++i)
 	{
@@ -38,6 +41,8 @@ void VisualInterface::update()
 			--i;
 		}
 	}
+
+	this->backgroundEntity.update();
 
 	for (int i = 0; i < this->entities.size(); ++i)
 	{

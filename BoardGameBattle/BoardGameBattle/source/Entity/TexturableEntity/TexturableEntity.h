@@ -12,13 +12,9 @@ class TexturableEntity : virtual public Entity
 {
 protected:
 	std::string textureName;
-	glm::vec3 color;
-	float textureBlendFactor;
-	float backgroundBlendFactor;
-
 
 public:
-	TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, bool requestedDeletion, bool requestedToBeHidden, const std::string& textureName, const glm::vec3& color, float textureBlendFactor, float backgroundBlendFactor);
+	TexturableEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const std::string& textureName);
 	virtual ~TexturableEntity();
 
 	virtual void draw() override;

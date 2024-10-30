@@ -26,13 +26,8 @@ Game::Game(Game::Status status, bool soundEnabled)
 			1.0f * WindowManager::get().getWindowHeight(),
 
 			0.0f,
-			false,
-			false,
-			"backgroundTexture",
-			glm::vec3(245.0f / 255.0f, 245.0f / 255.0f, 220.0f / 255.0f),
-			1.0f,
-			1.0f
-			), true)
+			"backgroundTexture"), 
+				true)
 		}
 	);
 	const auto& mainMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MAIN_MENU);
@@ -44,17 +39,14 @@ Game::Game(Game::Status status, bool soundEnabled)
 				0.25f * WindowManager::get().getWindowWidth(),
 				0.025f * WindowManager::get().getWindowHeight(),
 				0.0f,
-				false,
-				false,
-				"buttonTexture",
 				glm::vec3(1.0f, 0.0f, 0.5f),
-				0.0f,
-				1.0f,
 				"arialFont",
 				"Exit",
-				Button::Status::RELEASED,
+				"buttonTexture",
 				Game::Status::EXITING,
-				"buttonPressedSound"
+				"buttonPressedSound",
+				"buttonTexture",
+				glm::vec3(1.0f, 0.0f, 1.0f)
 			//)
 		)
 	);

@@ -13,7 +13,7 @@ protected:
 	bool requestedToBeHidden;
 
 public:
-	Entity(float posCenterX, float posCenterY, float width, float height, float rotateAngle, bool requestedDeletion, bool requestedToBeHidden);
+	Entity(float posCenterX, float posCenterY, float width, float height, float rotateAngle);
 	virtual ~Entity();
 
 	virtual void draw() = 0;
