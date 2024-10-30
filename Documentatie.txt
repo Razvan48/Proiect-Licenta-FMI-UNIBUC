@@ -42,6 +42,13 @@ Texturi:
 Texturi piese:
 https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent
 
+Sunete:
+Sunete butoane (hovered si pressed):
+https://pixabay.com/sound-effects
+
+
+
+
 
 
 

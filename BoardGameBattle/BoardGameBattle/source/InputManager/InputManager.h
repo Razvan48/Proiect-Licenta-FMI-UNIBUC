@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../WindowManager/WindowManager.h"
+
 class InputManager
 {
 private:
@@ -43,7 +45,7 @@ public:
 	void update();
 
 	inline double getCursorPosX() const { return this->cursorPosX; }
-	inline double getCursorPosY() const { return this->cursorPosY; }
+	inline double getCursorPosY() const { return WindowManager::get().getWindowHeight() - this->cursorPosY; }
 	inline bool isKeyPressed(int key) const { return this->pressedKeys[key]; }
 	inline bool isKeyReleased(int key) const { return this->releasedKeys[key]; }
 	inline bool isKeyHeld(int key) const { return this->heldKeys[key]; }

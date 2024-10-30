@@ -15,39 +15,82 @@ Game::Game(Game::Status status, bool soundEnabled)
 	: status(status), soundEnabled(soundEnabled)
 {
 	this->visualInterfaces.insert(
-		{ 
+		{
 			Game::Status::IN_MAIN_MENU,
 
-			VisualInterface(TexturableEntity(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 2.0f,
-
-			1.0f * WindowManager::get().getWindowWidth(),
-			1.0f * WindowManager::get().getWindowHeight(),
-
-			0.0f,
-			"backgroundTexture"), 
-				true)
+			VisualInterface(
+				TexturableEntity
+				(
+					WindowManager::get().getWindowWidth() / 2.0f,
+					WindowManager::get().getWindowHeight() / 2.0f,
+					1.0f * WindowManager::get().getWindowWidth(),
+					1.0f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					"mainMenuBackgroundTexture"
+				)
+				, true
+			)
 		}
 	);
 	const auto& mainMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MAIN_MENU);
-	mainMenuVisualInterface->second.addEntity(
-		std::make_shared<Button>(
-			//Button(
-				WindowManager::get().getWindowWidth() / 2.0f,
-				WindowManager::get().getWindowHeight() / 2.0f,
-				0.25f * WindowManager::get().getWindowWidth(),
-				0.025f * WindowManager::get().getWindowHeight(),
-				0.0f,
-				glm::vec3(1.0f, 0.0f, 0.5f),
-				"arialFont",
-				"Exit",
-				"buttonTexture",
-				Game::Status::EXITING,
-				"buttonPressedSound",
-				"buttonTexture",
-				glm::vec3(1.0f, 0.0f, 1.0f)
-			//)
+	mainMenuVisualInterface->second.addEntity
+	(
+		std::make_shared<Button>
+		(
+			WindowManager::get().getWindowWidth() / 2.0f,
+			WindowManager::get().getWindowHeight() / 8.0f + 0.2f * WindowManager::get().getWindowHeight(),
+			0.25f * WindowManager::get().getWindowWidth(),
+			0.075f * WindowManager::get().getWindowHeight(),
+			0.0f,
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			"arialFont",
+			"Play",
+			"buttonTexture",
+			Game::Status::IN_MAIN_MENU,
+			"buttonPressedSound",
+			"buttonHoveredTexture",
+			glm::vec3(0.75f, 0.75f, 0.75f),
+			"buttonHoveredSound"
+		)
+	);
+	mainMenuVisualInterface->second.addEntity
+	(
+		std::make_shared<Button>
+		(
+			WindowManager::get().getWindowWidth() / 2.0f,
+			WindowManager::get().getWindowHeight() / 8.0f + 0.1f * WindowManager::get().getWindowHeight(),
+			0.25f * WindowManager::get().getWindowWidth(),
+			0.075f * WindowManager::get().getWindowHeight(),
+			0.0f,
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			"arialFont",
+			"Settings",
+			"buttonTexture",
+			Game::Status::IN_MAIN_MENU,
+			"buttonPressedSound",
+			"buttonHoveredTexture",
+			glm::vec3(0.75f, 0.75f, 0.75f),
+			"buttonHoveredSound"
+		)
+	);
+	mainMenuVisualInterface->second.addEntity
+	(
+		std::make_shared<Button>
+		(
+			WindowManager::get().getWindowWidth() / 2.0f,
+			WindowManager::get().getWindowHeight() / 8.0f,
+			0.25f * WindowManager::get().getWindowWidth(),
+			0.075f * WindowManager::get().getWindowHeight(),
+			0.0f,
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			"arialFont",
+			"Exit",
+			"buttonTexture",
+			Game::Status::EXITING,
+			"buttonPressedSound",
+			"buttonHoveredTexture",
+			glm::vec3(0.75f, 0.75f, 0.75f),
+			"buttonHoveredSound"
 		)
 	);
 }

@@ -133,6 +133,7 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 void AssetManager::loadResources()
 {
 	this->loadTexture("backgroundTexture", "assets/textures/backgroundTexture.png");
+	this->loadTexture("mainMenuBackgroundTexture", "assets/textures/mainMenuBackgroundTexture.png");
 	this->loadTexture("fontTexture", "assets/textures/fontTexture.png");
 
 	this->loadTexture("whitePawnTexture", "assets/textures/whitePawnTexture.png");
@@ -150,11 +151,15 @@ void AssetManager::loadResources()
 	this->loadTexture("blackKingTexture", "assets/textures/blackKingTexture.png");
 
 	this->loadTexture("buttonTexture", "assets/textures/buttonTexture.png");
+	this->loadTexture("buttonHoveredTexture", "assets/textures/buttonHoveredTexture.png");
 
 	this->loadTexture("testTexture", "assets/textures/testTexture.png");
 	this->loadTexture("test1Texture", "assets/textures/test1Texture.png");
 
 	this->loadSound("testSound", "assets/sounds/testSound.mp3");
+
+	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
+	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");
 
 	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");
 }
@@ -181,7 +186,7 @@ std::vector<AssetManager::Character>& AssetManager::getFont(const std::string& f
 	return this->fonts[fontName];
 }
 
-void AssetManager::playSound(const std::string& soundName, bool loop)
+void AssetManager::playSound(const std::string& soundName, bool isLooping)
 {
 	if (this->sounds.find(soundName) == this->sounds.end())
 	{
@@ -191,7 +196,7 @@ void AssetManager::playSound(const std::string& soundName, bool loop)
 
 	if (Game::get().getSoundEnabled())
 	{
-		this->soundEngine->play2D(this->sounds[soundName].c_str(), loop);
+		this->soundEngine->play2D(this->sounds[soundName].c_str(), isLooping);
 	}
 	else
 	{

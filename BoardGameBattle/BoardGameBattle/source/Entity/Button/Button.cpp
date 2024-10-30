@@ -5,7 +5,7 @@
 #include "../../AssetManager/AssetManager.h"
 
 Button::Button(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
-	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered)
+	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered, const std::string& soundNameWhenHovered)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
 	, TextEntity(centerPosX, centerPosY, width, height, rotateAngle, color, fontName, text)
 	, TexturableEntity(centerPosX, centerPosY, width, height, rotateAngle, textureName)
@@ -13,6 +13,7 @@ Button::Button(float centerPosX, float centerPosY, float width, float height, fl
 	, status(Button::Status::RELEASED)
 	, gameStatusWhenPressed(gameStatusWhenPressed), soundNameWhenPressed(soundNameWhenPressed)
 	, textureNameWhenHovered(textureNameWhenHovered), colorWhenHovered(colorWhenHovered)
+	, soundNameWhenHovered(soundNameWhenHovered)
 {
 
 }
@@ -29,7 +30,7 @@ void Button::draw()
 	{
 		currentTexture = this->textureName;
 	}
-	else if (this->status == Button::Status::HOVERED)
+	else // if (this->status == Button::Status::HOVERED)
 	{
 		currentTexture = this->textureNameWhenHovered;
 	}
@@ -59,7 +60,7 @@ void Button::draw()
 	{
 		currentColor = this->color;
 	}
-	else if (this->status == Button::Status::HOVERED)
+	else // if (this->status == Button::Status::HOVERED)
 	{
 		currentColor = this->colorWhenHovered;
 	}
@@ -77,12 +78,6 @@ void Button::draw()
 
 void Button::update()
 {
-	if (this->status == Button::Status::PRESSED)
-	{
-		Game::get().setStatus(this->gameStatusWhenPressed);
-		AssetManager::get().playSound(this->soundNameWhenPressed, false);
-	}
-
 	float cursorPosX = InputManager::get().getCursorPosX();
 	float cursorPosY = InputManager::get().getCursorPosY();
 
@@ -91,10 +86,15 @@ void Button::update()
 	{
 		if (InputManager::get().isLeftMouseButtonReleased())
 		{
-			this->status = Button::Status::PRESSED;
+			Game::get().setStatus(this->gameStatusWhenPressed);
+			AssetManager::get().playSound(this->soundNameWhenPressed, false);
 		}
 		else
 		{
+			if (this->status == Button::Status::RELEASED)
+			{
+				AssetManager::get().playSound(this->soundNameWhenHovered, false);
+			}
 			this->status = Button::Status::HOVERED;
 		}
 	}
