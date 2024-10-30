@@ -132,9 +132,7 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 
 void AssetManager::loadResources()
 {
-	this->loadTexture("backgroundTexture", "assets/textures/backgroundTexture.png");
 	this->loadTexture("mainMenuBackgroundTexture", "assets/textures/mainMenuBackgroundTexture.png");
-	this->loadTexture("fontTexture", "assets/textures/fontTexture.png");
 
 	this->loadTexture("whitePawnTexture", "assets/textures/whitePawnTexture.png");
 	this->loadTexture("whiteRookTexture", "assets/textures/whiteRookTexture.png");
@@ -152,11 +150,6 @@ void AssetManager::loadResources()
 
 	this->loadTexture("buttonTexture", "assets/textures/buttonTexture.png");
 	this->loadTexture("buttonHoveredTexture", "assets/textures/buttonHoveredTexture.png");
-
-	this->loadTexture("testTexture", "assets/textures/testTexture.png");
-	this->loadTexture("test1Texture", "assets/textures/test1Texture.png");
-
-	this->loadSound("testSound", "assets/sounds/testSound.mp3");
 
 	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
 	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");
