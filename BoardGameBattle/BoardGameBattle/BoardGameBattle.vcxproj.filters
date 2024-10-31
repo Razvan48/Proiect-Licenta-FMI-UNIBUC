@@ -58,6 +58,15 @@
     <Filter Include="Source Files\Entity\SoundButton">
       <UniqueIdentifier>{5eaa92cf-c858-405f-b5c0-d60c2aa338c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Client">
+      <UniqueIdentifier>{4fd075a7-c075-4202-b771-b982f8d6a155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server">
+      <UniqueIdentifier>{8384d71f-55ba-4b9c-93dc-eb1d030e7d8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\InputButton">
+      <UniqueIdentifier>{c8b16a5d-f8c7-4d52-b0e6-d343255ccae5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -105,6 +114,15 @@
     <ClCompile Include="source\Entity\SoundButton\SoundButton.cpp">
       <Filter>Source Files\Entity\SoundButton</Filter>
     </ClCompile>
+    <ClCompile Include="source\Server\Server.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Client\Client.cpp">
+      <Filter>Source Files\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\InputButton\InputButton.cpp">
+      <Filter>Source Files\Entity\InputButton</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -148,6 +166,15 @@
     </ClInclude>
     <ClInclude Include="source\Entity\SoundButton\SoundButton.h">
       <Filter>Source Files\Entity\SoundButton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Server\Server.h">
+      <Filter>Source Files\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Client\Client.h">
+      <Filter>Source Files\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\InputButton\InputButton.h">
+      <Filter>Source Files\Entity\InputButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
