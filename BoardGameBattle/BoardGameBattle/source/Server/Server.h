@@ -17,7 +17,7 @@ private:
 	const int NUM_CHANNELS;
 	const int TIMEOUT_LIMIT_MS;
 	ENetAddress address;
-	ENetHost* host;
+	ENetHost* server;
 
 	const int MINIMUM_PORT;
 	const int MAXIMUM_PORT;
