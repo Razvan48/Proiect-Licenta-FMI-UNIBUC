@@ -157,6 +157,7 @@ void AssetManager::loadResources()
 
 	this->loadTexture("buttonTexture", "assets/textures/buttonTexture.png");
 	this->loadTexture("buttonHoveredTexture", "assets/textures/buttonHoveredTexture.png");
+	this->loadTexture("dataBoxTexture", "assets/textures/dataBoxTexture.png");
 
 	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
 	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");

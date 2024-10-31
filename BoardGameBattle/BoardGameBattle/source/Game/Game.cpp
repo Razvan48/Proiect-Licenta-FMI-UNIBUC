@@ -7,7 +7,7 @@
 
 #include "../Entity/TexturableEntity/TexturableEntity.h"
 #include "../Entity/Button/Button.h"
-#include "../Entity/SoundButton/SoundButton.h"
+#include "../Entity/SoundSetting/SoundSetting.h"
 #include "../Entity/DataBox/DataBox.h"
 
 #include <enet/enet.h>
@@ -132,7 +132,7 @@ Game::Game()
 	const auto& settingsMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_SETTINGS_MENU);
 	settingsMenuVisualInterface->second.addEntity
 	(
-		std::make_shared<SoundButton>
+		std::make_shared<SoundSetting>
 		(
 			WindowManager::get().getWindowWidth() / 2.0f,
 			WindowManager::get().getWindowHeight() / 8.0f + 0.4f * WindowManager::get().getWindowHeight(),
@@ -488,7 +488,23 @@ Game::Game()
 
 	// IN_MULTIPLAYER_GAME
 
-
+	/*
+	mainMenuVisualInterface->second.addEntity(
+		std::make_shared<DataBox>
+		(
+			WindowManager::get().getWindowWidth() / 2.0f,
+			WindowManager::get().getWindowHeight() / 2.0f,
+			0.5f * WindowManager::get().getWindowWidth(),
+			0.1f * WindowManager::get().getWindowHeight(),
+			0.0f,
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			"arialFont",
+			"Data Box",
+			"dataBoxTexture",
+			"Data Box"
+		)
+	);
+	*/
 }
 
 Game::~Game()

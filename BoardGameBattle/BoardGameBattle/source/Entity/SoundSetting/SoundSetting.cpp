@@ -1,8 +1,8 @@
-#include "SoundButton.h"
+#include "SoundSetting.h"
 
 #include "../../Game/Game.h"
 
-SoundButton::SoundButton(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOn, Button buttonOff)
+SoundSetting::SoundSetting(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOn, Button buttonOff)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
 	, TextEntity(centerPosX, centerPosY, width, height, rotateAngle, color, fontName, text)
 	, buttonOn(buttonOn), buttonOff(buttonOff)
@@ -10,19 +10,19 @@ SoundButton::SoundButton(float centerPosX, float centerPosY, float width, float 
 
 }
 
-SoundButton::~SoundButton()
+SoundSetting::~SoundSetting()
 {
 
 }
 
-void SoundButton::draw()
+void SoundSetting::draw()
 {
 	TextEntity::draw();
 	this->buttonOn.draw();
 	this->buttonOff.draw();
 }
 
-void SoundButton::update()
+void SoundSetting::update()
 {
 	TextEntity::update();
 	this->buttonOn.update();
