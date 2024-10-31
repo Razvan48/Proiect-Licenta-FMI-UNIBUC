@@ -67,6 +67,9 @@
     <Filter Include="Source Files\Entity\InputButton">
       <UniqueIdentifier>{c8b16a5d-f8c7-4d52-b0e6-d343255ccae5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity\DataBox">
+      <UniqueIdentifier>{2492dbcc-b17e-4150-9c43-feaf4cb26d34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -123,6 +126,9 @@
     <ClCompile Include="source\Entity\InputButton\InputButton.cpp">
       <Filter>Source Files\Entity\InputButton</Filter>
     </ClCompile>
+    <ClCompile Include="source\Entity\DataBox\DataBox.cpp">
+      <Filter>Source Files\Entity\DataBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -175,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="source\Entity\InputButton\InputButton.h">
       <Filter>Source Files\Entity\InputButton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\DataBox\DataBox.h">
+      <Filter>Source Files\Entity\DataBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

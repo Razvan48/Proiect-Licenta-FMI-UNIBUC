@@ -24,4 +24,6 @@ public:
 
 	inline bool getRequestedToBeHidden() const { return this->requestedToBeHidden; }
 	inline void setRequestedToBeHidden(bool requestedToBeHidden) { this->requestedToBeHidden = requestedToBeHidden; }
+
+	bool isInMouseCollision() const;
 };

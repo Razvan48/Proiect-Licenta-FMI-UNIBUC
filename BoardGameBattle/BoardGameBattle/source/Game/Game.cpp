@@ -8,6 +8,7 @@
 #include "../Entity/TexturableEntity/TexturableEntity.h"
 #include "../Entity/Button/Button.h"
 #include "../Entity/SoundButton/SoundButton.h"
+#include "../Entity/DataBox/DataBox.h"
 
 #include <enet/enet.h>
 
@@ -486,6 +487,8 @@ Game::Game()
 	// IN_SINGLEPLAYER_GAME
 
 	// IN_MULTIPLAYER_GAME
+
+
 }
 
 Game::~Game()
@@ -512,7 +515,7 @@ void Game::loadResources()
 {
 	WindowManager::get(); // Asigura setup-ul la OpenGL, trebuie sa fie primul apelat.
 	AssetManager::get().loadResources();
-	this->initializeENet();// Enet
+	this->initializeENet(); // Enet
 }
 
 void Game::run()

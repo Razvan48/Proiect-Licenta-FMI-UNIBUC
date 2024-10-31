@@ -81,15 +81,6 @@ void Button::draw()
 	);
 }
 
-bool Button::isInMouseCollision() const
-{
-	float cursorPosX = InputManager::get().getCursorPosX();
-	float cursorPosY = InputManager::get().getCursorPosY();
-
-	return this->posCenterX - this->width / 2.0f < cursorPosX && cursorPosX < this->posCenterX + this->width / 2.0f
-		&& this->posCenterY - this->height / 2.0f < cursorPosY && cursorPosY < this->posCenterY + this->height / 2.0f;
-}
-
 void Button::update()
 {
 	this->recentlyPressed = false;

@@ -39,7 +39,5 @@ public:
 	virtual void draw() override;
 	virtual void update() override;
 
-	bool isInMouseCollision() const;
-
 	inline bool getRecentlyPressed() const { return this->recentlyPressed; }
 };

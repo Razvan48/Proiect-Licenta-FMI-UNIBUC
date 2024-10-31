@@ -48,6 +48,11 @@ void Client::update()
 
 void Client::stop()
 {
+	enet_host_flush(this->client);
+	enet_peer_disconnect(this->serverPeer, 0);
+
+	// TODO: aici ar putea sa mai astepte dupa niste ultime mesaje primite din partea serverului
+
 	enet_host_destroy(this->client);
 }
 
