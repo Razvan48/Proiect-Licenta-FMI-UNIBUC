@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../TextEntity/TextEntity.h"
-#include "../../Button/Button.h"
+#include "../TextEntity/TextEntity.h"
+#include "../Button/Button.h"
 
 class SoundButton : virtual public TextEntity
 {

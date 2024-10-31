@@ -55,8 +55,8 @@
     <Filter Include="Source Files\Entity\BoardTile">
       <UniqueIdentifier>{91a29d9b-e9f0-4044-a389-99a41dd80383}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entity\Button\SoundButton">
-      <UniqueIdentifier>{f4befc9f-636a-458c-940b-0ee4becd8541}</UniqueIdentifier>
+    <Filter Include="Source Files\Entity\SoundButton">
+      <UniqueIdentifier>{5eaa92cf-c858-405f-b5c0-d60c2aa338c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -102,8 +102,8 @@
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp">
       <Filter>Source Files\Entity\BoardTile</Filter>
     </ClCompile>
-    <ClCompile Include="source\Entity\Button\SoundButton\SoundButton.cpp">
-      <Filter>Source Files\Entity\Button\SoundButton</Filter>
+    <ClCompile Include="source\Entity\SoundButton\SoundButton.cpp">
+      <Filter>Source Files\Entity\SoundButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,8 +146,8 @@
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h">
       <Filter>Source Files\Entity\BoardTile</Filter>
     </ClInclude>
-    <ClInclude Include="source\Entity\Button\SoundButton\SoundButton.h">
-      <Filter>Source Files\Entity\Button\SoundButton</Filter>
+    <ClInclude Include="source\Entity\SoundButton\SoundButton.h">
+      <Filter>Source Files\Entity\SoundButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

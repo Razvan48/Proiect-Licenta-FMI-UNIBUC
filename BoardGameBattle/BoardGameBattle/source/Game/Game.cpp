@@ -7,7 +7,7 @@
 
 #include "../Entity/TexturableEntity/TexturableEntity.h"
 #include "../Entity/Button/Button.h"
-#include "../Entity/Button/SoundButton/SoundButton.h"
+#include "../Entity/SoundButton/SoundButton.h"
 
 #include <iostream>
 #include <memory>

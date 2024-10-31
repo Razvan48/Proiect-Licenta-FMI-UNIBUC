@@ -1,6 +1,6 @@
 #include "SoundButton.h"
 
-#include "../../../Game/Game.h"
+#include "../../Game/Game.h"
 
 SoundButton::SoundButton(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOn, Button buttonOff)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
