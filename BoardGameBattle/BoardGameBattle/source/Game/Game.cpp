@@ -11,8 +11,9 @@
 #include <iostream>
 #include <memory>
 
-Game::Game(Game::Status status, bool soundEnabled)
-	: status(status), soundEnabled(soundEnabled)
+Game::Game()
+	: status(Game::Status::IN_MAIN_MENU), soundEnabled(true)
+	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
 {
 	this->visualInterfaces.insert(
 		{
@@ -102,7 +103,7 @@ Game::~Game()
 
 Game& Game::get()
 {
-	static Game instance(Game::Status::IN_MAIN_MENU, true);
+	static Game instance;
 	return instance;
 }
 

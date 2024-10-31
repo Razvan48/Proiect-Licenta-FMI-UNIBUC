@@ -22,6 +22,7 @@
     <ClCompile Include="source\AssetManager\AssetManager.cpp" />
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
+    <ClCompile Include="source\Entity\Button\SoundButton\SoundButton.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Entity\TextEntity\TextEntity.cpp" />
     <ClCompile Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="source\AssetManager\AssetManager.h" />
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />
+    <ClInclude Include="source\Entity\Button\SoundButton\SoundButton.h" />
     <ClInclude Include="source\Entity\Entity.h" />
     <ClInclude Include="source\Entity\TextEntity\TextEntity.h" />
     <ClInclude Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.h" />

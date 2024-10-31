@@ -11,10 +11,34 @@ public:
 	{
 		EXITING,
 		IN_MAIN_MENU,
+		IN_SETTINGS_MENU,
+		IN_MODE_MENU,
+		IN_COLOR_MENU,
+		IN_MULTIPLAYER_MENU,
+		IN_INPUT_MENU,
+		IN_GAME,
 		// etc..
 	};
+	enum class Mode
+	{
+		SINGLE_PLAYER,
+		MULTIPLAYER,
+		NONE,
+	};
+	enum class Color
+	{
+		WHITE,
+		BLACK,
+		NONE,
+	};
+	enum class MultiplayerStatus
+	{
+		CREATE_GAME,
+		JOIN_GAME,
+		NONE,
+	};
 private:
-	Game(Game::Status status, bool soundEnabled);
+	Game();
 	~Game();
 	Game(const Game& other) = delete;
 	Game& operator= (const Game& other) = delete;
@@ -26,6 +50,10 @@ private:
 	bool soundEnabled;
 
 	std::map<Game::Status, VisualInterface> visualInterfaces;
+
+	Game::Mode mode;
+	Game::Color color;
+	Game::MultiplayerStatus multiplayerStatus;
 
 	void loadResources();
 	void run();

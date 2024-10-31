@@ -133,6 +133,11 @@ void AssetManager::loadFont(const std::string& fontName, const std::string& font
 void AssetManager::loadResources()
 {
 	this->loadTexture("mainMenuBackgroundTexture", "assets/textures/mainMenuBackgroundTexture.png");
+	this->loadTexture("settingsMenuBackgroundTexture", "assets/textures/settingsMenuBackgroundTexture.png");
+	this->loadTexture("modeMenuBackgroundTexture", "assets/textures/modeMenuBackgroundTexture.png");
+	this->loadTexture("colorMenuBackgroundTexture", "assets/textures/colorMenuBackgroundTexture.png");
+	this->loadTexture("multiplayerMenuBackgroundTexture", "assets/textures/multiplayerMenuBackgroundTexture.png");
+	this->loadTexture("inputMenuBackgroundTexture", "assets/textures/inputMenuBackgroundTexture.png");
 
 	this->loadTexture("whitePawnTexture", "assets/textures/whitePawnTexture.png");
 	this->loadTexture("whiteRookTexture", "assets/textures/whiteRookTexture.png");
@@ -153,6 +158,7 @@ void AssetManager::loadResources()
 
 	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
 	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");
+	this->loadSound("pieceMoveSound", "assets/sounds/pieceMoveSound.mp3");
 
 	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");
 }

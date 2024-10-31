@@ -94,12 +94,17 @@ void Button::update()
 			if (this->status == Button::Status::RELEASED)
 			{
 				AssetManager::get().playSound(this->soundNameWhenHovered, false);
+				this->text.push_back('<');
 			}
 			this->status = Button::Status::HOVERED;
 		}
 	}
 	else
 	{
+		if (this->status == Button::Status::HOVERED)
+		{
+			this->text.pop_back();
+		}
 		this->status = Button::Status::RELEASED;
 	}
 }
