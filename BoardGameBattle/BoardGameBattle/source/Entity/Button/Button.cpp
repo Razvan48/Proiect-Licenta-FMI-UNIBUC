@@ -47,6 +47,7 @@ void Button::draw()
 		currentTexture
 	);
 
+	/*
 	Renderer::get().drawText( // contur
 		this->posCenterX,
 		this->posCenterY,
@@ -57,6 +58,7 @@ void Button::draw()
 		this->text,
 		glm::vec3(0.0f, 0.0f, 0.0f)
 	);
+	*/
 
 	glm::vec3 currentColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	if (this->status == Button::Status::RELEASED)

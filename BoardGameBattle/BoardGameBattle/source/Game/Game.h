@@ -63,6 +63,8 @@ private:
 	void draw();
 	void update();
 
+	void initializeENet();
+
 public:
 	static Game& get();
 	void start();

@@ -9,6 +9,8 @@
 #include "../Entity/Button/Button.h"
 #include "../Entity/SoundButton/SoundButton.h"
 
+#include <enet/enet.h>
+
 #include <iostream>
 #include <memory>
 
@@ -497,10 +499,20 @@ Game& Game::get()
 	return instance;
 }
 
+void Game::initializeENet()
+{
+	if (enet_initialize() != 0)
+	{
+		std::cout << "Error: An error occurred while initializing ENet" << std::endl;
+	}
+	atexit(enet_deinitialize);
+}
+
 void Game::loadResources()
 {
 	WindowManager::get(); // Asigura setup-ul la OpenGL, trebuie sa fie primul apelat.
 	AssetManager::get().loadResources();
+	this->initializeENet();// Enet
 }
 
 void Game::run()

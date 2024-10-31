@@ -20,6 +20,7 @@ const float TextEntity::TEXT_PADDING_1 = 0.85f;
 
 void TextEntity::draw()
 {
+	/*
 	Renderer::get().drawText( // contur
 		this->posCenterX,
 		this->posCenterY,
@@ -30,6 +31,7 @@ void TextEntity::draw()
 		this->text,
 		glm::vec3(0.0f, 0.0f, 0.0f)
 	);
+	*/
 
 	Renderer::get().drawText(
 		this->posCenterX,
