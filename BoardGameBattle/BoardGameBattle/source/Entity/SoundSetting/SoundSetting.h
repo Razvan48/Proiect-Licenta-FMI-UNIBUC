@@ -14,6 +14,6 @@ public:
 		, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOn, Button buttonOff);
 	virtual ~SoundSetting();
 
-	virtual void draw();
-	virtual void update();
+	virtual void draw() override;
+	virtual void update() override;
 };
