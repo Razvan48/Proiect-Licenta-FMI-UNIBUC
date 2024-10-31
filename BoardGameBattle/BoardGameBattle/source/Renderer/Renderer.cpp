@@ -170,7 +170,7 @@ void Renderer::drawText(GLfloat posCenterX, GLfloat posCenterY, GLfloat width, G
 	GLfloat scale = std::min(width / actualWidth, height / actualHeight);
 
 	GLfloat currentPosX = posCenterX
-		- glm::cos(glm::radians(rotateAngle)) * (actualWidth / 2.0f) * scale;
+		- glm::cos(glm::radians(rotateAngle)) * (actualWidth / 2.0f) * scale
 		+ glm::sin(glm::radians(rotateAngle)) * (actualBearingY / 2.0f) * scale;
 	GLfloat currentPosY = posCenterY
 		- glm::cos(glm::radians(rotateAngle)) * (actualBearingY / 2.0f) * scale
