@@ -5,7 +5,9 @@
 #include "../../AssetManager/AssetManager.h"
 
 Button::Button(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
-	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered, const std::string& soundNameWhenHovered)
+	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered, const std::string& soundNameWhenHovered
+	, const Game::Mode& gameModeWhenPressed
+	, const Game::Color& gameColorWhenPressed, const Game::MultiplayerStatus& gameMultiplayerStatusWhenPressed)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
 	, TextEntity(centerPosX, centerPosY, width, height, rotateAngle, color, fontName, text)
 	, TexturableEntity(centerPosX, centerPosY, width, height, rotateAngle, textureName)
@@ -13,7 +15,8 @@ Button::Button(float centerPosX, float centerPosY, float width, float height, fl
 	, status(Button::Status::RELEASED)
 	, gameStatusWhenPressed(gameStatusWhenPressed), soundNameWhenPressed(soundNameWhenPressed)
 	, textureNameWhenHovered(textureNameWhenHovered), colorWhenHovered(colorWhenHovered)
-	, soundNameWhenHovered(soundNameWhenHovered)
+	, soundNameWhenHovered(soundNameWhenHovered), recentlyPressed(false)
+	, gameModeWhenPressed(gameModeWhenPressed), gameColorWhenPressed(gameColorWhenPressed), gameMultiplayerStatusWhenPressed(gameMultiplayerStatusWhenPressed)
 {
 
 }
@@ -76,18 +79,29 @@ void Button::draw()
 	);
 }
 
-void Button::update()
+bool Button::isInMouseCollision() const
 {
 	float cursorPosX = InputManager::get().getCursorPosX();
 	float cursorPosY = InputManager::get().getCursorPosY();
 
-	if (this->posCenterX - this->width / 2.0f < cursorPosX && cursorPosX < this->posCenterX + this->width / 2.0f
-		&& this->posCenterY - this->height / 2.0f < cursorPosY && cursorPosY < this->posCenterY + this->height / 2.0f)
+	return this->posCenterX - this->width / 2.0f < cursorPosX && cursorPosX < this->posCenterX + this->width / 2.0f
+		&& this->posCenterY - this->height / 2.0f < cursorPosY && cursorPosY < this->posCenterY + this->height / 2.0f;
+}
+
+void Button::update()
+{
+	this->recentlyPressed = false;
+
+	if (this->isInMouseCollision())
 	{
 		if (InputManager::get().isLeftMouseButtonReleased())
 		{
 			Game::get().setStatus(this->gameStatusWhenPressed);
 			AssetManager::get().playSound(this->soundNameWhenPressed, false);
+			this->recentlyPressed = true;
+			Game::get().setMode(this->gameModeWhenPressed);
+			Game::get().setColor(this->gameColorWhenPressed);
+			Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);
 		}
 		else
 		{

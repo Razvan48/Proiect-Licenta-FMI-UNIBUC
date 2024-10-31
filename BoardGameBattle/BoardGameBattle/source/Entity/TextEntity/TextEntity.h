@@ -29,4 +29,6 @@ public:
 	inline const std::string& getText() const { return this->text; }
 	inline void setFont(const std::string& fontName) { this->fontName = fontName; }
 	inline void setText(const std::string& text) { this->text = text; }
+
+	inline void setColor(const glm::vec3& color) { this->color = color; }
 };
