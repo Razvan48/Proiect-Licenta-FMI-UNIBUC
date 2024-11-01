@@ -25,7 +25,12 @@ JoinInputForm::JoinInputForm(float centerPosX, float centerPosY, float width, fl
 	, soundNameWhenContentNotOk(soundNameWhenContentNotOk)
 	, playerNameContentOk(false), serverAddressContentOk(false)
 {
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->serverAddressTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->playerNameDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->serverAddressDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
+	this->color = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 JoinInputForm::~JoinInputForm()

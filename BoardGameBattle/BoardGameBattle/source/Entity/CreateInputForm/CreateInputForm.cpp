@@ -22,7 +22,10 @@ CreateInputForm::CreateInputForm(float centerPosX, float centerPosY, float width
 	, soundNameWhenContentNotOk(soundNameWhenContentNotOk)
 	, playerNameContentOk(false)
 {
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->playerNameDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
+	this->color = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 CreateInputForm::~CreateInputForm()
