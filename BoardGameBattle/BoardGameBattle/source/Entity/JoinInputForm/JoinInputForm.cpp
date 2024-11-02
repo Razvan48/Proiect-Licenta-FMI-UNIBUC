@@ -10,7 +10,8 @@ JoinInputForm::JoinInputForm(float centerPosX, float centerPosY, float width, fl
 	, const Game::Color& gameColorWhenPressed, const Game::MultiplayerStatus& gameMultiplayerStatusWhenPressed
 	, TextEntity playerNameTextEntity, TextEntity serverAddressTextEntity
 	, DataBox playerNameDataBox, DataBox serverAddressDataBox
-	, const std::string& soundNameWhenContentNotOk)
+	, const std::string& soundNameWhenContentNotOk
+	, const glm::vec3& colorInputContentOk, const glm::vec3& colorInputContentNotOk)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
 	, TextEntity(centerPosX, centerPosY, width, height, rotateAngle, color, fontName, text)
 	, TexturableEntity(centerPosX, centerPosY, width, height, rotateAngle, textureName)
@@ -23,14 +24,15 @@ JoinInputForm::JoinInputForm(float centerPosX, float centerPosY, float width, fl
 	, playerNameTextEntity(playerNameTextEntity), serverAddressTextEntity(serverAddressTextEntity)
 	, playerNameDataBox(playerNameDataBox), serverAddressDataBox(serverAddressDataBox)
 	, soundNameWhenContentNotOk(soundNameWhenContentNotOk)
+	, colorInputContentOk(colorInputContentOk), colorInputContentNotOk(colorInputContentNotOk)
 	, playerNameContentOk(false), serverAddressContentOk(false)
 {
-	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	this->serverAddressTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	this->playerNameDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	this->serverAddressDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->playerNameTextEntity.setColor(this->colorInputContentOk);
+	this->serverAddressTextEntity.setColor(this->colorInputContentOk);
+	this->playerNameDataBox.setColor(this->colorInputContentOk);
+	this->serverAddressDataBox.setColor(this->colorInputContentOk);
 
-	this->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	this->color = this->colorInputContentOk;
 }
 
 JoinInputForm::~JoinInputForm()
@@ -134,20 +136,20 @@ void JoinInputForm::update()
 				Game::get().setColor(this->gameColorWhenPressed);
 				Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);
 
-				this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-				this->serverAddressTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				this->playerNameTextEntity.setColor(this->colorInputContentOk);
+				this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 			}
 			else
 			{
 				if (!this->playerNameContentOk)
-					this->playerNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+					this->playerNameTextEntity.setColor(this->colorInputContentNotOk);
 				else
-					this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+					this->playerNameTextEntity.setColor(this->colorInputContentOk);
 
 				if (!this->serverAddressContentOk)
-					this->serverAddressTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+					this->serverAddressTextEntity.setColor(this->colorInputContentNotOk);
 				else
-					this->serverAddressTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+					this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
 				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false);
 			}

@@ -8,7 +8,8 @@ CreateInputForm::CreateInputForm(float centerPosX, float centerPosY, float width
 	, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered
 	, const std::string& soundNameWhenHovered, const Game::Mode& gameModeWhenPressed
 	, const Game::Color& gameColorWhenPressed, const Game::MultiplayerStatus& gameMultiplayerStatusWhenPressed
-	, TextEntity playerNameTextEntity, DataBox playerNameDataBox, const std::string& soundNameWhenContentNotOk)
+	, TextEntity playerNameTextEntity, DataBox playerNameDataBox, const std::string& soundNameWhenContentNotOk
+	, const glm::vec3& colorInputContentOk, const glm::vec3& colorInputContentNotOk)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
 	, TextEntity(centerPosX, centerPosY, width, height, rotateAngle, color, fontName, text)
 	, TexturableEntity(centerPosX, centerPosY, width, height, rotateAngle, textureName)
@@ -20,12 +21,13 @@ CreateInputForm::CreateInputForm(float centerPosX, float centerPosY, float width
 		, gameColorWhenPressed, gameMultiplayerStatusWhenPressed)
 	, playerNameTextEntity(playerNameTextEntity), playerNameDataBox(playerNameDataBox)
 	, soundNameWhenContentNotOk(soundNameWhenContentNotOk)
+	, colorInputContentOk(colorInputContentOk), colorInputContentNotOk(colorInputContentNotOk)
 	, playerNameContentOk(false)
 {
-	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	this->playerNameDataBox.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->playerNameTextEntity.setColor(this->colorInputContentOk);
+	this->playerNameDataBox.setColor(this->colorInputContentOk);
 
-	this->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	this->color = this->colorInputContentOk;
 }
 
 CreateInputForm::~CreateInputForm()
@@ -75,11 +77,11 @@ void CreateInputForm::update()
 				Game::get().setColor(this->gameColorWhenPressed);
 				Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);
 
-				this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 			}
 			else
 			{
-				this->playerNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+				this->playerNameTextEntity.setColor(this->colorInputContentNotOk);
 
 				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false);
 			}
