@@ -73,6 +73,12 @@
     <Filter Include="Source Files\Entity\CreateInputForm">
       <UniqueIdentifier>{e12e4bdd-7754-4b55-8e40-ebe14a878040}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\TableManager">
+      <UniqueIdentifier>{c5183664-5194-4b38-9704-e751650a959c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TableVisualizer">
+      <UniqueIdentifier>{c4da235c-4ad8-4c4b-b38b-db01fc03bb4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -135,6 +141,12 @@
     <ClCompile Include="source\Entity\JoinInputForm\JoinInputForm.cpp">
       <Filter>Source Files\Entity\JoinInputForm</Filter>
     </ClCompile>
+    <ClCompile Include="source\TableManager\TableManager.cpp">
+      <Filter>Source Files\TableManager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TableVisualizer\TableVisualizer.cpp">
+      <Filter>Source Files\TableVisualizer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -193,6 +205,12 @@
     </ClInclude>
     <ClInclude Include="source\Entity\JoinInputForm\JoinInputForm.h">
       <Filter>Source Files\Entity\JoinInputForm</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TableManager\TableManager.h">
+      <Filter>Source Files\TableManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TableVisualizer\TableVisualizer.h">
+      <Filter>Source Files\TableVisualizer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
