@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AssetManager\AssetManager.cpp" />
+    <ClCompile Include="source\BoardManager\BoardManager.cpp" />
+    <ClCompile Include="source\BoardVisualizer\BoardVisualizer.cpp" />
     <ClCompile Include="source\Client\Client.cpp" />
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
@@ -37,13 +39,13 @@
     <ClCompile Include="source\RandomGenerator\RandomGenerator.cpp" />
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Server\Server.cpp" />
-    <ClCompile Include="source\TableManager\TableManager.cpp" />
-    <ClCompile Include="source\TableVisualizer\TableVisualizer.cpp" />
     <ClCompile Include="source\VisualInterface\VisualInterface.cpp" />
     <ClCompile Include="source\WindowManager\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AssetManager\AssetManager.h" />
+    <ClInclude Include="source\BoardManager\BoardManager.h" />
+    <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h" />
     <ClInclude Include="source\Client\Client.h" />
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />
@@ -60,8 +62,6 @@
     <ClInclude Include="source\RandomGenerator\RandomGenerator.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Server\Server.h" />
-    <ClInclude Include="source\TableManager\TableManager.h" />
-    <ClInclude Include="source\TableVisualizer\TableVisualizer.h" />
     <ClInclude Include="source\VisualInterface\VisualInterface.h" />
     <ClInclude Include="source\WindowManager\WindowManager.h" />
   </ItemGroup>

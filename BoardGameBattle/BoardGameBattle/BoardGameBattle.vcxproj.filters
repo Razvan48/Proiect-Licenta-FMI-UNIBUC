@@ -73,11 +73,11 @@
     <Filter Include="Source Files\Entity\CreateInputForm">
       <UniqueIdentifier>{e12e4bdd-7754-4b55-8e40-ebe14a878040}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\TableManager">
-      <UniqueIdentifier>{c5183664-5194-4b38-9704-e751650a959c}</UniqueIdentifier>
+    <Filter Include="Source Files\BoardVisualizer">
+      <UniqueIdentifier>{98dbd8c0-b730-487d-b1e1-20781561a122}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\TableVisualizer">
-      <UniqueIdentifier>{c4da235c-4ad8-4c4b-b38b-db01fc03bb4c}</UniqueIdentifier>
+    <Filter Include="Source Files\BoardManager">
+      <UniqueIdentifier>{52368cab-c902-4306-85e1-27186f7eb926}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,11 +141,11 @@
     <ClCompile Include="source\Entity\JoinInputForm\JoinInputForm.cpp">
       <Filter>Source Files\Entity\JoinInputForm</Filter>
     </ClCompile>
-    <ClCompile Include="source\TableManager\TableManager.cpp">
-      <Filter>Source Files\TableManager</Filter>
+    <ClCompile Include="source\BoardVisualizer\BoardVisualizer.cpp">
+      <Filter>Source Files\BoardVisualizer</Filter>
     </ClCompile>
-    <ClCompile Include="source\TableVisualizer\TableVisualizer.cpp">
-      <Filter>Source Files\TableVisualizer</Filter>
+    <ClCompile Include="source\BoardManager\BoardManager.cpp">
+      <Filter>Source Files\BoardManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,11 +206,11 @@
     <ClInclude Include="source\Entity\JoinInputForm\JoinInputForm.h">
       <Filter>Source Files\Entity\JoinInputForm</Filter>
     </ClInclude>
-    <ClInclude Include="source\TableManager\TableManager.h">
-      <Filter>Source Files\TableManager</Filter>
+    <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h">
+      <Filter>Source Files\BoardVisualizer</Filter>
     </ClInclude>
-    <ClInclude Include="source\TableVisualizer\TableVisualizer.h">
-      <Filter>Source Files\TableVisualizer</Filter>
+    <ClInclude Include="source\BoardManager\BoardManager.h">
+      <Filter>Source Files\BoardManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
