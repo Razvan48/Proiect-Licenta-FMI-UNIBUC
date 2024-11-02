@@ -27,6 +27,7 @@ AssetManager::AssetManager()
 AssetManager::~AssetManager()
 {
 	FT_Done_FreeType(this->freeType);
+	this->soundEngine->drop();
 }
 
 AssetManager& AssetManager::get()
@@ -199,7 +200,10 @@ void AssetManager::playSound(const std::string& soundName, bool isLooping)
 
 	if (Game::get().getSoundEnabled())
 	{
-		this->soundEngine->play2D(this->sounds[soundName].c_str(), isLooping);
+		if (!this->soundEngine->isCurrentlyPlaying(this->sounds[soundName].c_str()))
+		{
+			this->soundEngine->play2D(this->sounds[soundName].c_str(), isLooping);
+		}
 	}
 	else
 	{
