@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 
 class BoardManager
 {
@@ -14,5 +15,5 @@ private:
 public:
 	static BoardManager& get();
 
-	void update();
+	std::string getPiecesConfigurationForVisualizing() const;
 };

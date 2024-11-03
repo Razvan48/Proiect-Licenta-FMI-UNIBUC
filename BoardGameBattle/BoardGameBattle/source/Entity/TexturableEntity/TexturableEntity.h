@@ -19,4 +19,6 @@ public:
 
 	virtual void draw() override;
 	virtual void update() override;
+
+	inline void setTextureName(const std::string& textureName) { this->textureName = textureName; }
 };

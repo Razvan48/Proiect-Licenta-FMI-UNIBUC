@@ -50,6 +50,7 @@ private:
 public:
 	static BoardVisualizer& get();
 
+	void initialize();
 	void draw();
 	void update();
 };

@@ -26,4 +26,12 @@ public:
 	inline void setRequestedToBeHidden(bool requestedToBeHidden) { this->requestedToBeHidden = requestedToBeHidden; }
 
 	bool isInMouseCollision() const;
+
+	inline float getPosCenterX() const { return this->posCenterX; }
+	inline float getPosCenterY() const { return this->posCenterY; }
+	inline float getRotateAngle() const { return this->rotateAngle; }
+
+	inline void setPosCenterX(float posCenterX) { this->posCenterX = posCenterX; }
+	inline void setPosCenterY(float posCenterY) { this->posCenterY = posCenterY; }
+	inline void setRotateAngle(float rotateAngle) { this->rotateAngle = rotateAngle; }
 };

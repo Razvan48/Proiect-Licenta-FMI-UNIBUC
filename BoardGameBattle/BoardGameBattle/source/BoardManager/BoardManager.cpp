@@ -16,9 +16,19 @@ BoardManager& BoardManager::get()
 	return instance;
 }
 
-void BoardManager::update()
+std::string BoardManager::getPiecesConfigurationForVisualizing() const
 {
-
+	// TODO: de implementat, momentan e asa pentru testing
+	return R"(
+			rnbqkbnr
+			pppppppp"
+			........
+			........
+			........
+			........
+			PPPPPPPP
+			RNBQKBNR
+	)";
 }
 
 
