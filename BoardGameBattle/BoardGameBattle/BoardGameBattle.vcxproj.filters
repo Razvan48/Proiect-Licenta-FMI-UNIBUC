@@ -79,6 +79,9 @@
     <Filter Include="Source Files\BoardManager">
       <UniqueIdentifier>{52368cab-c902-4306-85e1-27186f7eb926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VisualInterface\InGameVisualInterface">
+      <UniqueIdentifier>{62382b98-b9ae-4fa5-9856-38fcfcc547b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -147,6 +150,9 @@
     <ClCompile Include="source\BoardManager\BoardManager.cpp">
       <Filter>Source Files\BoardManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\VisualInterface\InGameVisualInterface\InGameVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\InGameVisualInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -211,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="source\BoardManager\BoardManager.h">
       <Filter>Source Files\BoardManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\InGameVisualInterface\InGameVisualInterface.h">
+      <Filter>Source Files\VisualInterface\InGameVisualInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

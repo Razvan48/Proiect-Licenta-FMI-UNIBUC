@@ -8,7 +8,7 @@
 
 class VisualInterface
 {
-private:
+protected:
 	TexturableEntity backgroundEntity;
 	std::vector<std::shared_ptr<Entity>> entities;
 	bool respondsToEscapeKey;
@@ -17,8 +17,8 @@ public:
 	VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);
 	~VisualInterface();
 
-	void draw();
-	void update();
+	virtual void draw();
+	virtual void update();
 
 	inline void addEntity(const std::shared_ptr<Entity>& entity) { this->entities.push_back(entity); }
 };
