@@ -51,19 +51,6 @@ void VisualInterface::update()
 
 	if (this->respondsToEscapeKey && InputManager::get().isKeyReleased(GLFW_KEY_ESCAPE))
 	{
-		if (Game::get().getStatus() == Game::Status::IN_MAIN_MENU)
-		{
-			Game::get().setStatus(Game::Status::EXITING);
-		}
-		else if (Game::get().getStatus() == Game::Status::IN_SETTINGS_MENU
-			|| Game::get().getStatus() == Game::Status::IN_MODE_MENU)
-		{
-			Game::get().setStatus(Game::Status::IN_MAIN_MENU);
-		}
-		else if (Game::get().getStatus() == Game::Status::IN_MULTIPLAYER_MENU
-			|| Game::get().getStatus() == Game::Status::IN_SINGLEPLAYER_COLOR_MENU)
-		{
-			Game::get().setStatus(Game::Status::IN_MODE_MENU);
-		}
+		Game::get().setStatus(Game::Status::EXITING);
 	}
 }

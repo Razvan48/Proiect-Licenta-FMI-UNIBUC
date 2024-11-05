@@ -127,7 +127,7 @@ Game::Game()
 					0.0f,
 					"settingsMenuBackgroundTexture"
 				)
-				, true
+				, false
 			)
 		}
 	);
@@ -225,7 +225,7 @@ Game::Game()
 					0.0f,
 					"modeMenuBackgroundTexture"
 				)
-				, true
+				, false
 			)
 		}
 	);
@@ -315,7 +315,7 @@ Game::Game()
 					0.0f,
 					"multiplayerMenuBackgroundTexture"
 				)
-				, true
+				, false
 			)
 		}
 	);
@@ -405,7 +405,7 @@ Game::Game()
 					0.0f,
 					"singleplayerColorMenuBackgroundTexture"
 				)
-				, true
+				, false
 			)
 		}
 	);
