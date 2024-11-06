@@ -61,6 +61,8 @@ void CreateInputForm::update()
 			this->playerNameContentOk = false;
 		}
 	}
+	if (this->playerNameDataBox.getText().empty())
+		this->playerNameContentOk = false;
 
 
 	this->recentlyPressed = false;

@@ -20,7 +20,8 @@ public:
 		IN_INPUT_CREATE_MENU,
 		IN_INPUT_JOIN_MENU,
 		IN_SINGLEPLAYER_GAME,
-		IN_MULTIPLAYER_GAME,
+		IN_CREATED_MULTIPLAYER_GAME,
+		IN_JOINED_MULTIPLAYER_GAME,
 		// etc..
 	};
 	enum class Mode
@@ -65,6 +66,8 @@ private:
 	void update();
 
 	void initializeENet();
+
+	void printGameStatuses();
 
 public:
 	static Game& get();

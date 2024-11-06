@@ -45,6 +45,9 @@ void JoinInputForm::draw()
 	this->playerNameTextEntity.draw();
 	this->playerNameDataBox.draw();
 
+	this->serverAddressTextEntity.draw();
+	this->serverAddressDataBox.draw();
+
 	Button::draw();
 }
 
@@ -52,6 +55,9 @@ void JoinInputForm::update()
 {
 	this->playerNameTextEntity.update();
 	this->playerNameDataBox.update();
+
+	this->serverAddressTextEntity.update();
+	this->serverAddressDataBox.update();
 
 	// Verificare continut casute de text
 	// playerName
@@ -68,6 +74,8 @@ void JoinInputForm::update()
 			this->playerNameContentOk = false;
 		}
 	}
+	if (this->playerNameDataBox.getText().empty())
+		this->playerNameContentOk = false;
 	// serverAddress
 	// std::vector<int> posDots;
 	// int posTwoDots = -1;
@@ -119,6 +127,8 @@ void JoinInputForm::update()
 		}
 	}
 	*/
+	if (this->serverAddressDataBox.getText().empty())
+		this->serverAddressContentOk = false;
 	// Final verificare continut casute de text
 
 

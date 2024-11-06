@@ -141,6 +141,9 @@ void AssetManager::loadResources()
 	this->loadTexture("multiplayerMenuBackgroundTexture", "assets/textures/multiplayerMenuBackgroundTexture.png");
 	this->loadTexture("inputCreateMenuBackgroundTexture", "assets/textures/inputCreateMenuBackgroundTexture.png");
 	this->loadTexture("inputJoinMenuBackgroundTexture", "assets/textures/inputJoinMenuBackgroundTexture.png");
+	this->loadTexture("singleplayerGameBackgroundTexture", "assets/textures/singleplayerGameBackgroundTexture.png");
+	this->loadTexture("createdMultiplayerGameBackgroundTexture", "assets/textures/createdMultiplayerGameBackgroundTexture.png");
+	this->loadTexture("joinedMultiplayerGameBackgroundTexture", "assets/textures/joinedMultiplayerGameBackgroundTexture.png");
 
 	this->loadTexture("whitePawnTexture", "assets/textures/whitePawnTexture.png");
 	this->loadTexture("whiteRookTexture", "assets/textures/whiteRookTexture.png");
