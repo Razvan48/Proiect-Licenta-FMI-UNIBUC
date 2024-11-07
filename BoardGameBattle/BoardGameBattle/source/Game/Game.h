@@ -54,7 +54,7 @@ private:
 
 	bool soundEnabled;
 
-	std::map<Game::Status, std::shared_ptr<VisualInterface>> visualInterfaces;
+	std::map<Game::Status, VisualInterface> visualInterfaces;
 
 	Game::Mode mode;
 	Game::Color color;

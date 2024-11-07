@@ -39,7 +39,6 @@
     <ClCompile Include="source\RandomGenerator\RandomGenerator.cpp" />
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Server\Server.cpp" />
-    <ClCompile Include="source\VisualInterface\InGameVisualInterface\InGameVisualInterface.cpp" />
     <ClCompile Include="source\VisualInterface\VisualInterface.cpp" />
     <ClCompile Include="source\WindowManager\WindowManager.cpp" />
   </ItemGroup>
@@ -63,7 +62,6 @@
     <ClInclude Include="source\RandomGenerator\RandomGenerator.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Server\Server.h" />
-    <ClInclude Include="source\VisualInterface\InGameVisualInterface\InGameVisualInterface.h" />
     <ClInclude Include="source\VisualInterface\VisualInterface.h" />
     <ClInclude Include="source\WindowManager\WindowManager.h" />
   </ItemGroup>

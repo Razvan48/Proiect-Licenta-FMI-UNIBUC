@@ -59,6 +59,7 @@ void Server::update()
 
 void Server::stop()
 {
-	enet_host_destroy(this->server);
+	if (this->server != nullptr)
+		enet_host_destroy(this->server);
 }
 

@@ -12,8 +12,6 @@
 #include "../Entity/CreateInputForm/CreateInputForm.h"
 #include "../Entity/JoinInputForm/JoinInputForm.h"
 
-#include "../VisualInterface/InGameVisualInterface/InGameVisualInterface.h"
-
 #include <enet/enet.h>
 
 #include <iostream>
@@ -29,7 +27,7 @@ Game::Game()
 		{
 			Game::Status::IN_MAIN_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -44,7 +42,7 @@ Game::Game()
 		}
 	);
 	const auto& mainMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MAIN_MENU);
-	mainMenuVisualInterface->second->addEntity
+	mainMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -67,7 +65,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	mainMenuVisualInterface->second->addEntity
+	mainMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -90,7 +88,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	mainMenuVisualInterface->second->addEntity
+	mainMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -119,7 +117,7 @@ Game::Game()
 		{
 			Game::Status::IN_SETTINGS_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -134,7 +132,7 @@ Game::Game()
 		}
 	);
 	const auto& settingsMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_SETTINGS_MENU);
-	settingsMenuVisualInterface->second->addEntity
+	settingsMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<SoundSetting>
 		(
@@ -188,7 +186,7 @@ Game::Game()
 			)
 		)
 	);
-	settingsMenuVisualInterface->second->addEntity
+	settingsMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -217,7 +215,7 @@ Game::Game()
 		{
 			Game::Status::IN_MODE_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -232,7 +230,7 @@ Game::Game()
 		}
 	);
 	const auto& modeMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MODE_MENU);
-	modeMenuVisualInterface->second->addEntity
+	modeMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -255,7 +253,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	modeMenuVisualInterface->second->addEntity
+	modeMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -278,7 +276,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	modeMenuVisualInterface->second->addEntity
+	modeMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -307,7 +305,7 @@ Game::Game()
 		{
 			Game::Status::IN_MULTIPLAYER_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -322,7 +320,7 @@ Game::Game()
 		}
 	);
 	const auto& multiplayerMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MULTIPLAYER_MENU);
-	multiplayerMenuVisualInterface->second->addEntity
+	multiplayerMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -345,7 +343,7 @@ Game::Game()
 			Game::MultiplayerStatus::CREATE_GAME
 		)
 	);
-	multiplayerMenuVisualInterface->second->addEntity
+	multiplayerMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -368,7 +366,7 @@ Game::Game()
 			Game::MultiplayerStatus::JOIN_GAME
 		)
 	);
-	multiplayerMenuVisualInterface->second->addEntity
+	multiplayerMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -397,7 +395,7 @@ Game::Game()
 		{
 			Game::Status::IN_SINGLEPLAYER_COLOR_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -412,7 +410,7 @@ Game::Game()
 		}
 	);
 	const auto& singleplayerColorMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_SINGLEPLAYER_COLOR_MENU);
-	singleplayerColorMenuVisualInterface->second->addEntity
+	singleplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -435,7 +433,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	singleplayerColorMenuVisualInterface->second->addEntity
+	singleplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -458,7 +456,7 @@ Game::Game()
 			Game::MultiplayerStatus::NONE
 		)
 	);
-	singleplayerColorMenuVisualInterface->second->addEntity
+	singleplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -487,7 +485,7 @@ Game::Game()
 		{
 			Game::Status::IN_INPUT_CREATE_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -502,7 +500,7 @@ Game::Game()
 		}
 	);
 	const auto& inputCreateMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_INPUT_CREATE_MENU);
-	inputCreateMenuVisualInterface->second->addEntity
+	inputCreateMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<CreateInputForm>
 		(
@@ -555,7 +553,7 @@ Game::Game()
 			glm::vec3(1.0f, 0.0f, 0.0f)
 		)
 	);
-	inputCreateMenuVisualInterface->second->addEntity
+	inputCreateMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -584,7 +582,7 @@ Game::Game()
 		{
 			Game::Status::IN_INPUT_JOIN_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -599,7 +597,7 @@ Game::Game()
 		}
 	);
 	const auto& inputJoinMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_INPUT_JOIN_MENU);
-	inputJoinMenuVisualInterface->second->addEntity
+	inputJoinMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<JoinInputForm>
 		(
@@ -678,7 +676,7 @@ Game::Game()
 			glm::vec3(1.0f, 0.0f, 0.0f)
 		)
 	);
-	inputJoinMenuVisualInterface->second->addEntity
+	inputJoinMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -707,7 +705,7 @@ Game::Game()
 		{
 			Game::Status::IN_MULTIPLAYER_COLOR_MENU,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -722,7 +720,7 @@ Game::Game()
 		}
 	);
 	const auto& multiplayerColorMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MULTIPLAYER_COLOR_MENU);
-	multiplayerColorMenuVisualInterface->second->addEntity
+	multiplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -745,7 +743,7 @@ Game::Game()
 			Game::MultiplayerStatus::CREATE_GAME
 		)
 	);
-	multiplayerColorMenuVisualInterface->second->addEntity
+	multiplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -768,7 +766,7 @@ Game::Game()
 			Game::MultiplayerStatus::CREATE_GAME
 		)
 	);
-	multiplayerColorMenuVisualInterface->second->addEntity
+	multiplayerColorMenuVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -797,7 +795,7 @@ Game::Game()
 		{
 			Game::Status::IN_SINGLEPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -812,7 +810,7 @@ Game::Game()
 		}
 	);
 	const auto& singleplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_SINGLEPLAYER_GAME);
-	singleplayerGameVisualInterface->second->addEntity
+	singleplayerGameVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -841,7 +839,7 @@ Game::Game()
 		{
 			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -856,7 +854,7 @@ Game::Game()
 		}
 	);
 	const auto& createdMultiplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_CREATED_MULTIPLAYER_GAME);
-	createdMultiplayerGameVisualInterface->second->addEntity
+	createdMultiplayerGameVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -885,7 +883,7 @@ Game::Game()
 		{
 			Game::Status::IN_JOINED_MULTIPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			VisualInterface(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -900,7 +898,7 @@ Game::Game()
 		}
 	);
 	const auto& joinedMultiplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_JOINED_MULTIPLAYER_GAME);
-	joinedMultiplayerGameVisualInterface->second->addEntity
+	joinedMultiplayerGameVisualInterface->second.addEntity
 	(
 		std::make_shared<Button>
 		(
@@ -972,7 +970,7 @@ void Game::draw()
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
-		visualInterface->second->draw();
+		visualInterface->second.draw();
 	}
 	else
 	{
@@ -985,7 +983,7 @@ void Game::update()
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
-		visualInterface->second->update();
+		visualInterface->second.update();
 	}
 	else
 	{
