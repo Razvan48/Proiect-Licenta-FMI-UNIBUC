@@ -51,6 +51,7 @@ private:
 	Game& operator= (const Game&& other) = delete;
 
 	Game::Status status;
+	Game::Status previousStatus;
 
 	bool soundEnabled;
 

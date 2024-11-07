@@ -12,13 +12,15 @@
 #include "../Entity/CreateInputForm/CreateInputForm.h"
 #include "../Entity/JoinInputForm/JoinInputForm.h"
 
+#include "../BoardVisualizer/BoardVisualizer.h"
+
 #include <enet/enet.h>
 
 #include <iostream>
 #include <memory>
 
 Game::Game()
-	: status(Game::Status::IN_MAIN_MENU)
+	: status(Game::Status::IN_MAIN_MENU), previousStatus(Game::Status::IN_MAIN_MENU)
 	, soundEnabled(true)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
 {
@@ -976,10 +978,26 @@ void Game::draw()
 	{
 		std::cout << "Error: Game Status " << (int)visualInterface->first << " requested for drawing not found in Visual Interfaces Map" << std::endl;
 	}
+
+	// Logica pentru Server-Client
+
+	if (this->status == Game::Status::IN_SINGLEPLAYER_GAME
+		|| this->status == Game::Status::IN_CREATED_MULTIPLAYER_GAME
+		|| this->status == Game::Status::IN_JOINED_MULTIPLAYER_GAME)
+	{
+		if (this->previousStatus != this->status)
+		{
+			BoardVisualizer::get().initialize();
+		}
+
+		BoardVisualizer::get().draw();
+	}
 }
 
 void Game::update()
 {
+	this->previousStatus = this->status;
+
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
@@ -997,7 +1015,9 @@ void Game::update()
 		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
 	}
 
-	// this->printGameStatuses(); // doar pentru debug
+	// Logica pentru Server-Client
+
+	// this->printGameStatuses(); // Doar pentru debug
 }
 
 void Game::start()

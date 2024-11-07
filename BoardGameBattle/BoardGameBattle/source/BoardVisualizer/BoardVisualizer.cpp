@@ -62,7 +62,7 @@ void BoardVisualizer::initialize()
 					this->BOARD_TILE_WIDTH,
 					this->BOARD_TILE_HEIGHT,
 					0.0f,
-					(j + i) % 2 ? this->blackBoardTileTextureName : this->whiteBoardTileTextureName
+					(j + i) % 2 ? this->whiteBoardTileTextureName : this->blackBoardTileTextureName
 				)
 			);
 		}
@@ -75,12 +75,12 @@ void BoardVisualizer::initialize()
 			(
 				(j + 1) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f,
 				this->BOARD_TILE_HEIGHT / 2.0f,
-				this->BOARD_TILE_WIDTH,
-				this->BOARD_TILE_HEIGHT,
+				this->BOARD_TILE_WIDTH / 2.0f,
+				this->BOARD_TILE_HEIGHT / 2.0f,
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				"arialFont",
-				std::to_string((char)('a' + j))
+				std::string(1, (char)('a' + j))
 			)
 		);
 
@@ -93,12 +93,12 @@ void BoardVisualizer::initialize()
 			(
 				this->BOARD_TILE_WIDTH / 2.0f,
 				(i + 1) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f,
-				this->BOARD_TILE_WIDTH,
-				this->BOARD_TILE_HEIGHT,
+				this->BOARD_TILE_WIDTH / 2.0f,
+				this->BOARD_TILE_HEIGHT / 2.0f,
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				"arialFont",
-				std::to_string((char)('1' + i))
+				std::string(1, (char)('1' + i))
 			)
 		);
 	}
@@ -109,7 +109,6 @@ void BoardVisualizer::initialize()
 		{
 			for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
 			{
-				this->boardTiles[i][j].setRotateAngle(180.0f);
 				this->boardTiles[i][j].setPosCenterX(
 					(this->NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
 				);
@@ -121,7 +120,6 @@ void BoardVisualizer::initialize()
 
 		for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
 		{
-			this->boardCoordinates[j].setRotateAngle(180.0f);
 			this->boardCoordinates[j].setPosCenterX(
 				(this->NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
 			);
@@ -129,7 +127,6 @@ void BoardVisualizer::initialize()
 
 		for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
 		{
-			this->boardCoordinates[this->NUM_TILES_WIDTH + i].setRotateAngle(180.0f);
 			this->boardCoordinates[this->NUM_TILES_WIDTH + i].setPosCenterY(
 				(this->NUM_TILES_HEIGHT - i) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f
 			);
@@ -167,16 +164,28 @@ void BoardVisualizer::draw()
 		0.0f,
 		""
 	);
+	int numRelevantCharacters = 0;
 	for (int i = 0; i < piecesConfiguration.size(); ++i)
 	{
-		int currentI = i / this->NUM_TILES_WIDTH;
-		int currentJ = i % this->NUM_TILES_WIDTH;
+		if (piecesConfiguration[i] == '\n' ||
+			piecesConfiguration[i] == '\t' ||
+			piecesConfiguration[i] == ' ')
+			continue;
+
+		int currentI = (this->NUM_TILES_HEIGHT - 1) - numRelevantCharacters / this->NUM_TILES_WIDTH;
+		int currentJ = numRelevantCharacters % this->NUM_TILES_WIDTH;
+
 		currentPiece.setPosCenterX(this->boardTiles[currentI][currentJ].getPosCenterX());
 		currentPiece.setPosCenterY(this->boardTiles[currentI][currentJ].getPosCenterY());
 		currentPiece.setRotateAngle(this->boardTiles[currentI][currentJ].getRotateAngle());
 
+		++numRelevantCharacters;
+
 		switch (piecesConfiguration[i])
 		{
+		case '.':
+			continue;
+			break;
 		case 'K':
 			currentPiece.setTextureName(this->whiteKingTextureName);
 			break;
