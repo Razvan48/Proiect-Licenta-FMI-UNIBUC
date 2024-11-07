@@ -28,57 +28,60 @@ Button::~Button()
 
 void Button::draw()
 {
-	std::string currentTexture = "";
-	if (this->status == Button::Status::RELEASED)
+	if (!this->requestedToBeHidden)
 	{
-		currentTexture = this->textureName;
-	}
-	else // if (this->status == Button::Status::HOVERED)
-	{
-		currentTexture = this->textureNameWhenHovered;
-	}
+		std::string currentTexture = "";
+		if (this->status == Button::Status::RELEASED)
+		{
+			currentTexture = this->textureName;
+		}
+		else // if (this->status == Button::Status::HOVERED)
+		{
+			currentTexture = this->textureNameWhenHovered;
+		}
 
-	Renderer::get().draw( // background
-		this->posCenterX,
-		this->posCenterY,
-		this->width,
-		this->height,
-		this->rotateAngle,
-		currentTexture
-	);
+		Renderer::get().draw( // background
+			this->posCenterX,
+			this->posCenterY,
+			this->width,
+			this->height,
+			this->rotateAngle,
+			currentTexture
+		);
 
-	/*
-	Renderer::get().drawText( // contur
-		this->posCenterX,
-		this->posCenterY,
-		TextEntity::TEXT_PADDING_0 * this->width,
-		TextEntity::TEXT_PADDING_0 * this->height,
-		this->rotateAngle,
-		this->fontName,
-		this->text,
-		glm::vec3(0.0f, 0.0f, 0.0f)
-	);
-	*/
+		/*
+		Renderer::get().drawText( // contur
+			this->posCenterX,
+			this->posCenterY,
+			TextEntity::TEXT_PADDING_0 * this->width,
+			TextEntity::TEXT_PADDING_0 * this->height,
+			this->rotateAngle,
+			this->fontName,
+			this->text,
+			glm::vec3(0.0f, 0.0f, 0.0f)
+		);
+		*/
 
-	glm::vec3 currentColor = glm::vec3(1.0f, 1.0f, 1.0f);
-	if (this->status == Button::Status::RELEASED)
-	{
-		currentColor = this->color;
+		glm::vec3 currentColor = glm::vec3(1.0f, 1.0f, 1.0f);
+		if (this->status == Button::Status::RELEASED)
+		{
+			currentColor = this->color;
+		}
+		else // if (this->status == Button::Status::HOVERED)
+		{
+			currentColor = this->colorWhenHovered;
+		}
+		Renderer::get().drawText(
+			this->posCenterX,
+			this->posCenterY,
+			TextEntity::TEXT_PADDING_1 * this->width,
+			TextEntity::TEXT_PADDING_1 * this->height,
+			this->rotateAngle,
+			this->fontName,
+			this->text,
+			currentColor
+		);
 	}
-	else // if (this->status == Button::Status::HOVERED)
-	{
-		currentColor = this->colorWhenHovered;
-	}
-	Renderer::get().drawText(
-		this->posCenterX,
-		this->posCenterY,
-		TextEntity::TEXT_PADDING_1 * this->width,
-		TextEntity::TEXT_PADDING_1 * this->height,
-		this->rotateAngle,
-		this->fontName,
-		this->text,
-		currentColor
-	);
 }
 
 void Button::update()

@@ -16,14 +16,17 @@ TexturableEntity::~TexturableEntity()
 
 void TexturableEntity::draw()
 {
-	Renderer::get().draw(
-		this->posCenterX,
-		this->posCenterY,
-		this->width,
-		this->height,
-		this->rotateAngle,
-		this->textureName
-	);
+	if (!this->requestedToBeHidden)
+	{
+		Renderer::get().draw(
+			this->posCenterX,
+			this->posCenterY,
+			this->width,
+			this->height,
+			this->rotateAngle,
+			this->textureName
+		);
+	}
 }
 
 void TexturableEntity::update()

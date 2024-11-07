@@ -20,29 +20,32 @@ const float TextEntity::TEXT_PADDING_1 = 0.85f;
 
 void TextEntity::draw()
 {
-	/*
-	Renderer::get().drawText( // contur
-		this->posCenterX,
-		this->posCenterY,
-		TextEntity::TEXT_PADDING_0 * this->width,
-		TextEntity::TEXT_PADDING_0 * this->height,
-		this->rotateAngle,
-		this->fontName,
-		this->text,
-		glm::vec3(0.0f, 0.0f, 0.0f)
-	);
-	*/
+	if (!this->requestedToBeHidden)
+	{
+		/*
+		Renderer::get().drawText( // contur
+			this->posCenterX,
+			this->posCenterY,
+			TextEntity::TEXT_PADDING_0 * this->width,
+			TextEntity::TEXT_PADDING_0 * this->height,
+			this->rotateAngle,
+			this->fontName,
+			this->text,
+			glm::vec3(0.0f, 0.0f, 0.0f)
+		);
+		*/
 
-	Renderer::get().drawText(
-		this->posCenterX,
-		this->posCenterY,
-		TextEntity::TEXT_PADDING_1 * this->width,
-		TextEntity::TEXT_PADDING_1 * this->height,
-		this->rotateAngle,
-		this->fontName,
-		this->text,
-		this->color
-	);
+		Renderer::get().drawText(
+			this->posCenterX,
+			this->posCenterY,
+			TextEntity::TEXT_PADDING_1 * this->width,
+			TextEntity::TEXT_PADDING_1 * this->height,
+			this->rotateAngle,
+			this->fontName,
+			this->text,
+			this->color
+		);
+	}
 }
 
 void TextEntity::update()

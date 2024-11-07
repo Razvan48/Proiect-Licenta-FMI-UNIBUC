@@ -169,8 +169,12 @@ void BoardVisualizer::draw()
 	{
 		if (piecesConfiguration[i] == '\n' ||
 			piecesConfiguration[i] == '\t' ||
-			piecesConfiguration[i] == ' ')
+			piecesConfiguration[i] == ' ' ||
+			piecesConfiguration[i] == '/')
+		{
+			std::cout << "Warning: Encountered ignored characters in pieces configuration received in board visualizer from board manager" << std::endl;
 			continue;
+		}
 
 		int currentI = (this->NUM_TILES_HEIGHT - 1) - numRelevantCharacters / this->NUM_TILES_WIDTH;
 		int currentJ = numRelevantCharacters % this->NUM_TILES_WIDTH;

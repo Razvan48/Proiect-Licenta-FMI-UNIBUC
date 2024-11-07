@@ -79,6 +79,12 @@
     <Filter Include="Source Files\BoardManager">
       <UniqueIdentifier>{52368cab-c902-4306-85e1-27186f7eb926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VisualInterface\MultiplayerGameVisualInterface">
+      <UniqueIdentifier>{813d42b2-6215-4e84-a654-b5ef10b066da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualInterface\SingleplayerGameVisualInterface">
+      <UniqueIdentifier>{a1f20a69-89c0-49e2-b46c-6eb8da0daa10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -147,6 +153,12 @@
     <ClCompile Include="source\BoardManager\BoardManager.cpp">
       <Filter>Source Files\BoardManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\VisualInterface\MultiplayerGameVisualInterface\MultiplayerGameVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\MultiplayerGameVisualInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -211,6 +223,12 @@
     </ClInclude>
     <ClInclude Include="source\BoardManager\BoardManager.h">
       <Filter>Source Files\BoardManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\MultiplayerGameVisualInterface\MultiplayerGameVisualInterface.h">
+      <Filter>Source Files\VisualInterface\MultiplayerGameVisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.h">
+      <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
