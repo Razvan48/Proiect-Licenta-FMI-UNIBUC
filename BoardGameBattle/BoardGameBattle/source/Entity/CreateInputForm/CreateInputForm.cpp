@@ -80,6 +80,8 @@ void CreateInputForm::update()
 				Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);
 
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
+
+				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
 			}
 			else
 			{

@@ -148,6 +148,8 @@ void JoinInputForm::update()
 
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 				this->serverAddressTextEntity.setColor(this->colorInputContentOk);
+
+				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
 			}
 			else
 			{

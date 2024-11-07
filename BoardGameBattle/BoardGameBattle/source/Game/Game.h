@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <map>
 #include <memory>
 
@@ -61,6 +62,8 @@ private:
 	Game::Color color;
 	Game::MultiplayerStatus multiplayerStatus;
 
+	std::string playerNameForMultiplayer;
+
 	void loadResources();
 	void run();
 	void draw();
@@ -78,6 +81,7 @@ public:
 	inline void setSoundEnabled(bool soundEnabled) { this->soundEnabled = soundEnabled; }
 
 	inline Game::Status getStatus() const { return this->status; }
+	inline Game::Status getPreviousStatus() const { return this->previousStatus; }
 	inline Game::Mode getMode() const { return this->mode; }
 	inline Game::Color getColor() const { return this->color; }
 	inline Game::MultiplayerStatus getMultiplayerStatus() const { return this->multiplayerStatus; }
@@ -86,4 +90,7 @@ public:
 	inline void setMode(const Game::Mode& mode) { this->mode = mode; }
 	inline void setColor(const Game::Color& color) { this->color = color; }
 	inline void setMultiplayerStatus(const Game::MultiplayerStatus& multiplayerStatus) { this->multiplayerStatus = multiplayerStatus; }
+
+	inline std::string getPlayerNameForMultiplayer() const { return this->playerNameForMultiplayer; }
+	inline void setPlayerNameForMultiplayer(const std::string& playerNameForMultiplayer) { this->playerNameForMultiplayer = playerNameForMultiplayer; }
 };

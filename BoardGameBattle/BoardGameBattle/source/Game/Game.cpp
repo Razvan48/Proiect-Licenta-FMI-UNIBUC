@@ -14,6 +14,9 @@
 
 #include "../BoardVisualizer/BoardVisualizer.h"
 
+#include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
+#include "../VisualInterface/MultiplayerGameVisualInterface/MultiplayerGameVisualInterface.h"
+
 #include <enet/enet.h>
 
 #include <iostream>
@@ -23,6 +26,7 @@ Game::Game()
 	: status(Game::Status::IN_MAIN_MENU), previousStatus(Game::Status::IN_MAIN_MENU)
 	, soundEnabled(true)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
+	, playerNameForMultiplayer("Player")
 {
 	// IN_MAIN_MENU
 	this->visualInterfaces.insert(
@@ -797,7 +801,7 @@ Game::Game()
 		{
 			Game::Status::IN_SINGLEPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			std::make_shared<SingleplayerGameVisualInterface>(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -806,8 +810,56 @@ Game::Game()
 					1.0f * WindowManager::get().getWindowHeight(),
 					0.0f,
 					"singleplayerGameBackgroundTexture"
+				),
+				false,
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Turn: WHITE"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Player: Player"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Opponent: BOT"
+				),
+
+				TextEntity
+				(
+					WindowManager::get().getWindowWidth() / 2.0f,
+					WindowManager::get().getWindowHeight() / 2.0f,
+					0.5f * WindowManager::get().getWindowWidth(),
+					0.5f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(0.0f, 1.0f, 0.0f),
+					"arialFont",
+					"You WON!"
 				)
-				, false
 			)
 		}
 	);
@@ -841,7 +893,7 @@ Game::Game()
 		{
 			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			std::make_shared<MultiplayerGameVisualInterface>(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -850,8 +902,92 @@ Game::Game()
 					1.0f * WindowManager::get().getWindowHeight(),
 					0.0f,
 					"createdMultiplayerGameBackgroundTexture"
+				),
+				false,
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Turn: WHITE"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Player: Player"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Opponent: Opponent"
+				),
+
+				TextEntity
+				(
+					WindowManager::get().getWindowWidth() / 2.0f,
+					WindowManager::get().getWindowHeight() / 2.0f,
+					0.5f * WindowManager::get().getWindowWidth(),
+					0.5f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(0.0f, 1.0f, 0.0f),
+					"arialFont",
+					"You WON!"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"ServConnect: ERROR"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"OppConnect: ERROR"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"ServerPort: ERROR"
 				)
-				, false
 			)
 		}
 	);
@@ -885,7 +1021,7 @@ Game::Game()
 		{
 			Game::Status::IN_JOINED_MULTIPLAYER_GAME,
 
-			std::make_shared<VisualInterface>(
+			std::make_shared<MultiplayerGameVisualInterface>(
 				TexturableEntity
 				(
 					WindowManager::get().getWindowWidth() / 2.0f,
@@ -894,8 +1030,93 @@ Game::Game()
 					1.0f * WindowManager::get().getWindowHeight(),
 					0.0f,
 					"joinedMultiplayerGameBackgroundTexture"
+				),
+				false,
+
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Turn: WHITE"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Player: Player"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					"arialFont",
+					"Opponent: Opponent"
+				),
+
+				TextEntity
+				(
+					WindowManager::get().getWindowWidth() / 2.0f,
+					WindowManager::get().getWindowHeight() / 2.0f,
+					0.5f * WindowManager::get().getWindowWidth(),
+					0.5f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(0.0f, 1.0f, 0.0f),
+					"arialFont",
+					"You WON!"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"ServConnect: ERROR"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"OppConnect: ERROR"
+				),
+
+				TextEntity
+				(
+					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+					2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+					0.1f * WindowManager::get().getWindowWidth(),
+					0.1f * WindowManager::get().getWindowHeight(),
+					0.0f,
+					glm::vec3(1.0f, 0.0f, 0.0f),
+					"arialFont",
+					"ServerPort: ERROR"
 				)
-				, false
 			)
 		}
 	);
@@ -959,8 +1180,8 @@ void Game::run()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		this->draw();
 		this->update();
+		this->draw();
 
 		glfwSwapBuffers(WindowManager::get().getWindow());
 		glfwPollEvents();
@@ -978,25 +1199,11 @@ void Game::draw()
 	{
 		std::cout << "Error: Game Status " << (int)visualInterface->first << " requested for drawing not found in Visual Interfaces Map" << std::endl;
 	}
-
-	// Logica pentru Server-Client
-
-	if (this->status == Game::Status::IN_SINGLEPLAYER_GAME
-		|| this->status == Game::Status::IN_CREATED_MULTIPLAYER_GAME
-		|| this->status == Game::Status::IN_JOINED_MULTIPLAYER_GAME)
-	{
-		if (this->previousStatus != this->status)
-		{
-			BoardVisualizer::get().initialize();
-		}
-
-		BoardVisualizer::get().draw();
-	}
 }
 
 void Game::update()
 {
-	this->previousStatus = this->status;
+	this->previousStatus = this->status; // Trebuie aici, deoarece daca o scriem la final de metoda atunci mereu avem previousStatus == status
 
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
@@ -1014,8 +1221,6 @@ void Game::update()
 	{
 		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
 	}
-
-	// Logica pentru Server-Client
 
 	// this->printGameStatuses(); // Doar pentru debug
 }
@@ -1127,3 +1332,4 @@ void Game::printGameStatuses()
 	}
 	std::cout << std::endl;
 }
+
