@@ -814,9 +814,9 @@ Game::Game()
 	(
 		std::make_shared<Button>
 		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f,
-			0.25f * WindowManager::get().getWindowWidth(),
+			WindowManager::get().getWindowWidth() / 20.0f,
+			WindowManager::get().getWindowHeight() / 20.0f,
+			0.075f * WindowManager::get().getWindowWidth(),
 			0.075f * WindowManager::get().getWindowHeight(),
 			0.0f,
 			glm::vec3(1.0f, 1.0f, 1.0f),
@@ -858,9 +858,9 @@ Game::Game()
 	(
 		std::make_shared<Button>
 		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f,
-			0.25f * WindowManager::get().getWindowWidth(),
+			WindowManager::get().getWindowWidth() / 20.0f,
+			WindowManager::get().getWindowHeight() / 20.0f,
+			0.075f * WindowManager::get().getWindowWidth(),
 			0.075f * WindowManager::get().getWindowHeight(),
 			0.0f,
 			glm::vec3(1.0f, 1.0f, 1.0f),
@@ -902,9 +902,9 @@ Game::Game()
 	(
 		std::make_shared<Button>
 		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f,
-			0.25f * WindowManager::get().getWindowWidth(),
+			WindowManager::get().getWindowWidth() / 20.0f,
+			WindowManager::get().getWindowHeight() / 20.0f,
+			0.075f * WindowManager::get().getWindowWidth(),
 			0.075f * WindowManager::get().getWindowHeight(),
 			0.0f,
 			glm::vec3(1.0f, 1.0f, 1.0f),
