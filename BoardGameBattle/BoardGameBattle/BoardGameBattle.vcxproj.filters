@@ -85,6 +85,9 @@
     <Filter Include="Source Files\VisualInterface\SingleplayerGameVisualInterface">
       <UniqueIdentifier>{a1f20a69-89c0-49e2-b46c-6eb8da0daa10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameMetadata">
+      <UniqueIdentifier>{ad865b7f-3182-4c63-a433-8c3fb3a1df43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -159,6 +162,9 @@
     <ClCompile Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.cpp">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameMetadata\GameMetadata.cpp">
+      <Filter>Source Files\GameMetadata</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -229,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.h">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameMetadata\GameMetadata.h">
+      <Filter>Source Files\GameMetadata</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 
 WindowManager::WindowManager()
-	: WINDOW_WIDTH(900), WINDOW_HEIGHT(900), WINDOW_TITLE("BoardGameBattle")
+	: WINDOW_WIDTH(1024), WINDOW_HEIGHT(1024), WINDOW_TITLE("BoardGameBattle")
 {
     glfwInit();
 

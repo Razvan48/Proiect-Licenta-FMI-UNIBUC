@@ -22,7 +22,7 @@ private:
 
 	std::string whiteBoardTileTextureName;
 	std::string blackBoardTileTextureName;
-	std::string boardTileSelectedTextureName;
+	std::string selectedBoardTileTextureName;
 
 	std::string whiteKingTextureName;
 	std::string whiteQueenTextureName;
@@ -41,11 +41,13 @@ private:
 	std::vector<std::vector<BoardTile>> boardTiles;
 	std::vector<TextEntity> boardCoordinates;
 
-	const int NUM_TILES_WIDTH;
-	const int NUM_TILES_HEIGHT;
-
 	const float BOARD_TILE_WIDTH;
 	const float BOARD_TILE_HEIGHT;
+
+	int selectedTileRow;
+	int selectedTileColumn;
+
+	void resetSelectedTiles();
 
 public:
 	static BoardVisualizer& get();

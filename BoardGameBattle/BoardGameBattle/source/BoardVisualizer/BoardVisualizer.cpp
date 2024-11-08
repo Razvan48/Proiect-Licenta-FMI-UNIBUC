@@ -7,12 +7,17 @@
 
 #include "../Entity/TexturableEntity/TexturableEntity.h"
 
+#include "../GameMetadata/GameMetadata.h"
+
+#include "../InputManager/InputManager.h"
+#include "../AssetManager/AssetManager.h"
+
 #include <iostream>
 
 BoardVisualizer::BoardVisualizer()
 	: whiteBoardTileTextureName("whiteBoardTileTexture")
 	, blackBoardTileTextureName("blackBoardTileTexture")
-	, boardTileSelectedTextureName("boardTileSelectedTexture")
+	, selectedBoardTileTextureName("selectedBoardTileTexture")
 	, whiteKingTextureName("whiteKingTexture")
 	, whiteQueenTextureName("whiteQueenTexture")
 	, whiteRookTextureName("whiteRookTexture")
@@ -25,10 +30,10 @@ BoardVisualizer::BoardVisualizer()
 	, blackBishopTextureName("blackBishopTexture")
 	, blackKnightTextureName("blackKnightTexture")
 	, blackPawnTextureName("blackPawnTexture")
-	, NUM_TILES_WIDTH(8)
-	, NUM_TILES_HEIGHT(8)
 	, BOARD_TILE_WIDTH(1.0f * WindowManager::get().getWindowWidth() / 10.0f)
 	, BOARD_TILE_HEIGHT(1.0f * WindowManager::get().getWindowHeight() / 10.0f)
+	, selectedTileRow(-1)
+	, selectedTileColumn(-1)
 {
 
 }
@@ -49,10 +54,10 @@ void BoardVisualizer::initialize()
 	this->boardTiles.clear();
 	this->boardCoordinates.clear();
 
-	this->boardTiles.resize(this->NUM_TILES_HEIGHT);
-	for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
+	this->boardTiles.resize(GameMetadata::NUM_TILES_HEIGHT);
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 	{
-		for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
+		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 		{
 			this->boardTiles[i].push_back(
 				BoardTile
@@ -62,13 +67,15 @@ void BoardVisualizer::initialize()
 					this->BOARD_TILE_WIDTH,
 					this->BOARD_TILE_HEIGHT,
 					0.0f,
-					(j + i) % 2 ? this->whiteBoardTileTextureName : this->blackBoardTileTextureName
+					(j + i) % 2 ? this->whiteBoardTileTextureName : this->blackBoardTileTextureName,
+					false,
+					this->selectedBoardTileTextureName
 				)
 			);
 		}
 	}
 	// a, b, c, d, e, f, g, h
-	for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
+	for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 	{
 		this->boardCoordinates.push_back(
 			TextEntity
@@ -86,7 +93,7 @@ void BoardVisualizer::initialize()
 
 	}
 	// 1, 2, 3, 4, 5, 6, 7, 8
-	for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 	{
 		this->boardCoordinates.push_back(
 			TextEntity
@@ -105,30 +112,30 @@ void BoardVisualizer::initialize()
 
 	if (Game::get().getColor() == Game::Color::BLACK) // rotire 180 de grade
 	{
-		for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
+		for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 		{
-			for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
+			for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 			{
 				this->boardTiles[i][j].setPosCenterX(
-					(this->NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
+					(GameMetadata::NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
 				);
 				this->boardTiles[i][j].setPosCenterY(
-					(this->NUM_TILES_HEIGHT - i) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f
+					(GameMetadata::NUM_TILES_HEIGHT - i) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f
 				);
 			}
 		}
 
-		for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
+		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 		{
 			this->boardCoordinates[j].setPosCenterX(
-				(this->NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
+				(GameMetadata::NUM_TILES_WIDTH - j) * this->BOARD_TILE_WIDTH + this->BOARD_TILE_WIDTH / 2.0f
 			);
 		}
 
-		for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
+		for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 		{
-			this->boardCoordinates[this->NUM_TILES_WIDTH + i].setPosCenterY(
-				(this->NUM_TILES_HEIGHT - i) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f
+			this->boardCoordinates[GameMetadata::NUM_TILES_WIDTH + i].setPosCenterY(
+				(GameMetadata::NUM_TILES_HEIGHT - i) * this->BOARD_TILE_HEIGHT + this->BOARD_TILE_HEIGHT / 2.0f
 			);
 		}
 	}
@@ -140,9 +147,9 @@ void BoardVisualizer::initialize()
 
 void BoardVisualizer::draw()
 {
-	for (int i = 0; i < this->NUM_TILES_HEIGHT; ++i)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 	{
-		for (int j = 0; j < this->NUM_TILES_WIDTH; ++j)
+		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 		{
 			this->boardTiles[i][j].draw();
 		}
@@ -170,14 +177,15 @@ void BoardVisualizer::draw()
 		if (piecesConfiguration[i] == '\n' ||
 			piecesConfiguration[i] == '\t' ||
 			piecesConfiguration[i] == ' ' ||
-			piecesConfiguration[i] == '/')
+			piecesConfiguration[i] == '/' ||
+			piecesConfiguration[i] == '$')
 		{
 			std::cout << "Warning: Encountered ignored characters in pieces configuration received in board visualizer from board manager" << std::endl;
 			continue;
 		}
 
-		int currentI = (this->NUM_TILES_HEIGHT - 1) - numRelevantCharacters / this->NUM_TILES_WIDTH;
-		int currentJ = numRelevantCharacters % this->NUM_TILES_WIDTH;
+		int currentI = (GameMetadata::NUM_TILES_HEIGHT - 1) - numRelevantCharacters / GameMetadata::NUM_TILES_WIDTH;
+		int currentJ = numRelevantCharacters % GameMetadata::NUM_TILES_WIDTH;
 
 		currentPiece.setPosCenterX(this->boardTiles[currentI][currentJ].getPosCenterX());
 		currentPiece.setPosCenterY(this->boardTiles[currentI][currentJ].getPosCenterY());
@@ -237,7 +245,78 @@ void BoardVisualizer::draw()
 
 void BoardVisualizer::update()
 {
-	// TODO: selected tiles logic
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+			this->boardTiles[i][j].update();
+
+	for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+		this->boardCoordinates[j].update();
+
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+		this->boardCoordinates[GameMetadata::NUM_TILES_WIDTH + i].update();
+
+	// Logica pentru selectare celule si efectuare mutari
+	if (InputManager::get().isLeftMouseButtonReleased())
+	{
+		if (this->selectedTileRow != -1 && this->selectedTileColumn != -1)
+		{
+			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+			{
+				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+				{
+					if (this->boardTiles[i][j].isInMouseCollision() && this->boardTiles[i][i].getIsSelected()
+						&& (i != this->selectedTileRow || j != this->selectedTileColumn))
+					{
+						std::string move = "";
+						move.push_back(BoardManager::get().getPiecesConfigurationForVisualizing()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
+						move.push_back((char)('a' + this->selectedTileColumn));
+						move.push_back((char)('1' + this->selectedTileRow));
+						move.push_back((char)('a' + j));
+						move.push_back((char)('1' + i));
+						move.push_back('$');
+
+						BoardManager::get().applyMove(move);
+
+						this->resetSelectedTiles();
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+			{
+				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+				{
+					if (this->boardTiles[i][j].isInMouseCollision())
+					{
+						this->boardTiles[i][j].setIsSelected(true);
+
+						std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(
+							std::string(1, (char)('a' + j)) + std::string(1, (char)('1' + i)));
+
+						for (int k = 0; k < moves.size(); ++k)
+						{
+							int rowEnd = (int)((GameMetadata::NUM_TILES_HEIGHT - 1) - (moves[k][4] - '1'));
+							int columnEnd = (int)(moves[k][3] - 'a');
+
+							this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void BoardVisualizer::resetSelectedTiles()
+{
+	this->selectedTileRow = -1;
+	this->selectedTileColumn = -1;
+
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+			this->boardTiles[i][j].setIsSelected(false);
 }
 
 

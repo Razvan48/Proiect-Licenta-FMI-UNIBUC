@@ -165,7 +165,7 @@ void AssetManager::loadResources()
 
 	this->loadTexture("whiteBoardTileTexture", "assets/textures/whiteBoardTileTexture.png");
 	this->loadTexture("blackBoardTileTexture", "assets/textures/blackBoardTileTexture.png");
-	this->loadTexture("boardTileSelectedTexture", "assets/textures/boardTileSelectedTexture.png");
+	this->loadTexture("selectedBoardTileTexture", "assets/textures/selectedBoardTileTexture.png");
 
 	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
 	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");
