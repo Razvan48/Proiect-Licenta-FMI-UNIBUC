@@ -25,6 +25,11 @@ BoardManager::~BoardManager()
 
 }
 
+void BoardManager::initialize()
+{
+	this->piecesConfigurationForVisualizing = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
+}
+
 BoardManager& BoardManager::get()
 {
 	static BoardManager instance;

@@ -1,6 +1,7 @@
 #include "SingleplayerGameVisualInterface.h"
 
 #include "../../BoardVisualizer/BoardVisualizer.h"
+#include "../../BoardManager/BoardManager.h"
 #include "../../Game/Game.h"
 
 SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -24,6 +25,7 @@ void SingleplayerGameVisualInterface::initialize()
 	VisualInterface::initialize();
 
 	BoardVisualizer::get().initialize();
+	BoardManager::get().initialize();
 }
 
 void SingleplayerGameVisualInterface::draw()

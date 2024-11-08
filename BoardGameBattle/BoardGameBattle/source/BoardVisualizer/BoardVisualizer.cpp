@@ -51,6 +51,9 @@ BoardVisualizer& BoardVisualizer::get()
 
 void BoardVisualizer::initialize()
 {
+	this->selectedTileRow = -1;
+	this->selectedTileColumn = -1;
+
 	this->boardTiles.clear();
 	this->boardCoordinates.clear();
 

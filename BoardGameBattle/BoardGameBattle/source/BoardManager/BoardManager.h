@@ -19,6 +19,7 @@ private:
 public:
 	static BoardManager& get();
 
+	void initialize();
 	inline std::string getPiecesConfigurationForVisualizing() const { return this->piecesConfigurationForVisualizing; }
 	void applyMove(const std::string& move);
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
