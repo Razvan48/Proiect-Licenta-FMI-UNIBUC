@@ -4,6 +4,7 @@
 
 BoardManager::BoardManager()
 {
+	/*
 	this->piecesConfigurationForVisualizing = R"(
 									rnbqkbnr
 									pppppppp
@@ -14,6 +15,9 @@ BoardManager::BoardManager()
 									PPPPPPPP
 									RNBQKBNR
 								)";
+	*/
+
+	this->piecesConfigurationForVisualizing = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
 }
 
 BoardManager::~BoardManager()
@@ -51,6 +55,9 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 	int column = piecePosition[0] - 'a';
 	int row = piecePosition[1] - '1';
 	char gamePiece = this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
+
+	if (gamePiece == '.')
+		return moves;
 
 	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 1) // Piesa Neagra
 	{

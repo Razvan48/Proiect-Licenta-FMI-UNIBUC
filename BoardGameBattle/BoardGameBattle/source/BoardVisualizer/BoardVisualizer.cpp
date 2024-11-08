@@ -180,7 +180,7 @@ void BoardVisualizer::draw()
 			piecesConfiguration[i] == '/' ||
 			piecesConfiguration[i] == '$')
 		{
-			std::cout << "Warning: Encountered ignored characters in pieces configuration received in board visualizer from board manager" << std::endl;
+			// std::cout << "Warning: Encountered ignored characters in pieces configuration received in board visualizer from board manager" << std::endl;
 			continue;
 		}
 
@@ -260,13 +260,17 @@ void BoardVisualizer::update()
 	{
 		if (this->selectedTileRow != -1 && this->selectedTileColumn != -1)
 		{
+			bool selectedTile = false;
+
 			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 			{
 				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 				{
-					if (this->boardTiles[i][j].isInMouseCollision() && this->boardTiles[i][i].getIsSelected()
+					if (this->boardTiles[i][j].isInMouseCollision() && this->boardTiles[i][j].getIsSelected()
 						&& (i != this->selectedTileRow || j != this->selectedTileColumn))
 					{
+						selectedTile = true;
+
 						std::string move = "";
 						move.push_back(BoardManager::get().getPiecesConfigurationForVisualizing()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
 						move.push_back((char)('a' + this->selectedTileColumn));
@@ -275,11 +279,20 @@ void BoardVisualizer::update()
 						move.push_back((char)('1' + i));
 						move.push_back('$');
 
+						std::cout << "move to apply: " << move << std::endl;
+
 						BoardManager::get().applyMove(move);
 
 						this->resetSelectedTiles();
 					}
 				}
+			}
+
+			if (!selectedTile)
+			{
+				this->resetSelectedTiles();
+				this->selectedTileRow = -1;
+				this->selectedTileColumn = -1;
 			}
 		}
 		else
@@ -291,13 +304,16 @@ void BoardVisualizer::update()
 					if (this->boardTiles[i][j].isInMouseCollision())
 					{
 						this->boardTiles[i][j].setIsSelected(true);
+						this->selectedTileRow = i;
+						this->selectedTileColumn = j;
 
 						std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(
 							std::string(1, (char)('a' + j)) + std::string(1, (char)('1' + i)));
 
 						for (int k = 0; k < moves.size(); ++k)
 						{
-							int rowEnd = (int)((GameMetadata::NUM_TILES_HEIGHT - 1) - (moves[k][4] - '1'));
+							std::cout << moves[k] << std::endl;
+							int rowEnd = (int)(moves[k][4] - '1');
 							int columnEnd = (int)(moves[k][3] - 'a');
 
 							this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
