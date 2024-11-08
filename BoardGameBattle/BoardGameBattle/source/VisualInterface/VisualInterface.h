@@ -17,7 +17,7 @@ public:
 	VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);
 	~VisualInterface();
 
-	virtual void onVisualInterfaceLoad();
+	virtual void initialize();
 	virtual void draw();
 	virtual void update();
 

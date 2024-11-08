@@ -19,9 +19,9 @@ SingleplayerGameVisualInterface::~SingleplayerGameVisualInterface()
 
 }
 
-void SingleplayerGameVisualInterface::onVisualInterfaceLoad()
+void SingleplayerGameVisualInterface::initialize()
 {
-	VisualInterface::onVisualInterfaceLoad();
+	VisualInterface::initialize();
 
 	BoardVisualizer::get().initialize();
 }

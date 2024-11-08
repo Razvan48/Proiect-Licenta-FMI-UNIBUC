@@ -21,9 +21,9 @@ MultiplayerGameVisualInterface::~MultiplayerGameVisualInterface()
 
 }
 
-void MultiplayerGameVisualInterface::onVisualInterfaceLoad()
+void MultiplayerGameVisualInterface::initialize()
 {
-	SingleplayerGameVisualInterface::onVisualInterfaceLoad();
+	SingleplayerGameVisualInterface::initialize();
 
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
 }

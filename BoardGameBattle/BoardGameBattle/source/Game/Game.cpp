@@ -1236,7 +1236,7 @@ void Game::setStatus(const Game::Status& status)
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
-		visualInterface->second->onVisualInterfaceLoad();
+		visualInterface->second->initialize();
 	}
 	else
 	{

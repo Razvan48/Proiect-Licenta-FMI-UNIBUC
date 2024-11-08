@@ -14,7 +14,7 @@ VisualInterface::~VisualInterface()
 
 }
 
-void VisualInterface::onVisualInterfaceLoad()
+void VisualInterface::initialize()
 {
 
 }

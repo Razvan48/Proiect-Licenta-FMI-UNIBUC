@@ -20,7 +20,7 @@ public:
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity);
 	~SingleplayerGameVisualInterface();
 
-	virtual void onVisualInterfaceLoad() override;
+	virtual void initialize() override;
 	virtual void draw() override;
 	virtual void update() override;
 
