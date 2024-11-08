@@ -72,7 +72,6 @@ void CreateInputForm::update()
 		{
 			if (this->playerNameContentOk)
 			{
-				Game::get().setStatus(this->gameStatusWhenPressed);
 				AssetManager::get().playSound(this->soundNameWhenPressed, false);
 				this->recentlyPressed = true;
 				Game::get().setMode(this->gameModeWhenPressed);
@@ -82,6 +81,8 @@ void CreateInputForm::update()
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 
 				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
+
+				Game::get().setStatus(this->gameStatusWhenPressed);
 			}
 			else
 			{

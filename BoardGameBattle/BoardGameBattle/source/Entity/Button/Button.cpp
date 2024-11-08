@@ -92,12 +92,13 @@ void Button::update()
 	{
 		if (InputManager::get().isLeftMouseButtonReleased())
 		{
-			Game::get().setStatus(this->gameStatusWhenPressed);
 			AssetManager::get().playSound(this->soundNameWhenPressed, false);
 			this->recentlyPressed = true;
 			Game::get().setMode(this->gameModeWhenPressed);
 			Game::get().setColor(this->gameColorWhenPressed);
 			Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);
+
+			Game::get().setStatus(this->gameStatusWhenPressed);
 		}
 		else
 		{

@@ -139,7 +139,6 @@ void JoinInputForm::update()
 		{
 			if (this->playerNameContentOk && this->serverAddressContentOk)
 			{
-				Game::get().setStatus(this->gameStatusWhenPressed);
 				AssetManager::get().playSound(this->soundNameWhenPressed, false);
 				this->recentlyPressed = true;
 				Game::get().setMode(this->gameModeWhenPressed);
@@ -150,6 +149,8 @@ void JoinInputForm::update()
 				this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
 				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
+
+				Game::get().setStatus(this->gameStatusWhenPressed);
 			}
 			else
 			{

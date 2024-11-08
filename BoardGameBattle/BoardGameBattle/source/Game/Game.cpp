@@ -23,7 +23,7 @@
 #include <memory>
 
 Game::Game()
-	: status(Game::Status::IN_MAIN_MENU), previousStatus(Game::Status::IN_MAIN_MENU)
+	: status(Game::Status::IN_MAIN_MENU)
 	, soundEnabled(true)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
 	, playerNameForMultiplayer("Player")
@@ -1203,8 +1203,6 @@ void Game::draw()
 
 void Game::update()
 {
-	this->previousStatus = this->status; // Trebuie aici, deoarece daca o scriem la final de metoda atunci mereu avem previousStatus == status
-
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
@@ -1229,6 +1227,21 @@ void Game::start()
 {
 	this->loadResources();
 	this->run();
+}
+
+void Game::setStatus(const Game::Status& status)
+{
+	this->status = status;
+
+	const auto& visualInterface = this->visualInterfaces.find(this->status);
+	if (visualInterface != this->visualInterfaces.end())
+	{
+		visualInterface->second->onVisualInterfaceLoad();
+	}
+	else
+	{
+		std::cout << "Error: Game Status " << (int)visualInterface->first << " requested for changing current game status not found in Visual Interface Map" << std::endl;
+	}
 }
 
 void Game::printGameStatuses()

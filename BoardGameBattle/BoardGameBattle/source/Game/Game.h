@@ -52,7 +52,6 @@ private:
 	Game& operator= (const Game&& other) = delete;
 
 	Game::Status status;
-	Game::Status previousStatus;
 
 	bool soundEnabled;
 
@@ -81,12 +80,11 @@ public:
 	inline void setSoundEnabled(bool soundEnabled) { this->soundEnabled = soundEnabled; }
 
 	inline Game::Status getStatus() const { return this->status; }
-	inline Game::Status getPreviousStatus() const { return this->previousStatus; }
 	inline Game::Mode getMode() const { return this->mode; }
 	inline Game::Color getColor() const { return this->color; }
 	inline Game::MultiplayerStatus getMultiplayerStatus() const { return this->multiplayerStatus; }
 
-	inline void setStatus(const Game::Status& status) { this->status = status; }
+	void setStatus(const Game::Status& status);
 	inline void setMode(const Game::Mode& mode) { this->mode = mode; }
 	inline void setColor(const Game::Color& color) { this->color = color; }
 	inline void setMultiplayerStatus(const Game::MultiplayerStatus& multiplayerStatus) { this->multiplayerStatus = multiplayerStatus; }

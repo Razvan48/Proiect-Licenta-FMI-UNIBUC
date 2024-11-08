@@ -21,6 +21,7 @@ public:
 		, TextEntity serverPortTextEntity);
 	~MultiplayerGameVisualInterface();
 
+	virtual void onVisualInterfaceLoad() override;
 	virtual void draw() override;
 	virtual void update() override;
 

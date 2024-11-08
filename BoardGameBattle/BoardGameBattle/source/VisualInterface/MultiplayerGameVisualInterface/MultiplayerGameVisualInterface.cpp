@@ -21,6 +21,13 @@ MultiplayerGameVisualInterface::~MultiplayerGameVisualInterface()
 
 }
 
+void MultiplayerGameVisualInterface::onVisualInterfaceLoad()
+{
+	SingleplayerGameVisualInterface::onVisualInterfaceLoad();
+
+	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
+}
+
 void MultiplayerGameVisualInterface::draw()
 {
 	SingleplayerGameVisualInterface::draw();
@@ -28,8 +35,6 @@ void MultiplayerGameVisualInterface::draw()
 	this->serverConnectionStatusTextEntity.draw();
 	this->opponentConnectionStatusTextEntity.draw();
 	this->serverPortTextEntity.draw();
-
-	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
 }
 
 void MultiplayerGameVisualInterface::update()
@@ -41,8 +46,6 @@ void MultiplayerGameVisualInterface::update()
 	this->serverPortTextEntity.update();
 
 	this->playerNameTextEntity.setText("Player: " + Game::get().getPlayerNameForMultiplayer());
-
-	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
 }
 
 void MultiplayerGameVisualInterface::setServerStatus(bool statusOk)

@@ -19,6 +19,13 @@ SingleplayerGameVisualInterface::~SingleplayerGameVisualInterface()
 
 }
 
+void SingleplayerGameVisualInterface::onVisualInterfaceLoad()
+{
+	VisualInterface::onVisualInterfaceLoad();
+
+	BoardVisualizer::get().initialize();
+}
+
 void SingleplayerGameVisualInterface::draw()
 {
 	VisualInterface::draw();
@@ -40,10 +47,7 @@ void SingleplayerGameVisualInterface::update()
 	this->opponentNameTextEntity.update();
 	this->finalMessageTextEntity.update();
 
-	if (Game::get().getStatus() != Game::get().getPreviousStatus())
-	{
-		BoardVisualizer::get().initialize();
-	}
+	BoardVisualizer::get().update();
 }
 
 void SingleplayerGameVisualInterface::setTurn(bool whiteTurn)

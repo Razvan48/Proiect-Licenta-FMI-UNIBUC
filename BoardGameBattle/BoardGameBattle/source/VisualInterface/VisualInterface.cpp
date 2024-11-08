@@ -14,6 +14,11 @@ VisualInterface::~VisualInterface()
 
 }
 
+void VisualInterface::onVisualInterfaceLoad()
+{
+
+}
+
 void VisualInterface::draw()
 {
 	this->backgroundEntity.draw(); // mai intai fundalul
