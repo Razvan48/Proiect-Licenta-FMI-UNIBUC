@@ -86,7 +86,11 @@ void JoinInputForm::update()
 			(('0' <= this->serverAddressDataBox.getText()[i]
 				&& this->serverAddressDataBox.getText()[i] <= '9')
 				|| this->serverAddressDataBox.getText()[i] == '.'
-				|| this->serverAddressDataBox.getText()[i] == ':')
+				|| this->serverAddressDataBox.getText()[i] == ':'
+				||
+				('a' <= this->serverAddressDataBox.getText()[i]
+				&& this->serverAddressDataBox.getText()[i] <= 'z')
+				)
 			)
 		{
 			this->serverAddressContentOk = false;
