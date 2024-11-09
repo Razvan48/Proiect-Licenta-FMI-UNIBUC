@@ -35,6 +35,7 @@
     <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp" />
     <ClCompile Include="source\GameMetadata\GameMetadata.cpp" />
     <ClCompile Include="source\Game\Game.cpp" />
+    <ClCompile Include="source\GlobalClock\GlobalClock.cpp" />
     <ClCompile Include="source\InputManager\InputManager.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\RandomGenerator\RandomGenerator.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h" />
     <ClInclude Include="source\GameMetadata\GameMetadata.h" />
     <ClInclude Include="source\Game\Game.h" />
+    <ClInclude Include="source\GlobalClock\GlobalClock.h" />
     <ClInclude Include="source\InputManager\InputManager.h" />
     <ClInclude Include="source\RandomGenerator\RandomGenerator.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />

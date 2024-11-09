@@ -88,6 +88,9 @@
     <Filter Include="Source Files\GameMetadata">
       <UniqueIdentifier>{ad865b7f-3182-4c63-a433-8c3fb3a1df43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GlobalClock">
+      <UniqueIdentifier>{1dc675c9-72fd-4b86-afb2-5ea258811f77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -165,6 +168,9 @@
     <ClCompile Include="source\GameMetadata\GameMetadata.cpp">
       <Filter>Source Files\GameMetadata</Filter>
     </ClCompile>
+    <ClCompile Include="source\GlobalClock\GlobalClock.cpp">
+      <Filter>Source Files\GlobalClock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -238,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="source\GameMetadata\GameMetadata.h">
       <Filter>Source Files\GameMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GlobalClock\GlobalClock.h">
+      <Filter>Source Files\GlobalClock</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
