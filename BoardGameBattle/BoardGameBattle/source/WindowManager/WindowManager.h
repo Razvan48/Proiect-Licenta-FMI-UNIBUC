@@ -16,8 +16,8 @@ private:
 	WindowManager& operator= (const WindowManager&& other) = delete;
 
 	GLFWwindow* window;
-	const int WINDOW_WIDTH;
-	const int WINDOW_HEIGHT;
+	int WINDOW_WIDTH;
+	int WINDOW_HEIGHT;
 	const std::string WINDOW_TITLE;
 
 public:

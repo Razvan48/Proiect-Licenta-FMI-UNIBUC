@@ -26,6 +26,7 @@ void MultiplayerGameVisualInterface::initialize()
 	SingleplayerGameVisualInterface::initialize();
 
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
+	// Tot SingleplayerGameVisualInterface ruleaza si sunetul de Board Start
 }
 
 void MultiplayerGameVisualInterface::draw()

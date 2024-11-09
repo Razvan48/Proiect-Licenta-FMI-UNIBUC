@@ -10,8 +10,15 @@ WindowManager::WindowManager()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // Blocheaza redimensionarea ferestrei
 
+	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+
     this->window = glfwCreateWindow(this->WINDOW_WIDTH, this->WINDOW_HEIGHT, this->WINDOW_TITLE.c_str(), 0, 0);
-	// glfwGetPrimaryMonitor(); // pentru fullscreen
+
+	// Urmatoarele 3 linii sunt pentru fullscreen mode.
+	// this->window = glfwCreateWindow(videoMode->width, videoMode->height, this->WINDOW_TITLE.c_str(), primaryMonitor, 0);
+	// this->WINDOW_WIDTH = videoMode->width;
+	// this->WINDOW_HEIGHT = videoMode->height;
 
     glfwMakeContextCurrent(this->window);
 
