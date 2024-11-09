@@ -200,13 +200,13 @@ void Server::update()
 			if (connectedClient.first == otherConnectedClient.first)
 				continue;
 
+			sentMessage.push_back('$');
+			sentMessage += otherConnectedClient.second.clientName;
+
 			if (GlobalClock::get().getCurrentTime() - otherConnectedClient.second.lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
 				sentMessage.push_back('0');
 			else
 				sentMessage.push_back('1');
-
-			sentMessage += otherConnectedClient.second.clientName;
-			sentMessage.push_back('$');
 		}
 
 		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
