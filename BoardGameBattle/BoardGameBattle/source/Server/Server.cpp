@@ -76,6 +76,10 @@ void Server::handleReceivedPacket()
 	{
 		this->connectedClients.find(clientKey)->second.color = Color::BLACK;
 	}
+	else if (receivedMessage.find("name:") == 0) // Are prefixul "name:"
+	{
+		this->connectedClients.find(clientKey)->second.clientName = receivedMessage.substr(std::string("name:").size()); // Pornim de la lungimea prefixului
+	}
 	else if (receivedMessage == "requestColor")
 	{
 		std::set<Server::Color> availableColors = { Server::Color::WHITE, Server::Color::BLACK };
@@ -197,9 +201,12 @@ void Server::update()
 				continue;
 
 			if (GlobalClock::get().getCurrentTime() - otherConnectedClient.second.lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
-				sentMessage += "0";
+				sentMessage.push_back('0');
 			else
-				sentMessage += "1";
+				sentMessage.push_back('1');
+
+			sentMessage += otherConnectedClient.second.clientName;
+			sentMessage.push_back('$');
 		}
 
 		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);

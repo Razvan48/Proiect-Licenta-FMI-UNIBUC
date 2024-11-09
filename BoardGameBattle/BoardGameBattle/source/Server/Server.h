@@ -21,10 +21,12 @@ private:
 		Server::Color color;
 		bool recentlyReceivedPing;
 		ENetPeer* peer;
+		std::string clientName;
 
 		ClientData()
 			: lastTimeReceivedPing(0.0f), lastTimeSentPing(0.0f), color(Server::Color::NONE)
 			, recentlyReceivedPing(false), peer(nullptr)
+			, clientName("client")
 		{
 
 		}
