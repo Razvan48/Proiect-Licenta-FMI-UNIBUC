@@ -6,6 +6,8 @@
 
 InputManager::InputManager()
 	: cursorPosX(0.0), cursorPosY(0.0)
+	, cursorLastPressedLeftMousePosX(0.0), cursorLastPressedLeftMousePosY(0.0)
+	, cursorLastPressedRightMousePosX(0.0), cursorLastPressedRightMousePosY(0.0)
 	, leftMouseButtonPressed(false), rightMouseButtonPressed(false)
 	, leftMouseButtonReleased(false), rightMouseButtonReleased(false)
 	, leftMouseButtonHeld(false), rightMouseButtonHeld(false)
@@ -81,11 +83,17 @@ void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int actio
 		{
 			this->leftMouseButtonPressed = true;
 			this->leftMouseButtonHeld = true;
+
+			this->cursorLastPressedLeftMousePosX = this->cursorPosX;
+			this->cursorLastPressedLeftMousePosY = this->cursorPosY;
 		}
 		else if (button == GLFW_MOUSE_BUTTON_RIGHT)
 		{
 			this->rightMouseButtonPressed = true;
 			this->rightMouseButtonHeld = true;
+
+			this->cursorLastPressedRightMousePosX = this->cursorPosX;
+			this->cursorLastPressedRightMousePosY = this->cursorPosY;
 		}
 	}
 	else if (action == GLFW_RELEASE)

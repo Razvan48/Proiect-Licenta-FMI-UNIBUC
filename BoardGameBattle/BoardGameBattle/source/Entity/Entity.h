@@ -2,6 +2,8 @@
 
 class Entity
 {
+private:
+
 protected:
 	float posCenterX;
 	float posCenterY;
@@ -10,7 +12,9 @@ protected:
 	float rotateAngle;
 
 	bool requestedDeletion;
-	bool requestedToBeHidden;
+
+	bool isInMouseCollision() const;
+	bool isInMouseLastPressedCollision() const;
 
 public:
 	Entity(float posCenterX, float posCenterY, float width, float height, float rotateAngle);
@@ -22,11 +26,6 @@ public:
 	inline bool getRequestedDeletion() const { return this->requestedDeletion; }
 	inline void setRequestedDeletion(bool requestedDeletion) { this->requestedDeletion = requestedDeletion; }
 
-	inline bool getRequestedToBeHidden() const { return this->requestedToBeHidden; }
-	inline void setRequestedToBeHidden(bool requestedToBeHidden) { this->requestedToBeHidden = requestedToBeHidden; }
-
-	bool isInMouseCollision() const;
-
 	inline float getPosCenterX() const { return this->posCenterX; }
 	inline float getPosCenterY() const { return this->posCenterY; }
 	inline float getRotateAngle() const { return this->rotateAngle; }
@@ -34,4 +33,7 @@ public:
 	inline void setPosCenterX(float posCenterX) { this->posCenterX = posCenterX; }
 	inline void setPosCenterY(float posCenterY) { this->posCenterY = posCenterY; }
 	inline void setRotateAngle(float rotateAngle) { this->rotateAngle = rotateAngle; }
+
+	bool isInCompleteMouseCollision() const;
+	bool isInCompleteOutsideMouseCollision() const;
 };

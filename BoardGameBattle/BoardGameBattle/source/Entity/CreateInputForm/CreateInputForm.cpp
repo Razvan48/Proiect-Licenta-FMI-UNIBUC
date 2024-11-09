@@ -65,15 +65,15 @@ void CreateInputForm::update()
 		this->playerNameContentOk = false;
 
 
-	this->recentlyPressed = false;
+	this->recentlyInteractedWith = false;
 	if (this->isInMouseCollision())
 	{
-		if (InputManager::get().isLeftMouseButtonReleased())
+		if (InputManager::get().isLeftMouseButtonReleased() && this->isInMouseLastPressedCollision())
 		{
 			if (this->playerNameContentOk)
 			{
 				AssetManager::get().playSound(this->soundNameWhenPressed, false);
-				this->recentlyPressed = true;
+				this->recentlyInteractedWith = true;
 				Game::get().setMode(this->gameModeWhenPressed);
 				Game::get().setColor(this->gameColorWhenPressed);
 				Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);

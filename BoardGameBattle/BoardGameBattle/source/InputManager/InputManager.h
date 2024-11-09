@@ -31,6 +31,10 @@ private:
 
 	double cursorPosX;
 	double cursorPosY;
+	double cursorLastPressedLeftMousePosX;
+	double cursorLastPressedLeftMousePosY;
+	double cursorLastPressedRightMousePosX;
+	double cursorLastPressedRightMousePosY;
 
 	bool leftMouseButtonPressed;
 	bool rightMouseButtonPressed;
@@ -46,6 +50,13 @@ public:
 
 	inline double getCursorPosX() const { return this->cursorPosX; }
 	inline double getCursorPosY() const { return WindowManager::get().getWindowHeight() - this->cursorPosY; }
+
+	inline double getCursorLastPressedLeftMousePosX() const { return this->cursorLastPressedLeftMousePosX; }
+	inline double getCursorLastPressedLeftMousePosY() const { return WindowManager::get().getWindowHeight() - this->cursorLastPressedLeftMousePosY; }
+
+	inline double getCursorLastPressedRightMousePosX() const { return this->cursorLastPressedRightMousePosX; }
+	inline double getCursorLastPressedRightMousePosY() const { return WindowManager::get().getWindowHeight() - this->cursorLastPressedRightMousePosY; }
+
 	inline bool isKeyPressed(int key) const { return this->pressedKeys[key]; }
 	inline bool isKeyReleased(int key) const { return this->releasedKeys[key]; }
 	inline bool isKeyHeld(int key) const { return this->heldKeys[key]; }

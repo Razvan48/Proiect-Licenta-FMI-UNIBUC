@@ -28,13 +28,13 @@ void SoundSetting::update()
 	this->buttonOn.update();
 	this->buttonOff.update();
 
-	if (this->buttonOn.getRecentlyPressed())
+	if (this->buttonOn.getRecentlyInteractedWith())
 	{
 		Game::get().setSoundEnabled(true);
 		this->text = "Sound: ON";
 		this->color = glm::vec3(0.0f, 1.0f, 0.0f);
 	}
-	else if (this->buttonOff.getRecentlyPressed())
+	else if (this->buttonOff.getRecentlyInteractedWith())
 	{
 		Game::get().setSoundEnabled(false);
 		this->text = "Sound: OFF";

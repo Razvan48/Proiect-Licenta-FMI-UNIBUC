@@ -25,7 +25,7 @@ void DataBox::draw()
 
 void DataBox::update()
 {
-	if (this->isInMouseCollision() && InputManager::get().isLeftMouseButtonReleased())
+	if (InputManager::get().isLeftMouseButtonReleased() && this->isInCompleteMouseCollision())
 	{
 		if (this->isSelected == false && this->text.empty())
 		{
@@ -34,7 +34,7 @@ void DataBox::update()
 		this->isSelected = true;
 		this->color = glm::vec3(0.0f, 1.0f, 0.0f);
 	}
-	else if (!this->isInMouseCollision() && InputManager::get().isLeftMouseButtonReleased())
+	else if (InputManager::get().isLeftMouseButtonReleased() && this->isInCompleteOutsideMouseCollision())
 	{
 		this->isSelected = false;
 		this->color = glm::vec3(1.0f, 1.0f, 1.0f);

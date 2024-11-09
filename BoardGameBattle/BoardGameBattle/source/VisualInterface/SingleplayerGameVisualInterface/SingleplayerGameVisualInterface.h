@@ -3,6 +3,8 @@
 #include "../VisualInterface.h"
 #include "../../Entity/TextEntity/TextEntity.h"
 
+#include <string>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,6 +16,10 @@ protected:
 	TextEntity playerNameTextEntity;
 	TextEntity opponentNameTextEntity;
 	TextEntity finalMessageTextEntity;
+
+	bool displayFinalMessage;
+
+	std::string boardStartSoundName;
 
 public:
 	SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -32,6 +38,6 @@ public:
 	void setTurn(bool whiteTurn);
 	void setPlayerName(const std::string& playerName);
 	void setOpponentName(const std::string& opponentName);
-	inline void hideFinalMessage() { this->finalMessageTextEntity.setRequestedToBeHidden(true); }
+	inline void setDisplayFinalMessage(bool displayFinalMessage) { this->displayFinalMessage = displayFinalMessage; }
 	void setFinalMessage(bool hasWon);
 };

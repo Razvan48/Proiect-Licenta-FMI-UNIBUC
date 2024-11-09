@@ -4,6 +4,8 @@
 #include "../../BoardManager/BoardManager.h"
 #include "../../Game/Game.h"
 
+#include "../../AssetManager/AssetManager.h"
+
 SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
 	, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity)
 	: VisualInterface(backgroundEntity, respondsToEscapeKey)
@@ -11,8 +13,10 @@ SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntit
 	, playerNameTextEntity(playerNameTextEntity)
 	, opponentNameTextEntity(opponentNameTextEntity)
 	, finalMessageTextEntity(finalMessageTextEntity)
+	, displayFinalMessage(false)
+	, boardStartSoundName("boardStartSound")
 {
-	this->finalMessageTextEntity.setRequestedToBeHidden(true); // Sa nu apara din prima
+
 }
 
 SingleplayerGameVisualInterface::~SingleplayerGameVisualInterface()
@@ -26,6 +30,8 @@ void SingleplayerGameVisualInterface::initialize()
 
 	BoardVisualizer::get().initialize();
 	BoardManager::get().initialize();
+
+	AssetManager::get().playSound(this->boardStartSoundName, false);
 }
 
 void SingleplayerGameVisualInterface::draw()
@@ -35,7 +41,9 @@ void SingleplayerGameVisualInterface::draw()
 	this->turnTextEntity.draw();
 	this->playerNameTextEntity.draw();
 	this->opponentNameTextEntity.draw();
-	this->finalMessageTextEntity.draw();
+
+	if (this->displayFinalMessage)
+		this->finalMessageTextEntity.draw();
 
 	BoardVisualizer::get().draw();
 }
@@ -79,7 +87,7 @@ void SingleplayerGameVisualInterface::setOpponentName(const std::string& opponen
 
 void SingleplayerGameVisualInterface::setFinalMessage(bool hasWon)
 {
-	this->finalMessageTextEntity.setRequestedToBeHidden(false);
+	this->displayFinalMessage = true;
 
 	if (hasWon)
 	{

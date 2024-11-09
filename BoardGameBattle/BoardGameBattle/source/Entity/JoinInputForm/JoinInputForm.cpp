@@ -60,6 +60,7 @@ void JoinInputForm::update()
 	this->serverAddressDataBox.update();
 
 	// Verificare continut casute de text
+
 	// playerName
 	this->playerNameContentOk = true;
 	for (int i = 0; i < this->playerNameDataBox.getText().size() && this->playerNameContentOk; ++i)
@@ -76,9 +77,8 @@ void JoinInputForm::update()
 	}
 	if (this->playerNameDataBox.getText().empty())
 		this->playerNameContentOk = false;
+
 	// serverAddress
-	// std::vector<int> posDots;
-	// int posTwoDots = -1;
 	this->serverAddressContentOk = true;
 	for (int i = 0; i < this->serverAddressDataBox.getText().size() && this->serverAddressContentOk; ++i)
 	{
@@ -91,56 +91,21 @@ void JoinInputForm::update()
 		{
 			this->serverAddressContentOk = false;
 		}
-
-		/*
-		if (this->serverAddressDataBox.getText()[i] == '.')
-		{
-			posDots.push_back(i);
-		}
-		if (this->serverAddressDataBox.getText()[i] == ':')
-		{
-			if (posTwoDots != -1)
-			{
-				this->serverAddressContentOk = false;
-			}
-			posTwoDots = i;
-		}
-		*/
 	}
-	/*
-	if (this->serverAddressContentOk)
-	{
-		if (posTwoDots == -1 || posTwoDots == (int)this->serverAddressDataBox.getText().size() - 1)
-		{
-			this->serverAddressContentOk = false;
-		}
-		for (int i = 1; i < posDots.size() && this->serverAddressContentOk; ++i)
-		{
-			if (posDots[i] - posDots[i - 1] == 1)
-			{
-				this->serverAddressContentOk = false;
-			}
-		}
-		if (posDots.empty() || posDots[0] == 0 || posDots.back() == (int)this->serverAddressDataBox.getText().size() - 1)
-		{
-			this->serverAddressContentOk = false;
-		}
-	}
-	*/
 	if (this->serverAddressDataBox.getText().empty())
 		this->serverAddressContentOk = false;
-	// Final verificare continut casute de text
 
 
-	this->recentlyPressed = false;
+
+	this->recentlyInteractedWith = false;
 	if (this->isInMouseCollision())
 	{
-		if (InputManager::get().isLeftMouseButtonReleased())
+		if (InputManager::get().isLeftMouseButtonReleased() && this->isInMouseLastPressedCollision())
 		{
 			if (this->playerNameContentOk && this->serverAddressContentOk)
 			{
 				AssetManager::get().playSound(this->soundNameWhenPressed, false);
-				this->recentlyPressed = true;
+				this->recentlyInteractedWith = true;
 				Game::get().setMode(this->gameModeWhenPressed);
 				Game::get().setColor(this->gameColorWhenPressed);
 				Game::get().setMultiplayerStatus(this->gameMultiplayerStatusWhenPressed);

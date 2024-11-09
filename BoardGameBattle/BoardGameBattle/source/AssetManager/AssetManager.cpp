@@ -170,6 +170,7 @@ void AssetManager::loadResources()
 	this->loadSound("buttonHoveredSound", "assets/sounds/buttonHoveredSound.mp3");
 	this->loadSound("buttonPressedSound", "assets/sounds/buttonPressedSound.mp3");
 	this->loadSound("pieceMoveSound", "assets/sounds/pieceMoveSound.mp3");
+	this->loadSound("boardStartSound", "assets/sounds/boardStartSound.mp3");
 	this->loadSound("errorSound", "assets/sounds/errorSound.mp3");
 
 	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");

@@ -47,6 +47,8 @@ private:
 	int selectedTileRow;
 	int selectedTileColumn;
 
+	std::string pieceMoveSoundName;
+
 	void resetSelectedTiles();
 
 public:

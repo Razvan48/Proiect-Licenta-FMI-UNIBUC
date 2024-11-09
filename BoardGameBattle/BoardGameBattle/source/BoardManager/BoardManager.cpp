@@ -3,21 +3,10 @@
 #include "../GameMetadata/GameMetadata.h"
 
 BoardManager::BoardManager()
+	: piecesConfigurationForVisualizing("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR")
+	, whiteTurn(true)
 {
-	/*
-	this->piecesConfigurationForVisualizing = R"(
-									rnbqkbnr
-									pppppppp
-									........
-									........
-									........
-									........
-									PPPPPPPP
-									RNBQKBNR
-								)";
-	*/
 
-	this->piecesConfigurationForVisualizing = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
 }
 
 BoardManager::~BoardManager()
@@ -37,9 +26,9 @@ BoardManager& BoardManager::get()
 }
 
 // TODO: COD DOAR DE TEST, VA FI INLOCUIT
-void BoardManager::applyMove(const std::string& move) // move e de forma "caracterPiesa + col + linie + col + linie + $ + alta mutare (de exemplu in cazul rocadei sau promovarii de pion)"
+void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mutarea este legala
 {
-	for (int i = 0; i < move.size(); i += (GameMetadata::NUM_CHARS_SUBMOVE + 1))
+	for (int i = 0; i < move.size(); i += GameMetadata::NUM_CHARS_SUBMOVE)
 	{
 		char gamePiece = move[i];
 		int columnStart = move[i + 1] - 'a';
@@ -50,6 +39,8 @@ void BoardManager::applyMove(const std::string& move) // move e de forma "caract
 		this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowStart) * GameMetadata::NUM_TILES_WIDTH + columnStart] = '.';
 		this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowEnd) * GameMetadata::NUM_TILES_WIDTH + columnEnd] = gamePiece;
 	}
+
+	this->whiteTurn = !this->whiteTurn;
 }
 
 // TODO: COD DOAR DE TEST, VA FI INLOCUIT
@@ -61,29 +52,14 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 	int row = piecePosition[1] - '1';
 	char gamePiece = this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
 
-	if (gamePiece == '.')
+	if (gamePiece == '.'
+		||
+		('A' <= gamePiece && gamePiece <= 'Z' && !this->whiteTurn)
+		||
+		('a' <= gamePiece && gamePiece <= 'z' && this->whiteTurn)
+		)
 		return moves;
 
-	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 1) // Piesa Neagra
-	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row - 1));
-		moves.back().push_back('$');
-	}
-	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 2)
-	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row - 2));
-		moves.back().push_back('$');
-	}
 	if ('A' <= gamePiece && gamePiece <= 'Z' && row <= 6) // Piesa Alba
 	{
 		moves.emplace_back();
@@ -92,7 +68,6 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		moves.back().push_back((char)('1' + row));
 		moves.back().push_back((char)('a' + column));
 		moves.back().push_back((char)('1' + row + 1));
-		moves.back().push_back('$');
 	}
 	if ('A' <= gamePiece && gamePiece <= 'Z' && row <= 5)
 	{
@@ -102,7 +77,25 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		moves.back().push_back((char)('1' + row));
 		moves.back().push_back((char)('a' + column));
 		moves.back().push_back((char)('1' + row + 2));
-		moves.back().push_back('$');
+	}
+
+	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 1) // Piesa Neagra
+	{
+		moves.emplace_back();
+		moves.back().push_back(gamePiece);
+		moves.back().push_back((char)('a' + column));
+		moves.back().push_back((char)('1' + row));
+		moves.back().push_back((char)('a' + column));
+		moves.back().push_back((char)('1' + row - 1));
+	}
+	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 2)
+	{
+		moves.emplace_back();
+		moves.back().push_back(gamePiece);
+		moves.back().push_back((char)('a' + column));
+		moves.back().push_back((char)('1' + row));
+		moves.back().push_back((char)('a' + column));
+		moves.back().push_back((char)('1' + row - 2));
 	}
 
 	return moves;

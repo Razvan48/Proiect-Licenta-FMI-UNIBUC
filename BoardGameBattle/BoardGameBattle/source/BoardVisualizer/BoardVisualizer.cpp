@@ -34,6 +34,7 @@ BoardVisualizer::BoardVisualizer()
 	, BOARD_TILE_HEIGHT(1.0f * WindowManager::get().getWindowHeight() / 10.0f)
 	, selectedTileRow(-1)
 	, selectedTileColumn(-1)
+	, pieceMoveSoundName("pieceMoveSound")
 {
 
 }
@@ -146,6 +147,10 @@ void BoardVisualizer::initialize()
 	{
 		std::cout << "Error: Game Color is NONE when initializing board" << std::endl;
 	}
+	else
+	{
+		std::cout << "Error: Invalid Game Color when initializing board (not even NONE)" << std::endl;
+	}
 }
 
 void BoardVisualizer::draw()
@@ -174,27 +179,14 @@ void BoardVisualizer::draw()
 		0.0f,
 		""
 	);
-	int numRelevantCharacters = 0;
 	for (int i = 0; i < piecesConfiguration.size(); ++i)
 	{
-		if (piecesConfiguration[i] == '\n' ||
-			piecesConfiguration[i] == '\t' ||
-			piecesConfiguration[i] == ' ' ||
-			piecesConfiguration[i] == '/' ||
-			piecesConfiguration[i] == '$')
-		{
-			// std::cout << "Warning: Encountered ignored characters in pieces configuration received in board visualizer from board manager" << std::endl;
-			continue;
-		}
-
-		int currentI = (GameMetadata::NUM_TILES_HEIGHT - 1) - numRelevantCharacters / GameMetadata::NUM_TILES_WIDTH;
-		int currentJ = numRelevantCharacters % GameMetadata::NUM_TILES_WIDTH;
+		int currentI = (GameMetadata::NUM_TILES_HEIGHT - 1) - i / GameMetadata::NUM_TILES_WIDTH;
+		int currentJ = i % GameMetadata::NUM_TILES_WIDTH;
 
 		currentPiece.setPosCenterX(this->boardTiles[currentI][currentJ].getPosCenterX());
 		currentPiece.setPosCenterY(this->boardTiles[currentI][currentJ].getPosCenterY());
 		currentPiece.setRotateAngle(this->boardTiles[currentI][currentJ].getRotateAngle());
-
-		++numRelevantCharacters;
 
 		switch (piecesConfiguration[i])
 		{
@@ -269,7 +261,7 @@ void BoardVisualizer::update()
 			{
 				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 				{
-					if (this->boardTiles[i][j].isInMouseCollision() && this->boardTiles[i][j].getIsSelected()
+					if (this->boardTiles[i][j].isInCompleteMouseCollision() && this->boardTiles[i][j].getIsSelected()
 						&& (i != this->selectedTileRow || j != this->selectedTileColumn))
 					{
 						selectedTile = true;
@@ -280,11 +272,9 @@ void BoardVisualizer::update()
 						move.push_back((char)('1' + this->selectedTileRow));
 						move.push_back((char)('a' + j));
 						move.push_back((char)('1' + i));
-						move.push_back('$');
-
-						std::cout << "move to apply: " << move << std::endl;
 
 						BoardManager::get().applyMove(move);
+						AssetManager::get().playSound(this->pieceMoveSoundName, false);
 
 						this->resetSelectedTiles();
 					}
@@ -304,18 +294,20 @@ void BoardVisualizer::update()
 			{
 				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 				{
-					if (this->boardTiles[i][j].isInMouseCollision())
+					if (this->boardTiles[i][j].isInCompleteMouseCollision())
 					{
 						this->boardTiles[i][j].setIsSelected(true);
 						this->selectedTileRow = i;
 						this->selectedTileColumn = j;
 
-						std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(
-							std::string(1, (char)('a' + j)) + std::string(1, (char)('1' + i)));
+						std::string piecePosition = "";
+						piecePosition.push_back((char)('a' + j));
+						piecePosition.push_back((char)('1' + i));
+
+						std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(piecePosition);
 
 						for (int k = 0; k < moves.size(); ++k)
 						{
-							std::cout << moves[k] << std::endl;
 							int rowEnd = (int)(moves[k][4] - '1');
 							int columnEnd = (int)(moves[k][3] - 'a');
 

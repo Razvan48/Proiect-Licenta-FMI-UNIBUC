@@ -22,11 +22,11 @@ protected:
 	glm::vec3 colorWhenHovered;
 	std::string soundNameWhenHovered;
 
-	bool recentlyPressed;
-
 	Game::Mode gameModeWhenPressed;
 	Game::Color gameColorWhenPressed;
 	Game::MultiplayerStatus gameMultiplayerStatusWhenPressed;
+
+	bool recentlyInteractedWith;
 
 public:
 	Button(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
@@ -39,5 +39,5 @@ public:
 	virtual void draw() override;
 	virtual void update() override;
 
-	inline bool getRecentlyPressed() const { return this->recentlyPressed; }
+	inline bool getRecentlyInteractedWith() const { return this->recentlyInteractedWith; }
 };

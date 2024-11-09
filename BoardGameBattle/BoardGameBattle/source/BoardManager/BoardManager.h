@@ -16,6 +16,8 @@ private:
 
 	std::string piecesConfigurationForVisualizing;
 
+	bool whiteTurn;
+
 public:
 	static BoardManager& get();
 

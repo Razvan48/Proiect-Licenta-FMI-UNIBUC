@@ -17,30 +17,27 @@ BoardTile::~BoardTile()
 
 void BoardTile::draw()
 {
-	if (!this->requestedToBeHidden)
+	if (this->isSelected)
 	{
-		if (this->isSelected)
-		{
-			Renderer::get().draw(
-				this->posCenterX,
-				this->posCenterY,
-				this->width,
-				this->height,
-				this->rotateAngle,
-				this->textureNameWhenSelected
-			);
-		}
-		else
-		{
-			Renderer::get().draw(
-				this->posCenterX,
-				this->posCenterY,
-				this->width,
-				this->height,
-				this->rotateAngle,
-				this->textureName
-			);
-		}
+		Renderer::get().draw(
+			this->posCenterX,
+			this->posCenterY,
+			this->width,
+			this->height,
+			this->rotateAngle,
+			this->textureNameWhenSelected
+		);
+	}
+	else
+	{
+		Renderer::get().draw(
+			this->posCenterX,
+			this->posCenterY,
+			this->width,
+			this->height,
+			this->rotateAngle,
+			this->textureName
+		);
 	}
 }
 
