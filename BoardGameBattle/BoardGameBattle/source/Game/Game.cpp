@@ -17,6 +17,7 @@
 #include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
 #include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
 #include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
+#include "../VisualInterface/MultiplayerColorMenuVisualInterface/MultiplayerColorMenuVisualInterface.h"
 
 #include <enet/enet.h>
 
@@ -27,7 +28,6 @@ Game::Game()
 	: status(Game::Status::IN_MAIN_MENU)
 	, soundEnabled(true)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
-	, playerNameForMultiplayer("Player")
 {
 	// IN_MAIN_MENU
 	this->visualInterfaces.insert(
@@ -712,89 +712,10 @@ Game::Game()
 		{
 			Game::Status::IN_MULTIPLAYER_COLOR_MENU,
 
-			std::make_shared<VisualInterface>(
-				TexturableEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					1.0f * WindowManager::get().getWindowWidth(),
-					1.0f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					"multiplayerColorMenuBackgroundTexture"
-				)
-				, false
+			std::make_shared<MultiplayerColorMenuVisualInterface>(
+				MultiplayerColorMenuVisualInterface::get()
 			)
 		}
-	);
-	const auto& multiplayerColorMenuVisualInterface = this->visualInterfaces.find(Game::Status::IN_MULTIPLAYER_COLOR_MENU);
-	multiplayerColorMenuVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f + 0.4f * WindowManager::get().getWindowHeight(),
-			0.5f * WindowManager::get().getWindowWidth(),
-			0.15f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"White",
-			"buttonTexture",
-			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::MULTIPLAYER,
-			Game::Color::WHITE,
-			Game::MultiplayerStatus::CREATE_GAME
-		)
-	);
-	multiplayerColorMenuVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f + 0.2f * WindowManager::get().getWindowHeight(),
-			0.5f * WindowManager::get().getWindowWidth(),
-			0.15f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"Black",
-			"buttonTexture",
-			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::MULTIPLAYER,
-			Game::Color::BLACK,
-			Game::MultiplayerStatus::CREATE_GAME
-		)
-	);
-	multiplayerColorMenuVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 2.0f,
-			WindowManager::get().getWindowHeight() / 8.0f,
-			0.25f * WindowManager::get().getWindowWidth(),
-			0.075f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"Back",
-			"buttonTexture",
-			Game::Status::IN_INPUT_CREATE_MENU,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::MULTIPLAYER,
-			Game::Color::NONE,
-			Game::MultiplayerStatus::CREATE_GAME
-		)
 	);
 
 	// IN_SINGLEPLAYER_GAME

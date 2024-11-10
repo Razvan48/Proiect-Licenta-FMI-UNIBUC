@@ -29,7 +29,7 @@ private:
 public:
 	static Client& get();
 
-	void start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName);
+	void start(const std::string& serverAddress, enet_uint16 serverPort, const std::string& clientName);
 	void update();
 	void stop();
 };

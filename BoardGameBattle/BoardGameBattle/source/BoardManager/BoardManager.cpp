@@ -3,7 +3,7 @@
 #include "../GameMetadata/GameMetadata.h"
 
 BoardManager::BoardManager()
-	: piecesConfigurationForVisualizing("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR")
+	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR")
 	, whiteTurn(true)
 {
 
@@ -16,7 +16,7 @@ BoardManager::~BoardManager()
 
 void BoardManager::initialize()
 {
-	this->piecesConfigurationForVisualizing = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
+	this->piecesConfiguration = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
 }
 
 BoardManager& BoardManager::get()
@@ -36,8 +36,8 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 		int columnEnd = move[i + 3] - 'a';
 		int rowEnd = move[i + 4] - '1';
 
-		this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowStart) * GameMetadata::NUM_TILES_WIDTH + columnStart] = '.';
-		this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowEnd) * GameMetadata::NUM_TILES_WIDTH + columnEnd] = gamePiece;
+		this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowStart) * GameMetadata::NUM_TILES_WIDTH + columnStart] = '.';
+		this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowEnd) * GameMetadata::NUM_TILES_WIDTH + columnEnd] = gamePiece;
 	}
 
 	this->whiteTurn = !this->whiteTurn;
@@ -50,7 +50,7 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 
 	int column = piecePosition[0] - 'a';
 	int row = piecePosition[1] - '1';
-	char gamePiece = this->piecesConfigurationForVisualizing[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
+	char gamePiece = this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
 
 	if (gamePiece == '.'
 		||

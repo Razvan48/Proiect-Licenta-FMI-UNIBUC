@@ -3,6 +3,8 @@
 #include "../../InputManager/InputManager.h"
 #include "../../AssetManager/AssetManager.h"
 
+#include "../../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
+
 JoinInputForm::JoinInputForm(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
 	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed
 	, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered
@@ -117,9 +119,10 @@ void JoinInputForm::update()
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 				this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
-				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
+				JoinedMultiplayerGameVisualInterface::get().setPlayerName(this->playerNameDataBox.getText());
+				JoinedMultiplayerGameVisualInterface::get().setServerAddress(this->serverAddressDataBox.getText());
 
-				Game::get().setStatus(this->gameStatusWhenPressed);
+				Game::get().setStatus(this->gameStatusWhenPressed); // Trebuie sa fie ultima linie, deoarece initializeaza interfata vizuala.
 			}
 			else
 			{

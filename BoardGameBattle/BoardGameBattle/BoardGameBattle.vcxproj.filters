@@ -94,6 +94,9 @@
     <Filter Include="Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface">
       <UniqueIdentifier>{9832cce9-159d-4ba0-84f3-be3b8f746a3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VisualInterface\MultiplayerColorMenuVisualInterface">
+      <UniqueIdentifier>{bba05abd-94c7-4142-a877-c528b8b84acb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -177,6 +180,9 @@
     <ClCompile Include="source\VisualInterface\JoinedMultiplayerGameVisualInterface\JoinedMultiplayerGameVisualInterface.cpp">
       <Filter>Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface</Filter>
     </ClCompile>
+    <ClCompile Include="source\VisualInterface\MultiplayerColorMenuVisualInterface\MultiplayerColorMenuVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\MultiplayerColorMenuVisualInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -256,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="source\VisualInterface\JoinedMultiplayerGameVisualInterface\JoinedMultiplayerGameVisualInterface.h">
       <Filter>Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\MultiplayerColorMenuVisualInterface\MultiplayerColorMenuVisualInterface.h">
+      <Filter>Source Files\VisualInterface\MultiplayerColorMenuVisualInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

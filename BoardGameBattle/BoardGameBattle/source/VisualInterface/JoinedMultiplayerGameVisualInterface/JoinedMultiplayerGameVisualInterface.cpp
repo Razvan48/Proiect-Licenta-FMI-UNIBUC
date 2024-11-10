@@ -21,6 +21,8 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 	, serverConnectionStatusTextEntity(serverConnectionStatusTextEntity)
 	, opponentConnectionStatusTextEntity(opponentConnectionStatusTextEntity)
 	, serverPortTextEntity(serverPortTextEntity)
+	, playerName("player")
+	, serverAddress("none")
 {
 	this->entities.push_back
 	(
@@ -74,9 +76,9 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Turn: WHITE"
+							"Turn: ERROR"
 						),
 
 						TextEntity
@@ -86,9 +88,9 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Player: Player"
+							"Player: ERROR"
 						),
 
 						TextEntity
@@ -98,9 +100,9 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Opponent: Opponent"
+							"Opp: ERROR"
 						),
 
 						TextEntity
@@ -110,9 +112,9 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.5f * WindowManager::get().getWindowWidth(),
 							0.5f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(0.0f, 1.0f, 0.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"You WON!"
+							"ERROR!"
 						),
 
 						TextEntity
@@ -124,7 +126,7 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"ServConnect: ERROR"
+							"ServConn: ERROR"
 						),
 
 						TextEntity
@@ -136,7 +138,7 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"OppConnect: ERROR"
+							"OppConn: ERROR"
 						),
 
 						TextEntity
@@ -148,7 +150,7 @@ JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get(
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"ServerPort: ERROR"
+							"ServPort: ERROR"
 						)
 	);
 
@@ -161,7 +163,31 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	SingleplayerGameVisualInterface::initialize();
 
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
+	// + draw-ul pentru finalMessage tot in SingleplayerGameVisualInterface are loc
 	// Tot SingleplayerGameVisualInterface ruleaza si sunetul de Board Start
+
+	this->turnTextEntity.setText("Turn: ERROR");
+	this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->playerNameTextEntity.setText("Player: ERROR");
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->opponentNameTextEntity.setText("Opp: ERROR");
+	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->finalMessageTextEntity.setText("ERROR!");
+	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
+	this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
+	this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->serverPortTextEntity.setText("ServPort: ERROR");
+	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	// Client::get().start();
 }
 
 void JoinedMultiplayerGameVisualInterface::draw()
@@ -181,7 +207,9 @@ void JoinedMultiplayerGameVisualInterface::update()
 	this->opponentConnectionStatusTextEntity.update();
 	this->serverPortTextEntity.update();
 
-	this->playerNameTextEntity.setText("Player: " + Game::get().getPlayerNameForMultiplayer());
+	// this->playerNameTextEntity.setText("Player: " + this->playerName);
+
+	Client::get().update();
 }
 
 void JoinedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)

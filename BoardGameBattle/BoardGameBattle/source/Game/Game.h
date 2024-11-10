@@ -61,8 +61,6 @@ private:
 	Game::Color color;
 	Game::MultiplayerStatus multiplayerStatus;
 
-	std::string playerNameForMultiplayer;
-
 	void loadResources();
 	void run();
 	void draw();
@@ -88,7 +86,4 @@ public:
 	inline void setMode(const Game::Mode& mode) { this->mode = mode; }
 	inline void setColor(const Game::Color& color) { this->color = color; }
 	inline void setMultiplayerStatus(const Game::MultiplayerStatus& multiplayerStatus) { this->multiplayerStatus = multiplayerStatus; }
-
-	inline std::string getPlayerNameForMultiplayer() const { return this->playerNameForMultiplayer; }
-	inline void setPlayerNameForMultiplayer(const std::string& playerNameForMultiplayer) { this->playerNameForMultiplayer = playerNameForMultiplayer; }
 };

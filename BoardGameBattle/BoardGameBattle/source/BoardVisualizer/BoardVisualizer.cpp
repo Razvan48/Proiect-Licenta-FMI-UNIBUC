@@ -169,7 +169,7 @@ void BoardVisualizer::draw()
 	}
 
 	// Desenarea pieselor
-	std::string piecesConfiguration = BoardManager::get().getPiecesConfigurationForVisualizing();
+	std::string piecesConfiguration = BoardManager::get().getPiecesConfiguration();
 
 	TexturableEntity currentPiece(
 		0.0f,
@@ -179,7 +179,7 @@ void BoardVisualizer::draw()
 		0.0f,
 		""
 	);
-	for (int i = 0; i < piecesConfiguration.size(); ++i)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
 		int currentI = (GameMetadata::NUM_TILES_HEIGHT - 1) - i / GameMetadata::NUM_TILES_WIDTH;
 		int currentJ = i % GameMetadata::NUM_TILES_WIDTH;
@@ -267,7 +267,7 @@ void BoardVisualizer::update()
 						selectedTile = true;
 
 						std::string move = "";
-						move.push_back(BoardManager::get().getPiecesConfigurationForVisualizing()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
+						move.push_back(BoardManager::get().getPiecesConfiguration()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
 						move.push_back((char)('a' + this->selectedTileColumn));
 						move.push_back((char)('1' + this->selectedTileRow));
 						move.push_back((char)('a' + j));

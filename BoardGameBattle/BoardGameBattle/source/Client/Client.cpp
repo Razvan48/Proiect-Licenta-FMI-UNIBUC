@@ -22,6 +22,8 @@ Client& Client::get()
 
 void Client::start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName)
 {
+	this->stop();
+
 	this->client = enet_host_create(NULL, this->MAX_NUM_SERVERS, this->NUM_CHANNELS, 0, 0); // 0, 0 inseamna fara limite la latimea de banda
 
 	if (client == NULL)
@@ -48,11 +50,14 @@ void Client::update()
 
 void Client::stop()
 {
-	enet_host_flush(this->client);
-	enet_peer_disconnect(this->serverPeer, 0);
+	if (this->client != nullptr)
+		enet_host_flush(this->client);
+	if (this->serverPeer != nullptr)
+		enet_peer_disconnect(this->serverPeer, 0);
+	if (this->client != nullptr)
+		enet_host_destroy(this->client);
 
-	// Aici ar putea sa mai astepte dupa niste ultime mesaje primite din partea serverului
-
-	enet_host_destroy(this->client);
+	this->client = nullptr;
+	this->serverPeer = nullptr;
 }
 

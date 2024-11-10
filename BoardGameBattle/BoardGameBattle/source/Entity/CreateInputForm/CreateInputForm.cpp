@@ -3,6 +3,8 @@
 #include "../../InputManager/InputManager.h"
 #include "../../AssetManager/AssetManager.h"
 
+#include "../../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
+
 CreateInputForm::CreateInputForm(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
 	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed
 	, const std::string& textureNameWhenHovered, const glm::vec3 colorWhenHovered
@@ -80,9 +82,10 @@ void CreateInputForm::update()
 
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 
-				Game::get().setPlayerNameForMultiplayer(this->playerNameDataBox.getText());
+				CreatedMultiplayerGameVisualInterface::get().setPlayerName(this->playerNameDataBox.getText());
+				CreatedMultiplayerGameVisualInterface::get().setServerAddress("127.0.0.1"); // Localhost
 
-				Game::get().setStatus(this->gameStatusWhenPressed);
+				Game::get().setStatus(this->gameStatusWhenPressed); // Trebuie sa fie ultima linie, deoarece initializeaza interfata vizuala.
 			}
 			else
 			{

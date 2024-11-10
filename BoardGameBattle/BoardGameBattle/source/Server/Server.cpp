@@ -32,11 +32,12 @@ Server& Server::get()
 
 void Server::start()
 {
+	this->stop();
+	this->connectedClients.clear();
+
 	this->address.port = RandomGenerator::randomUniformInt(this->MINIMUM_PORT, this->MAXIMUM_PORT);
 	this->succesfullyCreated = false;
 	this->lastTimeTriedCreation = 0.0f;
-	this->connectedClients.clear();
-	this->stop();
 }
 
 void Server::handleReceivedPacket()

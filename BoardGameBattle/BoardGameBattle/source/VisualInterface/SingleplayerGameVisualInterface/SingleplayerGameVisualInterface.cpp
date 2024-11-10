@@ -70,9 +70,9 @@ SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Turn: WHITE"
+							"Turn: ERROR"
 						),
 
 						TextEntity
@@ -82,9 +82,9 @@ SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Player: Player"
+							"Player: ERROR"
 						),
 
 						TextEntity
@@ -94,9 +94,9 @@ SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
 							0.1f * WindowManager::get().getWindowWidth(),
 							0.1f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 1.0f, 1.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Opponent: BOT"
+							"Opp: ERROR"
 						),
 
 						TextEntity
@@ -106,9 +106,9 @@ SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
 							0.5f * WindowManager::get().getWindowWidth(),
 							0.5f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(0.0f, 1.0f, 0.0f),
+							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"You WON!"
+							"ERROR!"
 						)
 		);
 
@@ -121,6 +121,18 @@ void SingleplayerGameVisualInterface::initialize()
 
 	BoardVisualizer::get().initialize();
 	BoardManager::get().initialize();
+
+	this->turnTextEntity.setText("Turn: WHITE");
+	this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	this->playerNameTextEntity.setText("Player: Player");
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	this->opponentNameTextEntity.setText("Opp: BOT");
+	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	this->finalMessageTextEntity.setText("ERROR!");
+	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
 	AssetManager::get().playSound(this->boardStartSoundName, false);
 }
