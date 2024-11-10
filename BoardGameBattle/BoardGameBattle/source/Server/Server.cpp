@@ -48,7 +48,7 @@ void Server::handleReceivedPacket()
 	}
 
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
-	std::cout << "Received Message: " << receivedMessage << " from " << clientKey << std::endl;
+	std::cout << "Received Message: " << receivedMessage << " from " << clientKey << ", size=" << receivedMessage.size() << std::endl;
 
 	if (this->connectedClients.size() == this->MAX_NUM_CLIENTS
 		&& this->connectedClients.find(clientKey) == this->connectedClients.end())
@@ -228,6 +228,10 @@ void Server::update()
 
 	// Pentru debug
 	std::cout << "Number of connected clients: " << this->connectedClients.size() << std::endl;
+	for (const auto& connectedClient : this->connectedClients)
+	{
+		std::cout << "Client " << connectedClient.first << ' ' << connectedClient.second.clientName << ' ' << (int)connectedClient.second.color << std::endl;
+	}
 }
 
 void Server::stop()

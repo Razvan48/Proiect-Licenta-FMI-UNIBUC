@@ -46,7 +46,7 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	this->clientName = clientName;
 	this->color = color;
 
-	if (!color.empty())
+	if (!this->color.empty())
 	{
 		this->knowsItsOwnColor = true;
 	}
@@ -88,7 +88,7 @@ void Client::handleReceivedPacket()
 	}
 
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
-	std::cout << "Received Message: " << receivedMessage << " from server" << std::endl;
+	std::cout << "Received Message: " << receivedMessage << " from server, size=" << receivedMessage.size() << std::endl;
 
 	if (receivedMessage == "white" || receivedMessage == "black")
 	{
