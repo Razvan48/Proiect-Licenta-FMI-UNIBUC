@@ -31,6 +31,8 @@ public:
 	virtual void draw() override;
 	virtual void update() override;
 
+	const std::string& getColor() const { return this->color; }
+
 	void setServerStatus(bool statusOk);
 	void setOpponentStatus(bool statusOk);
 	inline void setServerPort(const std::string& serverPort) { this->serverPortTextEntity.setText(serverPort); }

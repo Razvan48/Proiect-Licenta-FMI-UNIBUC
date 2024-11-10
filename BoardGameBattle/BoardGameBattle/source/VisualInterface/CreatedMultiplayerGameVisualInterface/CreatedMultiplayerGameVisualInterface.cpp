@@ -10,6 +10,7 @@
 
 #include "../../WindowManager/WindowManager.h"
 
+#include <iostream>
 #include <string>
 
 CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -159,6 +160,8 @@ CreatedMultiplayerGameVisualInterface& CreatedMultiplayerGameVisualInterface::ge
 
 void CreatedMultiplayerGameVisualInterface::initialize()
 {
+	std::cout << "color before initialize:" << this->color << std::endl;
+
 	SingleplayerGameVisualInterface::initialize();
 
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
@@ -193,6 +196,7 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	Server::get().start();
 	this->serverPortTextEntity.setText("ServPort: " + std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
+	std::cout << "CreatedMultiplayerGameVisualInterface: " << this->playerName << ' ' << this->color << ' ' << this->serverAddress << std::endl;
 	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color);
 }
 

@@ -6,6 +6,10 @@
 
 #include "../../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
 
+#include "../../InputManager/InputManager.h"
+
+#include <iostream>
+
 MultiplayerColorMenuVisualInterface::MultiplayerColorMenuVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey)
 	: VisualInterface(backgroundEntity, respondsToEscapeKey)
 	, whiteButton(
@@ -112,17 +116,21 @@ void MultiplayerColorMenuVisualInterface::draw()
 
 void MultiplayerColorMenuVisualInterface::update()
 {
+	if (InputManager::get().isLeftMouseButtonReleased() && this->whiteButton.isInCompleteMouseCollision())
+	{
+		std::cout << "Pressed white button" << std::endl;
+		CreatedMultiplayerGameVisualInterface::get().setColor("white");
+		std::cout << "Color: " << CreatedMultiplayerGameVisualInterface::get().getColor() << std::endl;
+	}
+	else if (InputManager::get().isLeftMouseButtonReleased() && this->blackButton.isInCompleteMouseCollision())
+	{
+		std::cout << "Pressed black button" << std::endl;
+		CreatedMultiplayerGameVisualInterface::get().setColor("black");
+		std::cout << "Color: " << CreatedMultiplayerGameVisualInterface::get().getColor() << std::endl;
+	}
+
 	VisualInterface::update();
 
 	this->whiteButton.update();
 	this->blackButton.update();
-
-	if (this->whiteButton.getRecentlyInteractedWith())
-	{
-		CreatedMultiplayerGameVisualInterface::get().setColor("white");
-	}
-	else if (this->blackButton.getRecentlyInteractedWith())
-	{
-		CreatedMultiplayerGameVisualInterface::get().setColor("black");
-	}
 }
