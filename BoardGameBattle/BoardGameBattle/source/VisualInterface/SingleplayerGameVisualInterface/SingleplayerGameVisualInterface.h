@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include <memory>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,7 +28,7 @@ public:
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity);
 	virtual ~SingleplayerGameVisualInterface();
 
-	static SingleplayerGameVisualInterface& get();
+	static std::shared_ptr<SingleplayerGameVisualInterface> get();
 
 	virtual void initialize() override;
 	virtual void draw() override;

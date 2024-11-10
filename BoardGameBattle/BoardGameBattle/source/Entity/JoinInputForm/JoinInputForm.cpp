@@ -141,8 +141,8 @@ void JoinInputForm::update()
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 				this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
-				JoinedMultiplayerGameVisualInterface::get().setPlayerName(this->playerNameDataBox.getText());
-				JoinedMultiplayerGameVisualInterface::get().setServerAddress(this->serverAddressDataBox.getText());
+				JoinedMultiplayerGameVisualInterface::get()->setPlayerName(this->playerNameDataBox.getText());
+				JoinedMultiplayerGameVisualInterface::get()->setServerAddress(this->serverAddressDataBox.getText());
 
 				Game::get().setStatus(this->gameStatusWhenPressed); // Trebuie sa fie ultima linie, deoarece initializeaza interfata vizuala.
 			}

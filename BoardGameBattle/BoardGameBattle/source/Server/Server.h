@@ -63,7 +63,7 @@ private:
 	std::string lastKnownBoardConfiguration;
 
 	// Atentie aici la unicitatea cheii
-	inline std::string getClientKey(const ENetAddress& address) const { return std::to_string(address.host); }
+	inline std::string getClientKey(const ENetAddress& address) const { return std::to_string(address.host) + std::to_string(address.port); }
 
 	void handleReceivedPacket();
 	

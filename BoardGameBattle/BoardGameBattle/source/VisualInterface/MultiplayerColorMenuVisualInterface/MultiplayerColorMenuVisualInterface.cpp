@@ -51,7 +51,7 @@ MultiplayerColorMenuVisualInterface::MultiplayerColorMenuVisualInterface(Textura
 		Game::MultiplayerStatus::CREATE_GAME
 	)
 {
-	this->entities.push_back // Butonul de back
+	this->entities.push_back // Butonul de Back
 	(
 		std::make_shared<Button>
 		(
@@ -81,9 +81,9 @@ MultiplayerColorMenuVisualInterface::~MultiplayerColorMenuVisualInterface()
 
 }
 
-MultiplayerColorMenuVisualInterface& MultiplayerColorMenuVisualInterface::get()
+std::shared_ptr<MultiplayerColorMenuVisualInterface> MultiplayerColorMenuVisualInterface::get()
 {
-	static MultiplayerColorMenuVisualInterface instance
+	static std::shared_ptr<MultiplayerColorMenuVisualInterface> instance = std::make_shared<MultiplayerColorMenuVisualInterface>
 	(
 		TexturableEntity
 		(
@@ -116,12 +116,14 @@ void MultiplayerColorMenuVisualInterface::draw()
 
 void MultiplayerColorMenuVisualInterface::update()
 {
-	if (InputManager::get().isLeftMouseButtonReleased() && this->whiteButton.isInCompleteMouseCollision())
-		CreatedMultiplayerGameVisualInterface::get().setColor("white");
-	else if (InputManager::get().isLeftMouseButtonReleased() && this->blackButton.isInCompleteMouseCollision())
-		CreatedMultiplayerGameVisualInterface::get().setColor("black");
-
 	VisualInterface::update();
+
+	// Liniile astea trebuie sa fie primele, ca altfel butoanele cand dau update vor schimba statusul,
+	// ceea ce va duce la apelul de initialize() fara sa apucam sa populam string-urile.
+	if (InputManager::get().isLeftMouseButtonReleased() && this->whiteButton.isInCompleteMouseCollision())
+		CreatedMultiplayerGameVisualInterface::get()->setColor("white");
+	else if (InputManager::get().isLeftMouseButtonReleased() && this->blackButton.isInCompleteMouseCollision())
+		CreatedMultiplayerGameVisualInterface::get()->setColor("black");
 
 	this->whiteButton.update();
 	this->blackButton.update();

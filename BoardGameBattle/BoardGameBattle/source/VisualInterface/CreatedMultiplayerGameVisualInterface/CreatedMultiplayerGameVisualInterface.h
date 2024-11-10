@@ -7,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
+
 class CreatedMultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
 {
 protected:
@@ -25,7 +27,7 @@ public:
 		, TextEntity serverPortTextEntity);
 	virtual ~CreatedMultiplayerGameVisualInterface();
 
-	static CreatedMultiplayerGameVisualInterface& get();
+	static std::shared_ptr<CreatedMultiplayerGameVisualInterface> get();
 
 	virtual void initialize() override;
 	virtual void draw() override;

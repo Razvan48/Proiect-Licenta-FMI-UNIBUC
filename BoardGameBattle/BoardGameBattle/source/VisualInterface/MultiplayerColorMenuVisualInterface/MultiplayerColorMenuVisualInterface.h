@@ -3,6 +3,8 @@
 #include "../VisualInterface.h"
 #include "../../Entity/Button/Button.h"
 
+#include <memory>
+
 class MultiplayerColorMenuVisualInterface : virtual public VisualInterface
 {
 protected:
@@ -13,7 +15,7 @@ public:
 	MultiplayerColorMenuVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);
 	virtual ~MultiplayerColorMenuVisualInterface();
 
-	static MultiplayerColorMenuVisualInterface& get();
+	static std::shared_ptr<MultiplayerColorMenuVisualInterface> get();
 
 	virtual void initialize() override;
 	virtual void draw() override;

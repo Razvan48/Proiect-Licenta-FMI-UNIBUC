@@ -26,8 +26,6 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, serverAddress("")
 	, color("")
 {
-	std::cout << "Constructor of CreatedMultiplayerGameVisualInterface" << std::endl;
-
 	this->entities.push_back
 	(
 		std::make_shared<Button>
@@ -58,9 +56,10 @@ CreatedMultiplayerGameVisualInterface::~CreatedMultiplayerGameVisualInterface()
 
 }
 
-CreatedMultiplayerGameVisualInterface& CreatedMultiplayerGameVisualInterface::get()
+std::shared_ptr<CreatedMultiplayerGameVisualInterface> CreatedMultiplayerGameVisualInterface::get()
 {
-	static CreatedMultiplayerGameVisualInterface instance(
+	static std::shared_ptr<CreatedMultiplayerGameVisualInterface> instance = std::make_shared<CreatedMultiplayerGameVisualInterface>
+	(
 						TexturableEntity
 						(
 							WindowManager::get().getWindowWidth() / 2.0f,
@@ -162,8 +161,6 @@ CreatedMultiplayerGameVisualInterface& CreatedMultiplayerGameVisualInterface::ge
 
 void CreatedMultiplayerGameVisualInterface::initialize()
 {
-	std::cout << "Color before initialization of CreatedMultiplayerGameVisualInterface: " << this->color << std::endl;
-
 	SingleplayerGameVisualInterface::initialize();
 
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
@@ -198,7 +195,7 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	Server::get().start();
 	this->serverPortTextEntity.setText("ServPort: " + std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-	std::cout << "CreatedMultiplayerGameVisualInterface: " << this->playerName << ' ' << this->color << ' ' << this->serverAddress << std::endl;
+
 	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color);
 }
 

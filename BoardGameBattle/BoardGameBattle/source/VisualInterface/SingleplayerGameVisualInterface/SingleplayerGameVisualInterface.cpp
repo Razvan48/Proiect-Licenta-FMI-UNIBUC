@@ -49,9 +49,10 @@ SingleplayerGameVisualInterface::~SingleplayerGameVisualInterface()
 
 }
 
-SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
+std::shared_ptr<SingleplayerGameVisualInterface> SingleplayerGameVisualInterface::get()
 {
-	static SingleplayerGameVisualInterface instance(
+	static std::shared_ptr<SingleplayerGameVisualInterface> instance = std::make_shared<SingleplayerGameVisualInterface>
+	(
 						TexturableEntity
 						(
 							WindowManager::get().getWindowWidth() / 2.0f,
@@ -110,7 +111,7 @@ SingleplayerGameVisualInterface& SingleplayerGameVisualInterface::get()
 							"arialFont",
 							"ERROR!"
 						)
-		);
+	);
 
 	return instance;
 }

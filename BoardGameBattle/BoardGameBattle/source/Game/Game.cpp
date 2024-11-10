@@ -711,10 +711,7 @@ Game::Game()
 	this->visualInterfaces.insert(
 		{
 			Game::Status::IN_MULTIPLAYER_COLOR_MENU,
-
-			std::make_shared<MultiplayerColorMenuVisualInterface>(
-				MultiplayerColorMenuVisualInterface::get()
-			)
+			MultiplayerColorMenuVisualInterface::get()
 		}
 	);
 
@@ -722,10 +719,7 @@ Game::Game()
 	this->visualInterfaces.insert(
 		{
 			Game::Status::IN_SINGLEPLAYER_GAME,
-
-			std::make_shared<SingleplayerGameVisualInterface>(
-				SingleplayerGameVisualInterface::get()
-			)
+			SingleplayerGameVisualInterface::get()
 		}
 	);
 
@@ -733,10 +727,7 @@ Game::Game()
 	this->visualInterfaces.insert(
 		{
 			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
-
-			std::make_shared<CreatedMultiplayerGameVisualInterface>(
-				CreatedMultiplayerGameVisualInterface::get()
-			)
+			CreatedMultiplayerGameVisualInterface::get()
 		}
 	);
 
@@ -744,10 +735,7 @@ Game::Game()
 	this->visualInterfaces.insert(
 		{
 			Game::Status::IN_JOINED_MULTIPLAYER_GAME,
-
-			std::make_shared<JoinedMultiplayerGameVisualInterface>(
-				JoinedMultiplayerGameVisualInterface::get()
-			)
+			JoinedMultiplayerGameVisualInterface::get()
 		}
 	);
 }
@@ -840,24 +828,6 @@ void Game::setStatus(const Game::Status& status)
 	this->status = status;
 
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
-
-	if (status == Game::Status::IN_CREATED_MULTIPLAYER_GAME)
-	{
-		std::cout << "IN CREATED GAME" << std::endl;
-
-		std::cout << "Color in game: " << std::dynamic_pointer_cast<CreatedMultiplayerGameVisualInterface>(visualInterface->second)->getColor() << std::endl;
-
-		/*
-		if ((visualInterface->second) == &(CreatedMultiplayerGameVisualInterface::get()))
-		{
-			std::cout << "they are the same!!!!!"
-		}
-		else
-		{
-			std::cout << "they are not the same!!!!!"
-		}
-		*/
-	}
 
 	if (visualInterface != this->visualInterfaces.end())
 	{

@@ -82,8 +82,8 @@ void CreateInputForm::update()
 
 				this->playerNameTextEntity.setColor(this->colorInputContentOk);
 
-				CreatedMultiplayerGameVisualInterface::get().setPlayerName(this->playerNameDataBox.getText());
-				CreatedMultiplayerGameVisualInterface::get().setServerAddress("127.0.0.1"); // Localhost
+				CreatedMultiplayerGameVisualInterface::get()->setPlayerName(this->playerNameDataBox.getText());
+				CreatedMultiplayerGameVisualInterface::get()->setServerAddress("127.0.0.1"); // Localhost
 
 				Game::get().setStatus(this->gameStatusWhenPressed); // Trebuie sa fie ultima linie, deoarece initializeaza interfata vizuala.
 			}

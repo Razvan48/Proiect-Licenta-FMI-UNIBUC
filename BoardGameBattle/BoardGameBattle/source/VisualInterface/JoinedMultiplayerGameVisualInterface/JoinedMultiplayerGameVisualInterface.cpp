@@ -55,9 +55,10 @@ JoinedMultiplayerGameVisualInterface::~JoinedMultiplayerGameVisualInterface()
 
 }
 
-JoinedMultiplayerGameVisualInterface& JoinedMultiplayerGameVisualInterface::get()
+std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisualInterface::get()
 {
-	static JoinedMultiplayerGameVisualInterface instance(
+	static std::shared_ptr<JoinedMultiplayerGameVisualInterface> instance = std::make_shared<JoinedMultiplayerGameVisualInterface>
+	(
 						TexturableEntity
 						(
 							WindowManager::get().getWindowWidth() / 2.0f,

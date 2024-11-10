@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
+#include <memory>
 
 class JoinedMultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
 {
@@ -27,7 +28,7 @@ public:
 		, TextEntity serverPortTextEntity);
 	virtual ~JoinedMultiplayerGameVisualInterface();
 
-	static JoinedMultiplayerGameVisualInterface& get();
+	static std::shared_ptr<JoinedMultiplayerGameVisualInterface> get();
 
 	virtual void initialize() override;
 	virtual void draw() override;
