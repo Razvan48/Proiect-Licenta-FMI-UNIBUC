@@ -242,15 +242,15 @@ void JoinedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)
 	if (statusOk)
 	{
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		this->serverConnectionStatusTextEntity.setText("Server connection: OK");
+		this->serverConnectionStatusTextEntity.setText("ServConn: OK");
 	}
 	else
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: ERROR");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
 
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->serverConnectionStatusTextEntity.setText("Server Connection: ERROR");
+		this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
 	}
 }
 
@@ -259,11 +259,11 @@ void JoinedMultiplayerGameVisualInterface::setOpponentStatus(bool statusOk)
 	if (statusOk)
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: OK");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: OK");
 	}
 	else
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: ERROR");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
 	}
 }

@@ -840,6 +840,25 @@ void Game::setStatus(const Game::Status& status)
 	this->status = status;
 
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
+
+	if (status == Game::Status::IN_CREATED_MULTIPLAYER_GAME)
+	{
+		std::cout << "IN CREATED GAME" << std::endl;
+
+		std::cout << "Color in game: " << std::dynamic_pointer_cast<CreatedMultiplayerGameVisualInterface>(visualInterface->second)->getColor() << std::endl;
+
+		/*
+		if ((visualInterface->second) == &(CreatedMultiplayerGameVisualInterface::get()))
+		{
+			std::cout << "they are the same!!!!!"
+		}
+		else
+		{
+			std::cout << "they are not the same!!!!!"
+		}
+		*/
+	}
+
 	if (visualInterface != this->visualInterfaces.end())
 	{
 		visualInterface->second->initialize();

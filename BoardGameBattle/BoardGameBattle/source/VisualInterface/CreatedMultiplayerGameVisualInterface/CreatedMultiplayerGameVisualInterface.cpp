@@ -26,6 +26,8 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, serverAddress("")
 	, color("")
 {
+	std::cout << "Constructor of CreatedMultiplayerGameVisualInterface" << std::endl;
+
 	this->entities.push_back
 	(
 		std::make_shared<Button>
@@ -160,7 +162,7 @@ CreatedMultiplayerGameVisualInterface& CreatedMultiplayerGameVisualInterface::ge
 
 void CreatedMultiplayerGameVisualInterface::initialize()
 {
-	std::cout << "color before initialize:" << this->color << std::endl;
+	std::cout << "Color before initialization of CreatedMultiplayerGameVisualInterface: " << this->color << std::endl;
 
 	SingleplayerGameVisualInterface::initialize();
 
@@ -228,15 +230,15 @@ void CreatedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)
 	if (statusOk)
 	{
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		this->serverConnectionStatusTextEntity.setText("Server connection: OK");
+		this->serverConnectionStatusTextEntity.setText("ServConn: OK");
 	}
 	else
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: ERROR");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
 
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->serverConnectionStatusTextEntity.setText("Server Connection: ERROR");
+		this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
 	}
 }
 
@@ -245,11 +247,11 @@ void CreatedMultiplayerGameVisualInterface::setOpponentStatus(bool statusOk)
 	if (statusOk)
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: OK");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: OK");
 	}
 	else
 	{
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("Opponent Connection: ERROR");
+		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
 	}
 }

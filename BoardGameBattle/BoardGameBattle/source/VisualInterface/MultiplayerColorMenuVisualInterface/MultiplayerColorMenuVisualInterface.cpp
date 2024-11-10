@@ -117,17 +117,9 @@ void MultiplayerColorMenuVisualInterface::draw()
 void MultiplayerColorMenuVisualInterface::update()
 {
 	if (InputManager::get().isLeftMouseButtonReleased() && this->whiteButton.isInCompleteMouseCollision())
-	{
-		std::cout << "Pressed white button" << std::endl;
 		CreatedMultiplayerGameVisualInterface::get().setColor("white");
-		std::cout << "Color: " << CreatedMultiplayerGameVisualInterface::get().getColor() << std::endl;
-	}
 	else if (InputManager::get().isLeftMouseButtonReleased() && this->blackButton.isInCompleteMouseCollision())
-	{
-		std::cout << "Pressed black button" << std::endl;
 		CreatedMultiplayerGameVisualInterface::get().setColor("black");
-		std::cout << "Color: " << CreatedMultiplayerGameVisualInterface::get().getColor() << std::endl;
-	}
 
 	VisualInterface::update();
 

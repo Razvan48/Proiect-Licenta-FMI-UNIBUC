@@ -61,7 +61,7 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	enet_address_set_host(&this->serverAddress, serverIP.c_str());
 	this->serverAddress.port = serverPort;
 
-	std::cout << "Client initialized with: " << this->clientName << ' ' << this->color << std::endl;
+	std::cout << "Client initialized with: " << serverIP << ' ' << serverPort << ' ' << clientName << ' ' << color << std::endl;
 }
 
 void Client::sentMessage(const std::string& message)
@@ -123,6 +123,11 @@ void Client::handleReceivedPacket()
 	else if (receivedMessage.find("boardConfiguration:") == 0) // "boardConfiguration" este prefix pentru mesaj.
 	{
 		this->lastKnownBoardConfiguration = receivedMessage.substr(std::string("boardConfiguration:").size()); // Pornim de la lungimea prefixului.
+
+		if (!this->lastKnownBoardConfiguration.empty())
+		{
+			this->hasRequestedInitialBoardConfiguration = true;
+		}
 	}
 	else
 	{
