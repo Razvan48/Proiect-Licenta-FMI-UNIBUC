@@ -1,10 +1,13 @@
 #pragma once
 
 #include "../VisualInterface.h"
+#include "../../Entity/Button/Button.h"
 
 class MultiplayerColorMenuVisualInterface : virtual public VisualInterface
 {
 protected:
+	Button whiteButton;
+	Button blackButton;
 
 public:
 	MultiplayerColorMenuVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);

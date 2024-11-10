@@ -100,6 +100,28 @@ void JoinInputForm::update()
 	}
 	if (this->serverAddressDataBox.getText().empty())
 		this->serverAddressContentOk = false;
+	int lastPositionTwoPoints = -1;
+	for (int i = 0; i < this->serverAddressDataBox.getText().size(); ++i)
+	{
+		if (this->serverAddressDataBox.getText()[i] == ':')
+			lastPositionTwoPoints = i;
+	}
+	if (lastPositionTwoPoints == -1 || lastPositionTwoPoints == (int)this->serverAddressDataBox.getText().size() - 1)
+		this->serverAddressContentOk = false;
+	else
+	{
+		bool onlyDigitsToTheRight = true;
+		for (int i = lastPositionTwoPoints + 1; i < this->serverAddressDataBox.getText().size() && onlyDigitsToTheRight; ++i)
+		{
+			if (!('0' <= this->serverAddressDataBox.getText()[i]
+				&& this->serverAddressDataBox.getText()[i] <= '9'))
+			{
+				onlyDigitsToTheRight = false;
+			}
+		}
+		if (!onlyDigitsToTheRight)
+			this->serverAddressContentOk = false;
+	}
 
 
 

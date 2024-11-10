@@ -23,6 +23,7 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, serverPortTextEntity(serverPortTextEntity)
 	, playerName("player")
 	, serverAddress("none")
+	, color("none")
 {
 	this->entities.push_back
 	(
@@ -187,7 +188,7 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	Server::get().start();
 	this->serverPortTextEntity.setText("ServerPort: " + std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName);
+	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color);
 }
 
 void CreatedMultiplayerGameVisualInterface::draw()

@@ -13,7 +13,7 @@ private:
 	Client(const Client&& other) = delete;
 	Client& operator= (const Client&& other) = delete;
 
-	const int MAX_NUM_SERVERS; // numarul maxim de server-e la care poate fi clientul conectat
+	const int MAX_NUM_SERVERS; // Numarul maxim de server-e la care poate fi clientul conectat
 	const int NUM_CHANNELS;
 	const int TIMEOUT_LIMIT_MS;
 
@@ -29,7 +29,8 @@ private:
 public:
 	static Client& get();
 
-	void start(const std::string& serverAddress, enet_uint16 serverPort, const std::string& clientName);
+	void start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName, const std::string& color);
 	void update();
 	void stop();
+
 };

@@ -16,6 +16,7 @@ protected:
 
 	std::string playerName;
 	std::string serverAddress;
+	std::string color;
 
 public:
 	CreatedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -36,4 +37,5 @@ public:
 
 	inline void setPlayerName(const std::string& playerName) { this->playerName = playerName; }
 	inline void setServerAddress(const std::string& serverAddress) { this->serverAddress = serverAddress; }
+	inline void setColor(const std::string& color) { this->color = color; }
 };

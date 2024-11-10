@@ -20,7 +20,7 @@ Client& Client::get()
 	return instance;
 }
 
-void Client::start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName)
+void Client::start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName, const std::string& color)
 {
 	this->stop();
 
