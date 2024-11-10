@@ -15,7 +15,7 @@ protected:
 
 public:
 	VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey);
-	~VisualInterface();
+	virtual ~VisualInterface();
 
 	virtual void initialize();
 	virtual void draw();

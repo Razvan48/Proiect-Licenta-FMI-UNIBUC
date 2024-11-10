@@ -15,7 +15,8 @@
 #include "../BoardVisualizer/BoardVisualizer.h"
 
 #include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
-#include "../VisualInterface/MultiplayerGameVisualInterface/MultiplayerGameVisualInterface.h"
+#include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
+#include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
 
 #include <enet/enet.h>
 
@@ -802,90 +803,9 @@ Game::Game()
 			Game::Status::IN_SINGLEPLAYER_GAME,
 
 			std::make_shared<SingleplayerGameVisualInterface>(
-				TexturableEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					1.0f * WindowManager::get().getWindowWidth(),
-					1.0f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					"singleplayerGameBackgroundTexture"
-				),
-				false,
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Turn: WHITE"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Player: Player"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Opponent: BOT"
-				),
-
-				TextEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					0.5f * WindowManager::get().getWindowWidth(),
-					0.5f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f),
-					"arialFont",
-					"You WON!"
-				)
+				SingleplayerGameVisualInterface::get()
 			)
 		}
-	);
-	const auto& singleplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_SINGLEPLAYER_GAME);
-	singleplayerGameVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 20.0f,
-			WindowManager::get().getWindowHeight() / 20.0f,
-			0.075f * WindowManager::get().getWindowWidth(),
-			0.075f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"Back",
-			"buttonTexture",
-			Game::Status::IN_SINGLEPLAYER_COLOR_MENU,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::SINGLEPLAYER,
-			Game::Color::NONE,
-			Game::MultiplayerStatus::NONE
-		)
 	);
 
 	// IN_CREATED_MULTIPLAYER_GAME
@@ -893,127 +813,10 @@ Game::Game()
 		{
 			Game::Status::IN_CREATED_MULTIPLAYER_GAME,
 
-			std::make_shared<MultiplayerGameVisualInterface>(
-				TexturableEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					1.0f * WindowManager::get().getWindowWidth(),
-					1.0f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					"createdMultiplayerGameBackgroundTexture"
-				),
-				false,
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Turn: WHITE"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Player: Player"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Opponent: Opponent"
-				),
-
-				TextEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					0.5f * WindowManager::get().getWindowWidth(),
-					0.5f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f),
-					"arialFont",
-					"You WON!"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"ServConnect: ERROR"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"OppConnect: ERROR"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"ServerPort: ERROR"
-				)
+			std::make_shared<CreatedMultiplayerGameVisualInterface>(
+				CreatedMultiplayerGameVisualInterface::get()
 			)
 		}
-	);
-	const auto& createdMultiplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_CREATED_MULTIPLAYER_GAME);
-	createdMultiplayerGameVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 20.0f,
-			WindowManager::get().getWindowHeight() / 20.0f,
-			0.075f * WindowManager::get().getWindowWidth(),
-			0.075f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"Back",
-			"buttonTexture",
-			Game::Status::IN_MULTIPLAYER_COLOR_MENU,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::MULTIPLAYER,
-			Game::Color::NONE,
-			Game::MultiplayerStatus::CREATE_GAME
-		)
 	);
 
 	// IN_JOINED_MULTIPLAYER_GAME
@@ -1021,128 +824,10 @@ Game::Game()
 		{
 			Game::Status::IN_JOINED_MULTIPLAYER_GAME,
 
-			std::make_shared<MultiplayerGameVisualInterface>(
-				TexturableEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					1.0f * WindowManager::get().getWindowWidth(),
-					1.0f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					"joinedMultiplayerGameBackgroundTexture"
-				),
-				false,
-
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Turn: WHITE"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Player: Player"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					"arialFont",
-					"Opponent: Opponent"
-				),
-
-				TextEntity
-				(
-					WindowManager::get().getWindowWidth() / 2.0f,
-					WindowManager::get().getWindowHeight() / 2.0f,
-					0.5f * WindowManager::get().getWindowWidth(),
-					0.5f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f),
-					"arialFont",
-					"You WON!"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"ServConnect: ERROR"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"OppConnect: ERROR"
-				),
-
-				TextEntity
-				(
-					9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-					2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
-					0.1f * WindowManager::get().getWindowWidth(),
-					0.1f * WindowManager::get().getWindowHeight(),
-					0.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f),
-					"arialFont",
-					"ServerPort: ERROR"
-				)
+			std::make_shared<JoinedMultiplayerGameVisualInterface>(
+				JoinedMultiplayerGameVisualInterface::get()
 			)
 		}
-	);
-	const auto& joinedMultiplayerGameVisualInterface = this->visualInterfaces.find(Game::Status::IN_JOINED_MULTIPLAYER_GAME);
-	joinedMultiplayerGameVisualInterface->second->addEntity
-	(
-		std::make_shared<Button>
-		(
-			WindowManager::get().getWindowWidth() / 20.0f,
-			WindowManager::get().getWindowHeight() / 20.0f,
-			0.075f * WindowManager::get().getWindowWidth(),
-			0.075f * WindowManager::get().getWindowHeight(),
-			0.0f,
-			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
-			"Back",
-			"buttonTexture",
-			Game::Status::IN_INPUT_JOIN_MENU,
-			"buttonPressedSound",
-			"buttonHoveredTexture",
-			glm::vec3(0.75f, 0.75f, 0.75f),
-			"buttonHoveredSound",
-			Game::Mode::MULTIPLAYER,
-			Game::Color::NONE,
-			Game::MultiplayerStatus::JOIN_GAME
-		)
 	);
 }
 

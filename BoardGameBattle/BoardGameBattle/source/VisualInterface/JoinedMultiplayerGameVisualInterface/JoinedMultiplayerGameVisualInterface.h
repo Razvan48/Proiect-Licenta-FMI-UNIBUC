@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class MultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
+class JoinedMultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
 {
 protected:
 	TextEntity serverConnectionStatusTextEntity;
@@ -15,11 +15,13 @@ protected:
 	TextEntity serverPortTextEntity;
 
 public:
-	MultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity
 		, TextEntity serverConnectionStatusTextEntity, TextEntity opponentConnectionStatusTextEntity
 		, TextEntity serverPortTextEntity);
-	~MultiplayerGameVisualInterface();
+	virtual ~JoinedMultiplayerGameVisualInterface();
+
+	static JoinedMultiplayerGameVisualInterface& get();
 
 	virtual void initialize() override;
 	virtual void draw() override;

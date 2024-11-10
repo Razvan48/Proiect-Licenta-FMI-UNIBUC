@@ -109,7 +109,7 @@ void Server::handleReceivedPacket()
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
 		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}
-	else if (receivedMessage == "requestConfiguration")
+	else if (receivedMessage == "requestBoardConfiguration")
 	{
 		ENetPacket* packet = enet_packet_create(this->lastKnownBoardConfiguration.c_str(), this->lastKnownBoardConfiguration.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
@@ -118,6 +118,16 @@ void Server::handleReceivedPacket()
 	else if (receivedMessage.find("boardConfiguration:") == 0) // Are prefixul "boardConfiguration:"
 	{
 		this->lastKnownBoardConfiguration = receivedMessage.substr(std::string("boardConfiguration:").size()); // Pornim de la lungimea prefixului
+
+		for (auto& connectedClient : this->connectedClients)
+		{
+			if (connectedClient.first == clientKey)
+				continue;
+
+			ENetPacket* packet = enet_packet_create(receivedMessage.c_str(), receivedMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+			enet_peer_send(connectedClient.second.peer, 0, packet);
+			connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		}
 	}
 	else if (receivedMessage == "ping")
 	{
@@ -212,6 +222,9 @@ void Server::update()
 		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(connectedClient.second.peer, 0, packet);
 	}
+
+	// Pentru debug
+	std::cout << "Number of connected clients: " << this->connectedClients.size() << std::endl;
 }
 
 void Server::stop()

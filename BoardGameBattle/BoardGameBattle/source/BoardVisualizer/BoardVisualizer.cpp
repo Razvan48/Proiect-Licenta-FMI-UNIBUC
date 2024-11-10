@@ -147,7 +147,7 @@ void BoardVisualizer::initialize()
 	{
 		std::cout << "Error: Game Color is NONE when initializing board" << std::endl;
 	}
-	else
+	else if (Game::get().getColor() != Game::Color::WHITE) // Putea fi si alb.
 	{
 		std::cout << "Error: Invalid Game Color when initializing board (not even NONE)" << std::endl;
 	}

@@ -24,7 +24,9 @@ protected:
 public:
 	SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity);
-	~SingleplayerGameVisualInterface();
+	virtual ~SingleplayerGameVisualInterface();
+
+	static SingleplayerGameVisualInterface& get();
 
 	virtual void initialize() override;
 	virtual void draw() override;

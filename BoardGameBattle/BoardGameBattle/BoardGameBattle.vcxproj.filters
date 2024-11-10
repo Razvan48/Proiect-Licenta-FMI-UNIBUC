@@ -79,9 +79,6 @@
     <Filter Include="Source Files\BoardManager">
       <UniqueIdentifier>{52368cab-c902-4306-85e1-27186f7eb926}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\VisualInterface\MultiplayerGameVisualInterface">
-      <UniqueIdentifier>{813d42b2-6215-4e84-a654-b5ef10b066da}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\VisualInterface\SingleplayerGameVisualInterface">
       <UniqueIdentifier>{a1f20a69-89c0-49e2-b46c-6eb8da0daa10}</UniqueIdentifier>
     </Filter>
@@ -90,6 +87,12 @@
     </Filter>
     <Filter Include="Source Files\GlobalClock">
       <UniqueIdentifier>{1dc675c9-72fd-4b86-afb2-5ea258811f77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualInterface\CreatedMultiplayerGameVisualInterface">
+      <UniqueIdentifier>{cc71ce49-a4ba-4c15-8ea7-ff76dcefd280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface">
+      <UniqueIdentifier>{9832cce9-159d-4ba0-84f3-be3b8f746a3e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +162,6 @@
     <ClCompile Include="source\BoardManager\BoardManager.cpp">
       <Filter>Source Files\BoardManager</Filter>
     </ClCompile>
-    <ClCompile Include="source\VisualInterface\MultiplayerGameVisualInterface\MultiplayerGameVisualInterface.cpp">
-      <Filter>Source Files\VisualInterface\MultiplayerGameVisualInterface</Filter>
-    </ClCompile>
     <ClCompile Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.cpp">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClCompile>
@@ -170,6 +170,12 @@
     </ClCompile>
     <ClCompile Include="source\GlobalClock\GlobalClock.cpp">
       <Filter>Source Files\GlobalClock</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VisualInterface\CreatedMultiplayerGameVisualInterface\CreatedMultiplayerGameVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\CreatedMultiplayerGameVisualInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VisualInterface\JoinedMultiplayerGameVisualInterface\JoinedMultiplayerGameVisualInterface.cpp">
+      <Filter>Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +242,6 @@
     <ClInclude Include="source\BoardManager\BoardManager.h">
       <Filter>Source Files\BoardManager</Filter>
     </ClInclude>
-    <ClInclude Include="source\VisualInterface\MultiplayerGameVisualInterface\MultiplayerGameVisualInterface.h">
-      <Filter>Source Files\VisualInterface\MultiplayerGameVisualInterface</Filter>
-    </ClInclude>
     <ClInclude Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.h">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClInclude>
@@ -247,6 +250,12 @@
     </ClInclude>
     <ClInclude Include="source\GlobalClock\GlobalClock.h">
       <Filter>Source Files\GlobalClock</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\CreatedMultiplayerGameVisualInterface\CreatedMultiplayerGameVisualInterface.h">
+      <Filter>Source Files\VisualInterface\CreatedMultiplayerGameVisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\VisualInterface\JoinedMultiplayerGameVisualInterface\JoinedMultiplayerGameVisualInterface.h">
+      <Filter>Source Files\VisualInterface\JoinedMultiplayerGameVisualInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
