@@ -33,11 +33,8 @@ Server& Server::get()
 void Server::start()
 {
 	this->stop();
-	this->connectedClients.clear();
 
 	this->address.port = RandomGenerator::randomUniformInt(this->MINIMUM_PORT, this->MAXIMUM_PORT);
-	this->succesfullyCreated = false;
-	this->lastTimeTriedCreation = 0.0f;
 }
 
 void Server::handleReceivedPacket()
@@ -92,7 +89,7 @@ void Server::handleReceivedPacket()
 		std::string sentMessage;
 		if (availableColors.size() == 2) // Inca nu s-a setat una dintre culori
 		{
-			sentMessage = "none";
+			sentMessage = "";
 		}
 		else
 		{
@@ -204,6 +201,9 @@ void Server::update()
 	// Apoi trimitem ping-urile catre clienti.
 	for (auto& connectedClient : this->connectedClients)
 	{
+		if (GlobalClock::get().getCurrentTime() - connectedClient.second.lastTimeSentPing < this->TIME_BETWEEN_PINGS)
+			continue;
+
 		std::string sentMessage = "ping";
 
 		for (auto& otherConnectedClient : this->connectedClients)
@@ -219,9 +219,11 @@ void Server::update()
 			else
 				sentMessage.push_back('1');
 		}
+		sentMessage.push_back('$');
 
 		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(connectedClient.second.peer, 0, packet);
+		connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}
 
 	// Pentru debug
@@ -233,5 +235,17 @@ void Server::stop()
 	if (this->server != nullptr)
 		enet_host_destroy(this->server);
 	this->server = nullptr;
+
+
+
+	this->connectedClients.clear();
+
+	this->address.host = ENET_HOST_ANY;
+	this->address.port = 0;
+
+	this->succesfullyCreated = false;
+	this->lastTimeTriedCreation = 0.0f;
+
+	this->lastKnownBoardConfiguration = "";
 }
 

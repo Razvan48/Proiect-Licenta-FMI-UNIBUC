@@ -21,9 +21,9 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 	, serverConnectionStatusTextEntity(serverConnectionStatusTextEntity)
 	, opponentConnectionStatusTextEntity(opponentConnectionStatusTextEntity)
 	, serverPortTextEntity(serverPortTextEntity)
-	, playerName("player")
-	, serverAddress("none")
-	, color("none")
+	, playerName("")
+	, serverAddress("")
+	, color("")
 {
 	this->entities.push_back
 	(
@@ -188,6 +188,11 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: ERROR");
 	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
+	///
+
+	this->playerNameTextEntity.setText("Player: " + this->playerName);
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
 
 
 	int lastPositionTwoPoints = -1;
@@ -203,6 +208,10 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	{
 		serverPort = serverPort * 10 + (int)(this->serverAddress[i] - '0');
 	}
+
+	this->serverPortTextEntity.setText("ServPort: " + std::to_string(serverPort));
+	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
+
 	Client::get().start(serverIP, serverPort, this->playerName, this->color);
 }
 

@@ -21,9 +21,9 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, serverConnectionStatusTextEntity(serverConnectionStatusTextEntity)
 	, opponentConnectionStatusTextEntity(opponentConnectionStatusTextEntity)
 	, serverPortTextEntity(serverPortTextEntity)
-	, playerName("player")
-	, serverAddress("none")
-	, color("none")
+	, playerName("")
+	, serverAddress("")
+	, color("")
 {
 	this->entities.push_back
 	(
@@ -185,8 +185,13 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: ERROR");
 	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
+	///
+
+	this->playerNameTextEntity.setText("Player: " + this->playerName);
+	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
 	Server::get().start();
-	this->serverPortTextEntity.setText("ServerPort: " + std::to_string(Server::get().getPort()));
+	this->serverPortTextEntity.setText("ServPort: " + std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color);
 }
