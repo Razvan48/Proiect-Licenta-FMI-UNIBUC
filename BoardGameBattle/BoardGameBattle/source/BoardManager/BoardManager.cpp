@@ -65,6 +65,11 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 
 	this->whiteTurn = !this->whiteTurn;
 
+	if (this->whiteTurn)
+		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'w';
+	else
+		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'b';
+
 	if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
 		CreatedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
 	else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)

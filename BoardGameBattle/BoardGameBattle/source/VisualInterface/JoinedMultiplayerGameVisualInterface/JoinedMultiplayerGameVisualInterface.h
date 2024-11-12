@@ -22,6 +22,8 @@ protected:
 
 	bool hasToSendBoardConfiguration;
 
+	bool clientColorSet;
+
 public:
 	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity

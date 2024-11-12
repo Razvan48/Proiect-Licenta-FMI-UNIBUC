@@ -237,11 +237,13 @@ void CreatedMultiplayerGameVisualInterface::update()
 	{
 		float timeWhenMessageSent = 0.0f; // Nu ne intereseaza timpul
 		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration());
-		Client::get().sendMessage(BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
+		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
 	}
 
-	BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
-	BoardVisualizer::get().initialize();
+	if (BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+
+	// BoardVisualizer::get().initialize(); // Nu trebuie pentru CreatedMultiplayerGame pentru ca deja stie culoarea.
 }
 
 void CreatedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)
