@@ -23,7 +23,6 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 	, serverPortTextEntity(serverPortTextEntity)
 	, playerName("")
 	, serverAddress("")
-	, color("")
 {
 	this->entities.push_back
 	(
@@ -195,7 +194,7 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
-
+	// Server Address (IP + PORT)
 	int lastPositionTwoPoints = -1;
 	for (int i = 0; i < this->serverAddress.size(); ++i)
 	{
@@ -213,7 +212,7 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: " + std::to_string(serverPort));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 
-	Client::get().start(serverIP, serverPort, this->playerName, this->color);
+	Client::get().start(serverIP, serverPort, this->playerName, "", "");
 }
 
 void JoinedMultiplayerGameVisualInterface::draw()

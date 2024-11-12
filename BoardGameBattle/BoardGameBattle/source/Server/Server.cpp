@@ -8,8 +8,8 @@
 #include <set>
 
 Server::Server()
-	: MAX_NUM_CLIENTS(2), NUM_CHANNELS(1), TIMEOUT_LIMIT_MS(1000)
-	, server(nullptr), MINIMUM_PORT(10000), MAXIMUM_PORT(20000)
+	: MAX_NUM_CLIENTS(2), NUM_CHANNELS(2), TIMEOUT_LIMIT_MS(1000)
+	, server(nullptr), address(), MINIMUM_PORT(10000), MAXIMUM_PORT(20000)
 	, eNetEvent()
 	, succesfullyCreated(false), lastTimeTriedCreation(0.0f), RETRY_CREATION_DELTA_TIME(1.0f)
 	, TIME_BETWEEN_PINGS(1.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
@@ -48,7 +48,7 @@ void Server::handleReceivedPacket()
 	}
 
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
-	std::cout << "Received Message: " << receivedMessage << " from " << clientKey << ", size=" << receivedMessage.size() << std::endl;
+	std::cout << "Received Message: " << receivedMessage << " from " << clientKey << ", size = " << receivedMessage.size() << std::endl;
 
 	if (this->connectedClients.size() == this->MAX_NUM_CLIENTS
 		&& this->connectedClients.find(clientKey) == this->connectedClients.end())
@@ -65,6 +65,8 @@ void Server::handleReceivedPacket()
 		this->connectedClients.find(clientKey)->second.peer = this->eNetEvent.peer;
 	}
 	this->connectedClients.find(clientKey)->second.lastTimeReceivedPing = GlobalClock::get().getCurrentTime();
+
+
 
 	if (receivedMessage == "color:white")
 	{
@@ -109,7 +111,10 @@ void Server::handleReceivedPacket()
 	}
 	else if (receivedMessage == "requestBoardConfiguration")
 	{
-		std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+		std::string messageToSent;
+		if (this->lastKnownBoardConfiguration != "")
+			messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+
 		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
 		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
@@ -131,7 +136,7 @@ void Server::handleReceivedPacket()
 	}
 	else if (receivedMessage == "ping")
 	{
-		this->connectedClients.find(clientKey)->second.recentlyReceivedPing = true;
+		this->connectedClients.find(clientKey)->second.lastTimeReceivedPing = GlobalClock::get().getCurrentTime();
 	}
 	else
 	{
@@ -194,7 +199,7 @@ void Server::update()
 	{
 		if (GlobalClock::get().getCurrentTime() - connectedClient.second.lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
 		{
-			connectedClient.second.recentlyReceivedPing = false;
+			connectedClient.second.workingConnection = false;
 		}
 	}
 
@@ -242,14 +247,17 @@ void Server::stop()
 
 
 
-	this->connectedClients.clear();
 
 	this->address.host = ENET_HOST_ANY;
 	this->address.port = 0;
+
+	this->eNetEvent = ENetEvent();
 
 	this->succesfullyCreated = false;
 	this->lastTimeTriedCreation = 0.0f;
 
 	this->lastKnownBoardConfiguration = "";
+
+	this->connectedClients.clear();
 }
 

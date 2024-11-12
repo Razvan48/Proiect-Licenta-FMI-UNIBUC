@@ -10,6 +10,8 @@
 
 #include "../../WindowManager/WindowManager.h"
 
+#include "../../BoardManager/BoardManager.h"
+
 #include <iostream>
 #include <string>
 
@@ -196,7 +198,8 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: " + std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 
-	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color);
+	BoardManager::get().initialize();
+	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color, BoardManager::get().getPiecesConfiguration());
 }
 
 void CreatedMultiplayerGameVisualInterface::draw()

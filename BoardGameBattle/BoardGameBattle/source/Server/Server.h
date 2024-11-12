@@ -16,17 +16,20 @@ private:
 
 	struct ClientData
 	{
-		float lastTimeReceivedPing;
-		float lastTimeSentPing;
-		Server::Color color;
-		bool recentlyReceivedPing;
 		ENetPeer* peer;
 		std::string clientName;
+		Server::Color color;
+		float lastTimeSentPing;
+		float lastTimeReceivedPing;
+		bool workingConnection;
 
 		ClientData()
-			: lastTimeReceivedPing(0.0f), lastTimeSentPing(0.0f), color(Server::Color::NONE)
-			, recentlyReceivedPing(false), peer(nullptr)
+			: peer(nullptr)
 			, clientName("")
+			, color(Server::Color::NONE)
+			, lastTimeSentPing(0.0f)
+			, lastTimeReceivedPing(0.0f)
+			, workingConnection(false)
 		{
 
 		}
@@ -43,8 +46,8 @@ private:
 	const int MAX_NUM_CLIENTS;
 	const int NUM_CHANNELS;
 	const int TIMEOUT_LIMIT_MS;
-	ENetAddress address;
 	ENetHost* server;
+	ENetAddress address;
 
 	const int MINIMUM_PORT;
 	const int MAXIMUM_PORT;
@@ -58,12 +61,12 @@ private:
 	const float TIME_BETWEEN_PINGS;
 	const float MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST;
 
-	std::map<std::string, ClientData> connectedClients;
-
 	std::string lastKnownBoardConfiguration;
 
+	std::map<std::string, ClientData> connectedClients;
+
 	// Atentie aici la unicitatea cheii
-	inline std::string getClientKey(const ENetAddress& address) const { return std::to_string(address.host) + std::to_string(address.port); }
+	inline std::string getClientKey(const ENetAddress& address) const { return std::to_string(address.host) + ":" + std::to_string(address.port); }
 
 	void handleReceivedPacket();
 	
