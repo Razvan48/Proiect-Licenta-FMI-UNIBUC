@@ -6,7 +6,7 @@
 
 Client::Client()
 	: MAX_NUM_SERVERS(1), NUM_CHANNELS(1), TIMEOUT_LIMIT_MS(1000)
-	, client(NULL), serverAddress(), serverPeer(nullptr), eNetEvent()
+	, serverPeer(nullptr), client(NULL), serverAddress(), eNetEvent()
 	, succesfullyConnected(false)
 	, lastTimeTriedConnection(0.0f)
 	, RETRY_CONNECTION_DELTA_TIME(1.0f)
@@ -14,16 +14,21 @@ Client::Client()
 	, MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
 	, lastTimeReceivedPing(0.0f)
 	, lastTimeSentPing(0.0f)
-	, opponentName("")
-	, serverConnectionOk(false)
-	, opponentConnectionOk(false)
-	, lastKnownBoardConfiguration("")
-	, knowsItsOwnColor(false)
-	, hasSentItsOwnColor(false)
-	, hasSentItsClientName(false)
-	, hasRequestedInitialBoardConfiguration(false)
 	, clientName("")
 	, color("")
+	, opponentName("")
+	, lastKnownBoardConfiguration("")
+	, workingServerConnection(false)
+	, workingOpponentConnection(false)
+	, hasToSendName(false)
+	, hasToSendColor(false)
+	, hasToReceiveColor(false)
+	, hasToSendBoardConfiguration(false)
+	, hasToReceiveBoardConfiguration(false)
+	, lastTimeRequestedColor(0.0f)
+	, TIME_BETWEEN_COLOR_REQUESTS(1.0f)
+	, lastTimeRequestedBoardConfiguration(0.0f)
+	, TIME_BETWEEN_BOARD_CONFIGURATION_REQUESTS(1.0f)
 {
 
 }
@@ -39,20 +44,32 @@ Client& Client::get()
 	return instance;
 }
 
-void Client::start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName, const std::string& color)
+void Client::start(const std::string& serverIP, enet_uint16 serverPort, const std::string& clientName, const std::string& color, const std::string& boardConfiguration)
 {
 	this->stop();
 
 	this->clientName = clientName;
 	this->color = color;
+	this->lastKnownBoardConfiguration = boardConfiguration;
 
+	// Client Name
+	this->hasToSendClientName = true;
+
+	// Color
 	if (!this->color.empty())
-	{
-		this->knowsItsOwnColor = true;
-	}
+		this->hasToSendColor = true;
+	else
+		this->hasToReceiveColor = true;
+
+	// BoardConfiguration
+	if (!this->lastKnownBoardConfiguration.empty())
+		this->hasToSendBoardConfiguration = true;
+	else
+		this->hasToReceiveBoardConfiguration = true;
+
+
 
 	this->client = enet_host_create(NULL, this->MAX_NUM_SERVERS, this->NUM_CHANNELS, 0, 0); // 0, 0 inseamna fara limite la latimea de banda
-
 	if (client == NULL)
 	{
 		std::cout << "Error: ENet failed to create client" << std::endl;
@@ -61,10 +78,10 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	enet_address_set_host(&this->serverAddress, serverIP.c_str());
 	this->serverAddress.port = serverPort;
 
-	std::cout << "Client initialized with: " << serverIP << ' ' << serverPort << ' ' << clientName << ' ' << color << std::endl;
+	std::cout << "Client initialized with: " << serverIP << ' ' << this->serverAddress.port << ' ' << this->clientName << ' ' << this->color << std::endl;
 }
 
-void Client::sentMessage(const std::string& messageToSend)
+void Client::sendMessage(const std::string& messageToSend)
 {
 	if (!this->succesfullyConnected)
 	{
@@ -79,7 +96,7 @@ void Client::sentMessage(const std::string& messageToSend)
 
 void Client::handleReceivedPacket()
 {
-	this->lastTimeReceivedPing = GlobalClock::get().getCurrentTime();
+	this->lastTimeReceivedPing = GlobalClock::get().getCurrentTime(); // Ar putea fi mutat mai jos de if-ul ce urmeaza.
 
 	if (this->eNetEvent.packet->dataLength == 0)
 	{
@@ -90,10 +107,27 @@ void Client::handleReceivedPacket()
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
 	std::cout << "Received Message: " << receivedMessage << " from server, size=" << receivedMessage.size() << std::endl;
 
-	if (receivedMessage == "color:white" || receivedMessage == "color:black")
+	if (receivedMessage.find("color:") == 0)
 	{
-		this->color = receivedMessage.substr(std::string("color:").size());
-		this->hasSentItsOwnColor = true;
+		if (receivedMessage == "color:")
+			this->hasToReceiveColor = true;
+		else
+		{
+			this->color = receivedMessage.substr(std::string("color:").size());
+
+			// this->hasToReceiveColor = false; // nu ar trebui sa fie nevoie, e deja pus pe false din metoda update()
+		}
+	}
+	else if (receivedMessage.find("boardConfiguration:") == 0)
+	{
+		if (receivedMessage == "boardConfiguration:")
+			this->hasToReceiveBoardConfiguration = true;
+		else
+		{
+			this->lastKnownBoardConfiguration = receivedMessage.substr(std::string("boardConfiguration:").size());
+
+			// this->hasToReceiveBoardConfiguration = false; // nu ar trebui sa fie nevoie, e deja pus pe false din metoda update()
+		}
 	}
 	else if (receivedMessage.find("ping") == 0) // "ping" este prefix pentru mesaj. Aici aflam si daca am pierdut conexiunea doar cu celalalt oponent.
 	{
@@ -106,9 +140,9 @@ void Client::handleReceivedPacket()
 				if (!currentSubstring.empty())
 				{
 					if (currentSubstring.back() == '1')
-						this->opponentConnectionOk = true;
+						this->workingOpponentConnection = true;
 					else
-						this->opponentConnectionOk = false;
+						this->workingOpponentConnection = false;
 
 					this->opponentName = currentSubstring.substr(0, (int)currentSubstring.size() - 1);
 				}
@@ -118,15 +152,6 @@ void Client::handleReceivedPacket()
 			}
 
 			currentSubstring.push_back(receivedMessage[i]);
-		}
-	}
-	else if (receivedMessage.find("boardConfiguration:") == 0) // "boardConfiguration" este prefix pentru mesaj.
-	{
-		this->lastKnownBoardConfiguration = receivedMessage.substr(std::string("boardConfiguration:").size()); // Pornim de la lungimea prefixului.
-
-		if (!this->lastKnownBoardConfiguration.empty())
-		{
-			this->hasRequestedInitialBoardConfiguration = true;
 		}
 	}
 	else
@@ -158,46 +183,42 @@ void Client::update()
 		return;
 	}
 
-	// Rezolvam problemele de baza (clientName, color si initialBoardConfiguration)
-	if (!this->hasSentItsClientName)
+	// Trimitem ce informatii vitale stim deja catre server.
+	if (this->hasToSendName)
 	{
-		std::string messageToSent = "name:" + this->clientName;
+		this->sendMessage("name:" + this->clientName);
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->serverPeer, 0, packet);
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		this->hasToSendName = false;
+	}
+	if (this->hasToSendColor)
+	{
+		this->sendMessage("color:" + this->color);
 
-		this->hasSentItsClientName = true;
+		this->hasToSendColor = false;
+	}
+	if (this->hasToSendBoardConfiguration)
+	{
+		this->sendMessage("boardConfiguration:" + this->lastKnownBoardConfiguration);
+
+		this->hasToSendBoardConfiguration = false;
 	}
 
-	if (this->knowsItsOwnColor && !this->hasSentItsOwnColor)
+	// Cerem ce informatii vitale avem nevoie pentru a incepe interactiunea.
+	if (this->hasToReceiveColor 
+		&& GlobalClock::get().getCurrentTime() - this->lastTimeRequestedColor > this->TIME_BETWEEN_COLOR_REQUESTS)
 	{
-		std::string messageToSent = "color:" + this->color;
+		this->sendMessage("requestColor");
+		this->lastTimeRequestedColor = GlobalClock::get().getCurrentTime();
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->serverPeer, 0, packet);
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
-
-		this->hasSentItsOwnColor = true;
+		this->hasToReceiveColor = false;
 	}
-	else if (!this->knowsItsOwnColor)
+	if (this->hasToReceiveBoardConfiguration
+		&& GlobalClock::get().getCurrentTime() - this->lastTimeRequestedBoardConfiguration > this->TIME_BETWEEN_BOARD_CONFIGURATION_REQUESTS)
 	{
-		std::string messageToSent = "requestColor";
+		this->sendMessage("requestBoardConfiguration");
+		this->lastTimeRequestedBoardConfiguration = GlobalClock::get().getCurrentTime();
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->serverPeer, 0, packet);
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
-	}
-
-	if (!this->hasRequestedInitialBoardConfiguration)
-	{
-		std::string messageToSent = "requestBoardConfiguration";
-
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->serverPeer, 0, packet);
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
-
-		this->hasRequestedInitialBoardConfiguration = true;
+		this->hasToReceiveBoardConfiguration = false;
 	}
 
 	// Vedem ce pachete am primit.
@@ -224,8 +245,8 @@ void Client::update()
 	// Vedem daca am pierdut conexiunea cu serverul.
 	if (GlobalClock::get().getCurrentTime() - this->lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
 	{
-		this->serverConnectionOk = false;
-		this->opponentConnectionOk = false;
+		this->workingServerConnection = false;
+		this->workingOpponentConnection = false;
 	}
 
 	// Apoi trimitem ping-ul catre server.
@@ -241,19 +262,18 @@ void Client::update()
 
 void Client::stop()
 {
-	if (this->client != nullptr)
-		enet_host_flush(this->client);
 	if (this->serverPeer != nullptr)
 		enet_peer_disconnect(this->serverPeer, 0);
+	//if (this->client != nullptr)
+	//	enet_host_flush(this->client);
 	if (this->client != nullptr)
 		enet_host_destroy(this->client);
 
-	this->client = nullptr;
 	this->serverPeer = nullptr;
+	this->client = nullptr;
 
-
-	this->serverAddress.host = 0;
-	this->serverAddress.port = 0;
+	this->serverAddress = ENetAddress();
+	this->eNetEvent = ENetEvent();
 
 
 	this->succesfullyConnected = false;
@@ -262,18 +282,21 @@ void Client::stop()
 	this->lastTimeReceivedPing = 0.0f;
 	this->lastTimeSentPing = 0.0f;
 
-
-	this->opponentName = "";
-	this->serverConnectionOk = false;
-	this->opponentConnectionOk = false;
-	this->lastKnownBoardConfiguration = "";
-
-	this->knowsItsOwnColor = false;
-	this->hasSentItsOwnColor = false;
-	this->hasSentItsClientName = false;
-	this->hasRequestedInitialBoardConfiguration = false;
-
 	this->clientName = "";
 	this->color = "";
+	this->opponentName = "";
+	this->lastKnownBoardConfiguration = "";
+
+	this->workingServerConnection = false;
+	this->workingOpponentConnection = false;
+
+	this->hasToSendName = false;
+	this->hasToSendColor = false;
+	this->hasToReceiveColor = false;
+	this->hasToSendBoardConfiguration = false;
+	this->hasToReceiveBoardConfiguration = false;
+
+	this->lastTimeRequestedColor = 0.0f;
+	this->lastTimeRequestedBoardConfiguration = 0.0f;
 }
 

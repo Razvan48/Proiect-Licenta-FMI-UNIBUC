@@ -91,7 +91,7 @@ void Server::handleReceivedPacket()
 		std::string messageToSent;
 		if (availableColors.size() == 2) // Inca nu s-a setat una dintre culori
 		{
-			messageToSent = "";
+			messageToSent = "color:";
 		}
 		else
 		{
@@ -111,9 +111,7 @@ void Server::handleReceivedPacket()
 	}
 	else if (receivedMessage == "requestBoardConfiguration")
 	{
-		std::string messageToSent;
-		if (this->lastKnownBoardConfiguration != "")
-			messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+		std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration; // Va fi "" daca inca nu e setata.
 
 		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
