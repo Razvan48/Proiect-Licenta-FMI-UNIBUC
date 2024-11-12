@@ -164,7 +164,7 @@ void Server::update()
 			std::cout << "Server started on port " << this->address.port << std::endl;
 		}
 
-		return;
+		return; // Foarte important, asigura ca primul apel de update() doar creeaza host-ul.
 	}
 
 

@@ -168,6 +168,8 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	// SingleplayerGameVisualInterface se ocupa de update-ul si draw-ul pentru singleton-ul BoardVisualizer
 	// Tot SingleplayerGameVisualInterface ruleaza si sunetul de Board Start
 
+
+
 	this->turnTextEntity.setText("Turn: ERROR");
 	this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 

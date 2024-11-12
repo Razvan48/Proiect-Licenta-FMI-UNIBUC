@@ -85,17 +85,23 @@ void Client::sendMessage(const std::string& messageToSend)
 {
 	if (!this->succesfullyConnected)
 	{
-		std::cout << "Warning: Client cannot send message because it is not connected to server" << std::endl;
+		std::cout << "Error: Client cannot send message because it is not connected to server" << std::endl;
 		return;
 	}
 
 	ENetPacket* packet = enet_packet_create(messageToSend.c_str(), messageToSend.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-	enet_peer_send(this->serverPeer, 0, packet);
-	this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+
+	// 0 daca a avut succes
+	if (enet_peer_send(this->serverPeer, 0, packet) == 0)
+		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+	else
+		std::cout << "Error: Client failed to send message" << std::endl;
 }
 
 void Client::handleReceivedPacket()
 {
+	std::cout << "In handleReceivedPacket in Client named " << this->clientName << " with color " << this->color << std::endl;
+
 	this->lastTimeReceivedPing = GlobalClock::get().getCurrentTime(); // Ar putea fi mutat mai jos de if-ul ce urmeaza.
 
 	if (this->eNetEvent.packet->dataLength == 0)
@@ -180,7 +186,7 @@ void Client::update()
 			std::cout << "Client connected to server" << std::endl;
 		}
 
-		return;
+		return; // Foarte important, asigura ca primul apel de update() doar face conexiunea.
 	}
 
 	// Trimitem ce informatii vitale stim deja catre server.

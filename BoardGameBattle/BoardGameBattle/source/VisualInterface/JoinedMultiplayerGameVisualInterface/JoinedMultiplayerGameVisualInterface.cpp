@@ -167,6 +167,7 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	// + draw-ul pentru finalMessage tot in SingleplayerGameVisualInterface are loc
 	// Tot SingleplayerGameVisualInterface ruleaza si sunetul de Board Start
 
+
 	this->turnTextEntity.setText("Turn: ERROR");
 	this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -233,6 +234,8 @@ void JoinedMultiplayerGameVisualInterface::update()
 	this->serverPortTextEntity.update();
 
 	// this->playerNameTextEntity.setText("Player: " + this->playerName);
+
+
 
 	Client::get().update();
 }
