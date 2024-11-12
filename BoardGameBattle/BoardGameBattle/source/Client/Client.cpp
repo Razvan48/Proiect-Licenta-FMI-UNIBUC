@@ -53,7 +53,7 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	this->lastKnownBoardConfiguration = boardConfiguration;
 
 	// Client Name
-	this->hasToSendClientName = true;
+	this->hasToSendName = true;
 
 	// Color
 	if (!this->color.empty())
