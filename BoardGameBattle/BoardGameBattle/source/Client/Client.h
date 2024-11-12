@@ -61,7 +61,8 @@ public:
 	void update();
 	void stop();
 
-	void sendMessage(const std::string& messageToSend);
+	void sendMessage(const std::string& messageToSend, bool& failedToSendMessage, float& timeWhenMessageSent);
+	void sendMessageUnsafe(const std::string& messageToSend, float& timeWhenMessageSent);
 
 	inline const std::string& getOpponentName() const { return this->opponentName; }
 	inline const std::string& getLastKnownBoardConfiguration() const { return this->lastKnownBoardConfiguration; }

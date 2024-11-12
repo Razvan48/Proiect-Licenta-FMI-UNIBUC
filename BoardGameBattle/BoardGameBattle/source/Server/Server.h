@@ -23,6 +23,9 @@ private:
 		float lastTimeReceivedPing;
 		bool workingConnection;
 
+		bool hasToSendColor;
+		bool hasToSendBoardConfiguration;
+
 		ClientData()
 			: peer(nullptr)
 			, clientName("")
@@ -30,9 +33,15 @@ private:
 			, lastTimeSentPing(0.0f)
 			, lastTimeReceivedPing(0.0f)
 			, workingConnection(false)
+
+			, hasToSendColor(false)
+			, hasToSendBoardConfiguration(false)
 		{
 
 		}
+
+		void sendMessage(const std::string& messageToSend, bool& failedToSendMessage);
+		void sendMessageUnsafe(const std::string& messageToSend);
 	};
 
 private:

@@ -81,7 +81,7 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	std::cout << "Client initialized with: " << serverIP << ' ' << this->serverAddress.port << ' ' << this->clientName << ' ' << this->color << std::endl;
 }
 
-void Client::sendMessage(const std::string& messageToSend)
+void Client::sendMessage(const std::string& messageToSend, bool& failedToSendMessage, float& timeWhenMessageSent)
 {
 	if (!this->succesfullyConnected)
 	{
@@ -93,7 +93,30 @@ void Client::sendMessage(const std::string& messageToSend)
 
 	// 0 daca a avut succes
 	if (enet_peer_send(this->serverPeer, 0, packet) == 0)
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+	{
+		timeWhenMessageSent = GlobalClock::get().getCurrentTime();
+		failedToSendMessage = false;
+	}
+	else
+	{
+		failedToSendMessage = true;
+		std::cout << "Error: Client failed to send message" << std::endl;
+	}
+}
+
+void Client::sendMessageUnsafe(const std::string& messageToSend, float& timeWhenMessageSent)
+{
+	if (!this->succesfullyConnected)
+	{
+		std::cout << "Error: Client cannot send message because it is not connected to server" << std::endl;
+		return;
+	}
+
+	ENetPacket* packet = enet_packet_create(messageToSend.c_str(), messageToSend.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+
+	// 0 daca a avut succes
+	if (enet_peer_send(this->serverPeer, 0, packet) == 0)
+		timeWhenMessageSent = GlobalClock::get().getCurrentTime();
 	else
 		std::cout << "Error: Client failed to send message" << std::endl;
 }
@@ -186,45 +209,35 @@ void Client::update()
 			std::cout << "Client connected to server" << std::endl;
 		}
 
-		return; // Foarte important, asigura ca primul apel de update() doar face conexiunea.
+		return;
 	}
 
 	// Trimitem ce informatii vitale stim deja catre server.
 	if (this->hasToSendName)
 	{
-		this->sendMessage("name:" + this->clientName);
-
-		this->hasToSendName = false;
+		this->sendMessage("name:" + this->clientName, this->hasToSendName, this->lastTimeSentPing);
 	}
 	if (this->hasToSendColor)
 	{
-		this->sendMessage("color:" + this->color);
-
-		this->hasToSendColor = false;
+		this->sendMessage("color:" + this->color, this->hasToSendColor, this->lastTimeSentPing);
 	}
 	if (this->hasToSendBoardConfiguration)
 	{
-		this->sendMessage("boardConfiguration:" + this->lastKnownBoardConfiguration);
-
-		this->hasToSendBoardConfiguration = false;
+		this->sendMessage("boardConfiguration:" + this->lastKnownBoardConfiguration, this->hasToSendBoardConfiguration, this->lastTimeSentPing);
 	}
 
 	// Cerem ce informatii vitale avem nevoie pentru a incepe interactiunea.
 	if (this->hasToReceiveColor 
 		&& GlobalClock::get().getCurrentTime() - this->lastTimeRequestedColor > this->TIME_BETWEEN_COLOR_REQUESTS)
 	{
-		this->sendMessage("requestColor");
+		this->sendMessage("requestColor", this->hasToReceiveColor, this->lastTimeSentPing);
 		this->lastTimeRequestedColor = GlobalClock::get().getCurrentTime();
-
-		this->hasToReceiveColor = false;
 	}
 	if (this->hasToReceiveBoardConfiguration
 		&& GlobalClock::get().getCurrentTime() - this->lastTimeRequestedBoardConfiguration > this->TIME_BETWEEN_BOARD_CONFIGURATION_REQUESTS)
 	{
-		this->sendMessage("requestBoardConfiguration");
+		this->sendMessage("requestBoardConfiguration", this->hasToReceiveBoardConfiguration, this->lastTimeSentPing);
 		this->lastTimeRequestedBoardConfiguration = GlobalClock::get().getCurrentTime();
-
-		this->hasToReceiveBoardConfiguration = false;
 	}
 
 	// Vedem ce pachete am primit.
@@ -258,11 +271,9 @@ void Client::update()
 	// Apoi trimitem ping-ul catre server.
 	if (GlobalClock::get().getCurrentTime() - this->lastTimeSentPing > this->TIME_BETWEEN_PINGS)
 	{
-		std::string messageToSent = "ping";
+		std::string messageToSend = "ping";
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->serverPeer, 0, packet);
-		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		this->sendMessageUnsafe(messageToSend, this->lastTimeSentPing);
 	}
 }
 

@@ -37,6 +37,34 @@ void Server::start()
 	this->address.port = RandomGenerator::randomUniformInt(this->MINIMUM_PORT, this->MAXIMUM_PORT);
 }
 
+void Server::ClientData::sendMessage(const std::string& messageToSend, bool& failedToSendMessage)
+{
+	ENetPacket* packet = enet_packet_create(messageToSend.c_str(), messageToSend.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+
+	// 0 daca a avut succes
+	if (enet_peer_send(this->peer, 0, packet) == 0)
+	{
+		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		failedToSendMessage = false;
+	}
+	else
+	{
+		failedToSendMessage = true;
+		std::cout << "Error: Client failed to send message" << std::endl;
+	}
+}
+
+void Server::ClientData::sendMessageUnsafe(const std::string& messageToSend)
+{
+	ENetPacket* packet = enet_packet_create(messageToSend.c_str(), messageToSend.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+
+	// 0 daca a avut succes
+	if (enet_peer_send(this->peer, 0, packet) == 0)
+		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
+	else
+		std::cout << "Error: Client failed to send message" << std::endl;
+}
+
 void Server::handleReceivedPacket()
 {
 	std::string clientKey = this->getClientKey(this->eNetEvent.peer->address);
@@ -88,34 +116,34 @@ void Server::handleReceivedPacket()
 			availableColors.erase(connectedClient.second.color);
 		}
 
-		std::string messageToSent;
+		std::string messageToSend;
 		if (availableColors.size() == 2) // Inca nu s-a setat una dintre culori
 		{
-			messageToSent = "color:";
+			messageToSend = "color:";
 		}
 		else
 		{
 			if ((*availableColors.begin()) == Server::Color::WHITE)
 			{
-				messageToSent = "color:white";
+				this->connectedClients.find(clientKey)->second.color = Color::WHITE;
+				messageToSend = "color:white";
 			}
 			else
 			{
-				messageToSent = "color:black";
+				this->connectedClients.find(clientKey)->second.color = Color::BLACK;
+				messageToSend = "color:black";
 			}
 		}
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->eNetEvent.peer, 0, packet);
-		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		this->connectedClients.find(clientKey)->second.hasToSendColor = true;
+		this->connectedClients.find(clientKey)->second.sendMessage(messageToSend, this->connectedClients.find(clientKey)->second.hasToSendColor);
 	}
 	else if (receivedMessage == "requestBoardConfiguration")
 	{
-		std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration; // Va fi "" daca inca nu e setata.
+		std::string messageToSend = "boardConfiguration:" + this->lastKnownBoardConfiguration; // Va fi "" daca inca nu e setata.
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(this->eNetEvent.peer, 0, packet);
-		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		this->connectedClients.find(clientKey)->second.hasToSendBoardConfiguration = true;
+		this->connectedClients.find(clientKey)->second.sendMessage(messageToSend, this->connectedClients.find(clientKey)->second.hasToSendBoardConfiguration);
 	}
 	else if (receivedMessage.find("boardConfiguration:") == 0) // Are prefixul "boardConfiguration:"
 	{
@@ -126,10 +154,10 @@ void Server::handleReceivedPacket()
 			if (connectedClient.first == clientKey)
 				continue;
 
-			std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
-			ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-			enet_peer_send(connectedClient.second.peer, 0, packet);
-			connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
+			std::string messageToSend = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+
+			connectedClient.second.hasToSendBoardConfiguration = true;
+			connectedClient.second.sendMessage(messageToSend, connectedClient.second.hasToSendBoardConfiguration);
 		}
 	}
 	else if (receivedMessage == "ping")
@@ -164,7 +192,7 @@ void Server::update()
 			std::cout << "Server started on port " << this->address.port << std::endl;
 		}
 
-		return; // Foarte important, asigura ca primul apel de update() doar creeaza host-ul.
+		return;
 	}
 
 
@@ -207,26 +235,54 @@ void Server::update()
 		if (GlobalClock::get().getCurrentTime() - connectedClient.second.lastTimeSentPing < this->TIME_BETWEEN_PINGS)
 			continue;
 
-		std::string messageToSent = "ping";
+		std::string messageToSend = "ping";
 
 		for (auto& otherConnectedClient : this->connectedClients)
 		{
 			if (connectedClient.first == otherConnectedClient.first)
 				continue;
 
-			messageToSent.push_back('$');
-			messageToSent += otherConnectedClient.second.clientName;
+			messageToSend.push_back('$');
+			messageToSend += otherConnectedClient.second.clientName;
 
 			if (GlobalClock::get().getCurrentTime() - otherConnectedClient.second.lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
-				messageToSent.push_back('0');
+				messageToSend.push_back('0');
 			else
-				messageToSent.push_back('1');
+				messageToSend.push_back('1');
 		}
-		messageToSent.push_back('$');
+		messageToSend.push_back('$');
 
-		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(connectedClient.second.peer, 0, packet);
-		connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
+		connectedClient.second.sendMessageUnsafe(messageToSend);
+	}
+
+	// Mai vedem daca ne ramasese ceva de trimis la vreun client ce a esuat.
+	for (auto& connectedClient : this->connectedClients)
+	{
+		if (connectedClient.second.hasToSendColor)
+		{
+			std::string messageToSend;
+			if (connectedClient.second.color == Color::WHITE)
+			{
+				messageToSend = "color:white";
+			}
+			else if (connectedClient.second.color == Color::BLACK)
+			{
+				messageToSend = "color:black";
+			}
+			else
+			{
+				messageToSend = "color:";
+			}
+
+			connectedClient.second.sendMessage(messageToSend, connectedClient.second.hasToSendColor);
+		}
+
+		if (connectedClient.second.hasToSendBoardConfiguration)
+		{
+			std::string messageToSend = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+
+			connectedClient.second.sendMessage(messageToSend, connectedClient.second.hasToSendBoardConfiguration);
+		}
 	}
 
 	// Pentru debug
