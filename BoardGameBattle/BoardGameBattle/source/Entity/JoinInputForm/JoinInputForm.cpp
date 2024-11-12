@@ -143,6 +143,7 @@ void JoinInputForm::update()
 
 				JoinedMultiplayerGameVisualInterface::get()->setPlayerName(this->playerNameDataBox.getText());
 				JoinedMultiplayerGameVisualInterface::get()->setServerAddress(this->serverAddressDataBox.getText());
+				JoinedMultiplayerGameVisualInterface::get()->setColor("");
 
 				Game::get().setStatus(this->gameStatusWhenPressed); // Trebuie sa fie ultima linie, deoarece initializeaza interfata vizuala.
 			}

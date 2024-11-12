@@ -64,7 +64,7 @@ void Client::start(const std::string& serverIP, enet_uint16 serverPort, const st
 	std::cout << "Client initialized with: " << serverIP << ' ' << serverPort << ' ' << clientName << ' ' << color << std::endl;
 }
 
-void Client::sentMessage(const std::string& message)
+void Client::sentMessage(const std::string& messageToSend)
 {
 	if (!this->succesfullyConnected)
 	{
@@ -72,7 +72,7 @@ void Client::sentMessage(const std::string& message)
 		return;
 	}
 
-	ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+	ENetPacket* packet = enet_packet_create(messageToSend.c_str(), messageToSend.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(this->serverPeer, 0, packet);
 	this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 }
@@ -90,9 +90,9 @@ void Client::handleReceivedPacket()
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
 	std::cout << "Received Message: " << receivedMessage << " from server, size=" << receivedMessage.size() << std::endl;
 
-	if (receivedMessage == "white" || receivedMessage == "black")
+	if (receivedMessage == "color:white" || receivedMessage == "color:black")
 	{
-		this->color = receivedMessage;
+		this->color = receivedMessage.substr(std::string("color:").size());
 		this->hasSentItsOwnColor = true;
 	}
 	else if (receivedMessage.find("ping") == 0) // "ping" este prefix pentru mesaj. Aici aflam si daca am pierdut conexiunea doar cu celalalt oponent.
@@ -161,9 +161,9 @@ void Client::update()
 	// Rezolvam problemele de baza (clientName, color si initialBoardConfiguration)
 	if (!this->hasSentItsClientName)
 	{
-		std::string sentMessage = "name:" + this->clientName;
+		std::string messageToSent = "name:" + this->clientName;
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->serverPeer, 0, packet);
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 
@@ -172,9 +172,9 @@ void Client::update()
 
 	if (this->knowsItsOwnColor && !this->hasSentItsOwnColor)
 	{
-		std::string sentMessage = this->color;
+		std::string messageToSent = "color:" + this->color;
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->serverPeer, 0, packet);
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 
@@ -182,18 +182,18 @@ void Client::update()
 	}
 	else if (!this->knowsItsOwnColor)
 	{
-		std::string sentMessage = "requestColor";
+		std::string messageToSent = "requestColor";
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->serverPeer, 0, packet);
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}
 
 	if (!this->hasRequestedInitialBoardConfiguration)
 	{
-		std::string sentMessage = "requestBoardConfiguration";
+		std::string messageToSent = "requestBoardConfiguration";
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->serverPeer, 0, packet);
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 
@@ -231,9 +231,9 @@ void Client::update()
 	// Apoi trimitem ping-ul catre server.
 	if (GlobalClock::get().getCurrentTime() - this->lastTimeSentPing > this->TIME_BETWEEN_PINGS)
 	{
-		std::string sentMessage = "ping";
+		std::string messageToSent = "ping";
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->serverPeer, 0, packet);
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}

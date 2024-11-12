@@ -66,11 +66,11 @@ void Server::handleReceivedPacket()
 	}
 	this->connectedClients.find(clientKey)->second.lastTimeReceivedPing = GlobalClock::get().getCurrentTime();
 
-	if (receivedMessage == "white")
+	if (receivedMessage == "color:white")
 	{
 		this->connectedClients.find(clientKey)->second.color = Color::WHITE;
 	}
-	else if (receivedMessage == "black")
+	else if (receivedMessage == "color:black")
 	{
 		this->connectedClients.find(clientKey)->second.color = Color::BLACK;
 	}
@@ -86,30 +86,31 @@ void Server::handleReceivedPacket()
 			availableColors.erase(connectedClient.second.color);
 		}
 
-		std::string sentMessage;
+		std::string messageToSent;
 		if (availableColors.size() == 2) // Inca nu s-a setat una dintre culori
 		{
-			sentMessage = "";
+			messageToSent = "";
 		}
 		else
 		{
 			if ((*availableColors.begin()) == Server::Color::WHITE)
 			{
-				sentMessage = "white";
+				messageToSent = "color:white";
 			}
 			else
 			{
-				sentMessage = "black";
+				messageToSent = "color:black";
 			}
 		}
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
 		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}
 	else if (receivedMessage == "requestBoardConfiguration")
 	{
-		ENetPacket* packet = enet_packet_create(this->lastKnownBoardConfiguration.c_str(), this->lastKnownBoardConfiguration.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(this->eNetEvent.peer, 0, packet);
 		this->connectedClients.find(clientKey)->second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}
@@ -122,7 +123,8 @@ void Server::handleReceivedPacket()
 			if (connectedClient.first == clientKey)
 				continue;
 
-			ENetPacket* packet = enet_packet_create(receivedMessage.c_str(), receivedMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+			std::string messageToSent = "boardConfiguration:" + this->lastKnownBoardConfiguration;
+			ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 			enet_peer_send(connectedClient.second.peer, 0, packet);
 			connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 		}
@@ -170,11 +172,9 @@ void Server::update()
 	{
 		switch (this->eNetEvent.type)
 		{
-			/*
 			case ENET_EVENT_TYPE_CONNECT:
 				std::cout << "Client connected" << std::endl;
 				break;
-			*/
 			case ENET_EVENT_TYPE_RECEIVE:
 				this->handleReceivedPacket();
 				break;
@@ -204,24 +204,24 @@ void Server::update()
 		if (GlobalClock::get().getCurrentTime() - connectedClient.second.lastTimeSentPing < this->TIME_BETWEEN_PINGS)
 			continue;
 
-		std::string sentMessage = "ping";
+		std::string messageToSent = "ping";
 
 		for (auto& otherConnectedClient : this->connectedClients)
 		{
 			if (connectedClient.first == otherConnectedClient.first)
 				continue;
 
-			sentMessage.push_back('$');
-			sentMessage += otherConnectedClient.second.clientName;
+			messageToSent.push_back('$');
+			messageToSent += otherConnectedClient.second.clientName;
 
 			if (GlobalClock::get().getCurrentTime() - otherConnectedClient.second.lastTimeReceivedPing > this->MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST)
-				sentMessage.push_back('0');
+				messageToSent.push_back('0');
 			else
-				sentMessage.push_back('1');
+				messageToSent.push_back('1');
 		}
-		sentMessage.push_back('$');
+		messageToSent.push_back('$');
 
-		ENetPacket* packet = enet_packet_create(sentMessage.c_str(), sentMessage.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(messageToSent.c_str(), messageToSent.size() + 1, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(connectedClient.second.peer, 0, packet);
 		connectedClient.second.lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	}

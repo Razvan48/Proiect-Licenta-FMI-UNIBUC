@@ -120,9 +120,9 @@ void MultiplayerColorMenuVisualInterface::update()
 
 	// Liniile astea trebuie sa fie primele, ca altfel butoanele cand dau update vor schimba statusul,
 	// ceea ce va duce la apelul de initialize() fara sa apucam sa populam string-urile.
-	if (InputManager::get().isLeftMouseButtonReleased() && this->whiteButton.isInCompleteMouseCollision())
+	if (this->whiteButton.anInteractionWillHappen())
 		CreatedMultiplayerGameVisualInterface::get()->setColor("white");
-	else if (InputManager::get().isLeftMouseButtonReleased() && this->blackButton.isInCompleteMouseCollision())
+	else if (this->blackButton.anInteractionWillHappen())
 		CreatedMultiplayerGameVisualInterface::get()->setColor("black");
 
 	this->whiteButton.update();

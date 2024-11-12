@@ -37,6 +37,11 @@ bool Entity::isInCompleteOutsideMouseCollision() const
 	return !this->isInMouseCollision() && !this->isInMouseLastPressedCollision();
 }
 
+bool Entity::anInteractionWillHappen() const
+{
+	return InputManager::get().isLeftMouseButtonReleased() && this->isInCompleteMouseCollision();
+}
+
 Entity::~Entity()
 {
 

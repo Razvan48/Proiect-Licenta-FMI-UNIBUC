@@ -61,7 +61,7 @@ public:
 	void update();
 	void stop();
 
-	void sentMessage(const std::string& message);
+	void sentMessage(const std::string& messageToSend);
 
 	inline const std::string& getOpponentName() const { return this->opponentName; }
 	inline bool getServerConnectionOk() const { return this->serverConnectionOk; }

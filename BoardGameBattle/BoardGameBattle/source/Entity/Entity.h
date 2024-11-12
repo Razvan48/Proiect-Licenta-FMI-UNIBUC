@@ -36,4 +36,5 @@ public:
 
 	bool isInCompleteMouseCollision() const;
 	bool isInCompleteOutsideMouseCollision() const;
+	bool anInteractionWillHappen() const;
 };
