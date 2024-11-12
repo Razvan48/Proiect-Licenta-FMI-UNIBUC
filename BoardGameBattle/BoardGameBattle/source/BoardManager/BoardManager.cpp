@@ -2,8 +2,18 @@
 
 #include "../GameMetadata/GameMetadata.h"
 
+#include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
+#include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
+
+#include "../Game/Game.h"
+
+#include "../Client/Client.h"
+
+#include <iostream>
+
+
 BoardManager::BoardManager()
-	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR")
+	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000")
 	, whiteTurn(true)
 {
 
@@ -16,7 +26,20 @@ BoardManager::~BoardManager()
 
 void BoardManager::initialize()
 {
-	this->piecesConfiguration = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR";
+	this->piecesConfiguration = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000";
+	this->whiteTurn = true;
+}
+
+void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration)
+{
+	this->piecesConfiguration = piecesConfiguration;
+	int whiteTurnPos = GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES;
+	if (whiteTurnPos < this->piecesConfiguration.size())
+		this->whiteTurn = (this->piecesConfiguration[whiteTurnPos] == 'w');
+	else
+	{
+		std::cout << "Error: Could not find whose turn is it inside the Pieces Configuration in BoardManager::setPiecesConfiguration. Set to default to white." << std::endl;
+	}
 }
 
 BoardManager& BoardManager::get()
@@ -41,6 +64,11 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 	}
 
 	this->whiteTurn = !this->whiteTurn;
+
+	if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+		CreatedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
+	else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+		JoinedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
 }
 
 // TODO: COD DOAR DE TEST, VA FI INLOCUIT
@@ -48,15 +76,18 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 {
 	std::vector<std::string> moves;
 
+	if (Client::get().getColor() == "") // Valoare hardcodata.
+		return moves;
+
 	int column = piecePosition[0] - 'a';
 	int row = piecePosition[1] - '1';
 	char gamePiece = this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
 
 	if (gamePiece == '.'
 		||
-		('A' <= gamePiece && gamePiece <= 'Z' && !this->whiteTurn)
+		(Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
 		||
-		('a' <= gamePiece && gamePiece <= 'z' && this->whiteTurn)
+		(Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
 		)
 		return moves;
 

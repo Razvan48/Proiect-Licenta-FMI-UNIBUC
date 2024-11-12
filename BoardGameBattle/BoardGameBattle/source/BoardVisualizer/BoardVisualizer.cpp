@@ -12,6 +12,8 @@
 #include "../InputManager/InputManager.h"
 #include "../AssetManager/AssetManager.h"
 
+#include "../Client/Client.h"
+
 #include <iostream>
 
 BoardVisualizer::BoardVisualizer()
@@ -114,7 +116,7 @@ void BoardVisualizer::initialize()
 		);
 	}
 
-	if (Game::get().getColor() == Game::Color::BLACK) // rotire 180 de grade
+	if (Game::get().getColor() == Game::Color::BLACK || (Game::get().getColor() == Game::Color::NONE && Client::get().getColor() == "black")) // rotire 180 de grade
 	{
 		for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 		{
@@ -179,7 +181,7 @@ void BoardVisualizer::draw()
 		0.0f,
 		""
 	);
-	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	for (int i = 0; i < min((int)piecesConfiguration.size(), GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH); ++i)
 	{
 		int currentI = (GameMetadata::NUM_TILES_HEIGHT - 1) - i / GameMetadata::NUM_TILES_WIDTH;
 		int currentJ = i % GameMetadata::NUM_TILES_WIDTH;

@@ -12,7 +12,7 @@ Server::Server()
 	, server(nullptr), address(), MINIMUM_PORT(10000), MAXIMUM_PORT(20000)
 	, eNetEvent()
 	, succesfullyCreated(false), lastTimeTriedCreation(0.0f), RETRY_CREATION_DELTA_TIME(1.0f)
-	, TIME_BETWEEN_PINGS(1.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
+	, TIME_BETWEEN_PINGS(10.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(30.0f)
 	, lastKnownBoardConfiguration("")
 {
 	this->address.host = ENET_HOST_ANY;

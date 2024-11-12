@@ -64,8 +64,11 @@ public:
 	void sendMessage(const std::string& messageToSend, bool& failedToSendMessage, float& timeWhenMessageSent);
 	void sendMessageUnsafe(const std::string& messageToSend, float& timeWhenMessageSent);
 
+	inline const std::string& getColor() const { return this->color; }
 	inline const std::string& getOpponentName() const { return this->opponentName; }
 	inline const std::string& getLastKnownBoardConfiguration() const { return this->lastKnownBoardConfiguration; }
+
+	inline void setLastKnownBoardConfiguration(const std::string& lastKnownBoardConfiguration) { this->lastKnownBoardConfiguration = lastKnownBoardConfiguration; }
 
 	inline bool getWorkingServerConnection() const { return this->workingServerConnection; }
 	inline bool getWorkingOpponentConnection() const { return this->workingOpponentConnection; }

@@ -12,6 +12,8 @@
 
 #include "../../BoardManager/BoardManager.h"
 
+#include "../../BoardVisualizer/BoardVisualizer.h"
+
 #include <iostream>
 #include <string>
 
@@ -27,6 +29,7 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, playerName("")
 	, serverAddress("")
 	, color("")
+	, hasToSendBoardConfiguration(false)
 {
 	this->entities.push_back
 	(
@@ -191,6 +194,9 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: ERROR");
 	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
+
+	this->hasToSendBoardConfiguration = false;
+
 	///
 
 	this->playerNameTextEntity.setText("Player: " + this->playerName);
@@ -221,10 +227,21 @@ void CreatedMultiplayerGameVisualInterface::update()
 	this->opponentConnectionStatusTextEntity.update();
 	this->serverPortTextEntity.update();
 
-	// this->playerNameTextEntity.setText("Player: " + this->playerName);
+
 
 	Server::get().update();
 	Client::get().update();
+
+
+	if (this->hasToSendBoardConfiguration)
+	{
+		float timeWhenMessageSent = 0.0f; // Nu ne intereseaza timpul
+		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration());
+		Client::get().sendMessage(BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
+	}
+
+	BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+	BoardVisualizer::get().initialize();
 }
 
 void CreatedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)

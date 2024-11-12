@@ -20,6 +20,8 @@ protected:
 	std::string playerName;
 	std::string serverAddress;
 
+	bool hasToSendBoardConfiguration;
+
 public:
 	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity
@@ -39,4 +41,6 @@ public:
 
 	inline void setPlayerName(const std::string& playerName) { this->playerName = playerName; }
 	inline void setServerAddress(const std::string& serverAddress) { this->serverAddress = serverAddress; }
+
+	inline void setHasToSendBoardConfiguration(bool hasToSendBoardConfiguration) { this->hasToSendBoardConfiguration = hasToSendBoardConfiguration; }
 };

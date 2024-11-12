@@ -10,6 +10,10 @@
 
 #include "../../WindowManager/WindowManager.h"
 
+#include "../../BoardManager/BoardManager.h"
+
+#include "../../BoardVisualizer/BoardVisualizer.h"
+
 #include <string>
 
 JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -23,6 +27,7 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 	, serverPortTextEntity(serverPortTextEntity)
 	, playerName("")
 	, serverAddress("")
+	, hasToSendBoardConfiguration(false)
 {
 	this->entities.push_back
 	(
@@ -189,6 +194,10 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText("ServPort: ERROR");
 	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
+
+
+	this->hasToSendBoardConfiguration = false;
+
 	///
 
 	this->playerNameTextEntity.setText("Player: " + this->playerName);
@@ -233,11 +242,19 @@ void JoinedMultiplayerGameVisualInterface::update()
 	this->opponentConnectionStatusTextEntity.update();
 	this->serverPortTextEntity.update();
 
-	// this->playerNameTextEntity.setText("Player: " + this->playerName);
-
 
 
 	Client::get().update();
+
+	if (this->hasToSendBoardConfiguration)
+	{
+		float timeWhenMessageSent = 0.0f; // Nu ne intereseaza timpul
+		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration());
+		Client::get().sendMessage(BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
+	}
+
+	BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+	BoardVisualizer::get().initialize();
 }
 
 void JoinedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)
