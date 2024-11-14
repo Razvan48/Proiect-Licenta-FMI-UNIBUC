@@ -96,6 +96,8 @@ void Client::sendMessage(const std::string& messageToSend, bool& failedToSendMes
 	{
 		timeWhenMessageSent = GlobalClock::get().getCurrentTime();
 		failedToSendMessage = false;
+
+		std::cout << "Client sent message: " << messageToSend << std::endl;
 	}
 	else
 	{
@@ -116,7 +118,11 @@ void Client::sendMessageUnsafe(const std::string& messageToSend, float& timeWhen
 
 	// 0 daca a avut succes
 	if (enet_peer_send(this->serverPeer, 0, packet) == 0)
+	{
 		timeWhenMessageSent = GlobalClock::get().getCurrentTime();
+
+		std::cout << "Client sent message: " << messageToSend << std::endl;
+	}
 	else
 		std::cout << "Error: Client failed to send message" << std::endl;
 }
@@ -163,7 +169,9 @@ void Client::handleReceivedPacket()
 		int pos = std::string("ping").size();
 		std::string currentSubstring = "";
 
-		// this->workingOpponentConnection = false;
+
+		this->workingOpponentConnection = false;
+
 
 		for (int i = pos; i < receivedMessage.size(); ++i)
 		{

@@ -117,7 +117,7 @@ void Server::handleReceivedPacket()
 		}
 
 		std::string messageToSend;
-		if (availableColors.size() == 2) // Inca nu s-a setat una dintre culori
+		if (availableColors.size() == 0 || availableColors.size() == 2) // Nu mai avem nicio culoare posibila sau inca nu s-a setat prima culoare.
 		{
 			messageToSend = "color:";
 		}
@@ -227,6 +227,10 @@ void Server::update()
 		{
 			connectedClient.second.workingConnection = false;
 		}
+		else
+		{
+			connectedClient.second.workingConnection = true;
+		}
 	}
 
 	// Apoi trimitem ping-urile catre clienti.
@@ -287,7 +291,6 @@ void Server::update()
 
 
 	// Eliminam din structura de date clientii pierduti.
-	/*
 	for (auto connectedClient = this->connectedClients.begin(); connectedClient != this->connectedClients.end(); )
 	{
 		if (!connectedClient->second.workingConnection && connectedClient->second.lastTimeReceivedPing != 0.0f)
@@ -298,7 +301,6 @@ void Server::update()
 		else
 			++connectedClient;
 	}
-	*/
 }
 
 void Server::stop()
