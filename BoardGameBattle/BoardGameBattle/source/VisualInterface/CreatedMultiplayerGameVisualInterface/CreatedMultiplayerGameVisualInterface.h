@@ -37,8 +37,6 @@ public:
 
 	const std::string& getColor() const { return this->color; }
 
-	void setServerStatus(bool statusOk);
-	void setOpponentStatus(bool statusOk);
 	inline void setServerPort(const std::string& serverPort) { this->serverPortTextEntity.setText(serverPort); }
 
 	inline void setPlayerName(const std::string& playerName) { this->playerName = playerName; }

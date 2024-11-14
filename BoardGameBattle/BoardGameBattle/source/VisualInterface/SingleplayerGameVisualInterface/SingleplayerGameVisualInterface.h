@@ -39,9 +39,5 @@ public:
 	inline const TextEntity& getOpponentNameTextEntity() const { return this->opponentNameTextEntity; }
 	inline const TextEntity& getFinalMessageTextEntity() const { return this->finalMessageTextEntity; }
 
-	void setTurn(bool whiteTurn);
-	void setPlayerName(const std::string& playerName);
-	void setOpponentName(const std::string& opponentName);
 	inline void setDisplayFinalMessage(bool displayFinalMessage) { this->displayFinalMessage = displayFinalMessage; }
-	void setFinalMessage(bool hasWon);
 };

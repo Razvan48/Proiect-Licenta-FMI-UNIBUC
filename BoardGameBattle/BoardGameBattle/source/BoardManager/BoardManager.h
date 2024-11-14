@@ -28,4 +28,6 @@ public:
 
 	void applyMove(const std::string& move);
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
+
+	inline bool getWhiteTurn() const { return this->whiteTurn; }
 };

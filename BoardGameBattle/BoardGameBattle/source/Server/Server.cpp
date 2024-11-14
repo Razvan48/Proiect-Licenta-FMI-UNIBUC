@@ -12,7 +12,7 @@ Server::Server()
 	, server(nullptr), address(), MINIMUM_PORT(10000), MAXIMUM_PORT(20000)
 	, eNetEvent()
 	, succesfullyCreated(false), lastTimeTriedCreation(0.0f), RETRY_CREATION_DELTA_TIME(1.0f)
-	, TIME_BETWEEN_PINGS(10.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(30.0f)
+	, TIME_BETWEEN_PINGS(1.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
 	, lastKnownBoardConfiguration("")
 {
 	this->address.host = ENET_HOST_ANY;
@@ -285,16 +285,30 @@ void Server::update()
 		}
 	}
 
-	// Pentru debug
-	std::cout << "Number of connected clients: " << this->connectedClients.size() << std::endl;
-	for (const auto& connectedClient : this->connectedClients)
+
+	// Eliminam din structura de date clientii pierduti.
+	/*
+	for (auto connectedClient = this->connectedClients.begin(); connectedClient != this->connectedClients.end(); )
 	{
-		std::cout << "Client " << connectedClient.first << ' ' << connectedClient.second.clientName << ' ' << (int)connectedClient.second.color << std::endl;
+		if (!connectedClient->second.workingConnection && connectedClient->second.lastTimeReceivedPing != 0.0f)
+		{
+			enet_peer_disconnect(connectedClient->second.peer, 0);
+			connectedClient = this->connectedClients.erase(connectedClient);
+		}
+		else
+			++connectedClient;
 	}
+	*/
 }
 
 void Server::stop()
 {
+	for (auto& connectedClient : this->connectedClients)
+	{
+		if (connectedClient.second.peer != nullptr)
+			enet_peer_disconnect(connectedClient.second.peer, 0);
+	}
+
 	if (this->server != nullptr)
 		enet_host_destroy(this->server);
 	this->server = nullptr;

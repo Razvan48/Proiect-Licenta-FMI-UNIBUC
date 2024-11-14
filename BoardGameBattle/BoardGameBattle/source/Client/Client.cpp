@@ -10,8 +10,8 @@ Client::Client()
 	, succesfullyConnected(false)
 	, lastTimeTriedConnection(0.0f)
 	, RETRY_CONNECTION_DELTA_TIME(1.0f)
-	, TIME_BETWEEN_PINGS(10.0f)
-	, MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(30.0f)
+	, TIME_BETWEEN_PINGS(1.0f)
+	, MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
 	, lastTimeReceivedPing(0.0f)
 	, lastTimeSentPing(0.0f)
 	, clientName("")
@@ -162,6 +162,9 @@ void Client::handleReceivedPacket()
 	{
 		int pos = std::string("ping").size();
 		std::string currentSubstring = "";
+
+		// this->workingOpponentConnection = false;
+
 		for (int i = pos; i < receivedMessage.size(); ++i)
 		{
 			if (receivedMessage[i] == '$')
@@ -267,6 +270,10 @@ void Client::update()
 		this->workingServerConnection = false;
 		this->workingOpponentConnection = false;
 	}
+	else
+	{
+		this->workingServerConnection = true;
+	}
 
 	// Apoi trimitem ping-ul catre server.
 	if (GlobalClock::get().getCurrentTime() - this->lastTimeSentPing > this->TIME_BETWEEN_PINGS)
@@ -275,6 +282,10 @@ void Client::update()
 
 		this->sendMessageUnsafe(messageToSend, this->lastTimeSentPing);
 	}
+
+	// Daca am pierdut conexiunea cu oponentul atunci nu ii mai afisam numele.
+	if (!this->workingOpponentConnection)
+		this->opponentName = "";
 }
 
 void Client::stop()

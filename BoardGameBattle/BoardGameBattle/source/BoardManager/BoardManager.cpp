@@ -48,7 +48,7 @@ BoardManager& BoardManager::get()
 	return instance;
 }
 
-// TODO: COD DOAR DE TEST, VA FI INLOCUIT
+
 void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mutarea este legala
 {
 	for (int i = 0; i < move.size(); i += GameMetadata::NUM_CHARS_SUBMOVE)
@@ -72,29 +72,47 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 
 	if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
 		CreatedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
-	else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+	else if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
 		JoinedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
+	// else Singleplayer, nu trebuie sa trimita nimic
 }
 
-// TODO: COD DOAR DE TEST, VA FI INLOCUIT
+
 std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::string& piecePosition)
 {
 	std::vector<std::string> moves;
-
-	if (Client::get().getColor() == "") // Valoare hardcodata.
-		return moves;
 
 	int column = piecePosition[0] - 'a';
 	int row = piecePosition[1] - '1';
 	char gamePiece = this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
 
-	if (gamePiece == '.'
-		||
-		(Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
-		||
-		(Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
-		)
+	if (gamePiece == '.')
 		return moves;
+
+	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+	{
+		if (Game::get().getColor() == Game::Color::WHITE && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
+			return moves;
+
+		if (Game::get().getColor() == Game::Color::BLACK && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
+			return moves;
+	}
+	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+	{
+		if (Client::get().getColor() == "") // Suntem in Multiplayer si nu stim culoarea
+			return moves;
+
+		if (Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
+			return moves;
+
+		if (Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
+			return moves;
+	}
+	else // Game::Mode::NONE
+	{
+		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
+		return moves;
+	}
 
 	if ('A' <= gamePiece && gamePiece <= 'Z' && row <= 6) // Piesa Alba
 	{

@@ -14,6 +14,8 @@
 
 #include "../../BoardVisualizer/BoardVisualizer.h"
 
+#include "../../GameMetadata/GameMetadata.h"
+
 #include <string>
 
 JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
@@ -264,35 +266,62 @@ void JoinedMultiplayerGameVisualInterface::update()
 		BoardVisualizer::get().initialize();
 		this->clientColorSet = true;
 	}
-}
 
-void JoinedMultiplayerGameVisualInterface::setServerStatus(bool statusOk)
-{
-	if (statusOk)
+	// Turn
+	std::string clientBoardConfiguration = Client::get().getLastKnownBoardConfiguration();
+	if (clientBoardConfiguration != "")
 	{
-		this->serverConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
+		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] == 'w')
+		{
+			this->turnTextEntity.setText("Turn: WHITE");
+			this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+		}
+		else
+		{
+			this->turnTextEntity.setText("Turn: BLACK");
+			this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
+		}
+	}
+	else
+	{
+		this->turnTextEntity.setText("Turn: ERROR");
+		this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+
+	// Opponent
+	if (Client::get().getOpponentName() != "")
+	{
+		this->opponentNameTextEntity.setText("Opp: " + Client::get().getOpponentName());
+		this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	}
+	else
+	{
+		this->opponentNameTextEntity.setText("Opp: ERROR");
+		this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+
+	// Server Connection
+	if (Client::get().getWorkingServerConnection())
+	{
 		this->serverConnectionStatusTextEntity.setText("ServConn: OK");
+		this->serverConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
-
-		this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 		this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
+		this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
-}
 
-void JoinedMultiplayerGameVisualInterface::setOpponentStatus(bool statusOk)
-{
-	if (statusOk)
+	// Opponent Connection
+	if (Client::get().getWorkingOpponentConnection())
 	{
-		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 		this->opponentConnectionStatusTextEntity.setText("OppConn: OK");
+		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
+		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 }
+

@@ -162,45 +162,18 @@ void SingleplayerGameVisualInterface::update()
 	this->finalMessageTextEntity.update();
 
 	BoardVisualizer::get().update();
-}
 
-void SingleplayerGameVisualInterface::setTurn(bool whiteTurn)
-{
-	if (whiteTurn)
+	/*
+	if (BoardManager::get().getWhiteTurn())
 	{
-		this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 		this->turnTextEntity.setText("Turn: WHITE");
+		this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 	else
 	{
-		this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
 		this->turnTextEntity.setText("Turn: BLACK");
-
+		this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
+	*/
 }
 
-void SingleplayerGameVisualInterface::setPlayerName(const std::string& playerName)
-{
-	this->playerNameTextEntity.setText(playerName);
-}
-
-void SingleplayerGameVisualInterface::setOpponentName(const std::string& opponentName)
-{
-	this->opponentNameTextEntity.setText(opponentName);
-}
-
-void SingleplayerGameVisualInterface::setFinalMessage(bool hasWon)
-{
-	this->displayFinalMessage = true;
-
-	if (hasWon)
-	{
-		this->finalMessageTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		this->finalMessageTextEntity.setText("You WON!");
-	}
-	else
-	{
-		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		this->finalMessageTextEntity.setText("You LOST!");
-	}
-}
