@@ -15,7 +15,7 @@ private:
 
 	const int MAX_NUM_SERVERS; // Numarul maxim de server-e la care poate fi clientul conectat
 	const int NUM_CHANNELS;
-	const int TIMEOUT_LIMIT_MS;
+	const int TIME_WAITING_FOR_EVENTS_MS;
 
 	ENetPeer* serverPeer;
 	ENetHost* client;

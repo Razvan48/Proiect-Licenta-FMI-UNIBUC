@@ -5,7 +5,7 @@
 #include <iostream>
 
 Client::Client()
-	: MAX_NUM_SERVERS(1), NUM_CHANNELS(1), TIMEOUT_LIMIT_MS(1000)
+	: MAX_NUM_SERVERS(1), NUM_CHANNELS(1), TIME_WAITING_FOR_EVENTS_MS(10)
 	, serverPeer(nullptr), client(NULL), serverAddress(), eNetEvent()
 	, succesfullyConnected(false)
 	, lastTimeTriedConnection(0.0f)
@@ -242,7 +242,7 @@ void Client::update()
 
 	// Vedem ce pachete am primit.
 	// code = 0 inseamna ca nu a fost niciun eveniment
-	int code = enet_host_service(this->client, &this->eNetEvent, this->TIMEOUT_LIMIT_MS);
+	int code = enet_host_service(this->client, &this->eNetEvent, this->TIME_WAITING_FOR_EVENTS_MS);
 	if (code > 0)
 	{
 		switch (this->eNetEvent.type)

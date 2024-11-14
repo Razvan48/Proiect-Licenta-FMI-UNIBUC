@@ -54,7 +54,7 @@ private:
 
 	const int MAX_NUM_CLIENTS;
 	const int NUM_CHANNELS;
-	const int TIMEOUT_LIMIT_MS;
+	const int TIME_WAITING_FOR_EVENTS_MS;
 	ENetHost* server;
 	ENetAddress address;
 

@@ -8,7 +8,7 @@
 #include <set>
 
 Server::Server()
-	: MAX_NUM_CLIENTS(2), NUM_CHANNELS(2), TIMEOUT_LIMIT_MS(1000)
+	: MAX_NUM_CLIENTS(2), NUM_CHANNELS(2), TIME_WAITING_FOR_EVENTS_MS(10)
 	, server(nullptr), address(), MINIMUM_PORT(10000), MAXIMUM_PORT(20000)
 	, eNetEvent()
 	, succesfullyCreated(false), lastTimeTriedCreation(0.0f), RETRY_CREATION_DELTA_TIME(1.0f)
@@ -198,7 +198,7 @@ void Server::update()
 
 	// Vedem ce pachete am primit.
 	// code = 0 inseamna ca nu a fost niciun eveniment
-	int code = enet_host_service(this->server, &this->eNetEvent, this->TIMEOUT_LIMIT_MS);
+	int code = enet_host_service(this->server, &this->eNetEvent, this->TIME_WAITING_FOR_EVENTS_MS);
 	if (code > 0)
 	{
 		switch (this->eNetEvent.type)
