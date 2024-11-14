@@ -12,6 +12,10 @@
 class CreatedMultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
 {
 protected:
+	TextEntity serverConnectionStatusLabelTextEntity;
+	TextEntity opponentConnectionStatusLabelTextEntity;
+	TextEntity serverPortLabelTextEntity;
+
 	TextEntity serverConnectionStatusTextEntity;
 	TextEntity opponentConnectionStatusTextEntity;
 	TextEntity serverPortTextEntity;
@@ -23,8 +27,11 @@ protected:
 	bool hasToSendBoardConfiguration;
 
 public:
-	CreatedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+	CreatedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
+		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
+		, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity
+		, TextEntity serverConnectionStatusLabelTextEntity, TextEntity opponentConnectionStatusLabelTextEntity, TextEntity serverPortLabelTextEntity
 		, TextEntity serverConnectionStatusTextEntity, TextEntity opponentConnectionStatusTextEntity
 		, TextEntity serverPortTextEntity);
 	virtual ~CreatedMultiplayerGameVisualInterface();

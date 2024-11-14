@@ -9,9 +9,14 @@
 
 #include "../../Entity/Button/Button.h"
 
-SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
+	, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
+	, TextEntity turnTextEntity
 	, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity)
 	: VisualInterface(backgroundEntity, respondsToEscapeKey)
+	, turnLabelTextEntity(turnLabelTextEntity)
+	, playerNameLabelTextEntity(playerNameLabelTextEntity)
+	, opponentNameLabelTextEntity(opponentNameLabelTextEntity)
 	, turnTextEntity(turnTextEntity)
 	, playerNameTextEntity(playerNameTextEntity)
 	, opponentNameTextEntity(opponentNameTextEntity)
@@ -67,37 +72,73 @@ std::shared_ptr<SingleplayerGameVisualInterface> SingleplayerGameVisualInterface
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"Turn: ERROR"
+							"Turn:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"Player: ERROR"
+							"Player:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 1.0f, 1.0f),
+							"arialFont",
+							"Opponent:"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Opp: ERROR"
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
 						),
 
 						TextEntity
@@ -123,13 +164,13 @@ void SingleplayerGameVisualInterface::initialize()
 	BoardVisualizer::get().initialize();
 	BoardManager::get().initialize();
 
-	this->turnTextEntity.setText("Turn: WHITE");
+	this->turnTextEntity.setText("WHITE");
 	this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	this->playerNameTextEntity.setText("Player: Player");
+	this->playerNameTextEntity.setText("Player");
 	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	this->opponentNameTextEntity.setText("Opp: BOT");
+	this->opponentNameTextEntity.setText("BOT");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
 	this->finalMessageTextEntity.setText("ERROR!");
@@ -141,6 +182,10 @@ void SingleplayerGameVisualInterface::initialize()
 void SingleplayerGameVisualInterface::draw()
 {
 	VisualInterface::draw();
+
+	this->turnLabelTextEntity.draw();
+	this->playerNameLabelTextEntity.draw();
+	this->opponentNameLabelTextEntity.draw();
 
 	this->turnTextEntity.draw();
 	this->playerNameTextEntity.draw();
@@ -156,24 +201,27 @@ void SingleplayerGameVisualInterface::update()
 {
 	VisualInterface::update();
 
+	this->turnLabelTextEntity.update();
+	this->playerNameLabelTextEntity.update();
+	this->opponentNameLabelTextEntity.update();
+
 	this->turnTextEntity.update();
 	this->playerNameTextEntity.update();
 	this->opponentNameTextEntity.update();
+
 	this->finalMessageTextEntity.update();
 
 	BoardVisualizer::get().update();
 
-	/*
 	if (BoardManager::get().getWhiteTurn())
 	{
-		this->turnTextEntity.setText("Turn: WHITE");
+		this->turnTextEntity.setText("WHITE");
 		this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 	else
 	{
-		this->turnTextEntity.setText("Turn: BLACK");
+		this->turnTextEntity.setText("BLACK");
 		this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
-	*/
 }
 

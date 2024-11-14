@@ -14,6 +14,10 @@
 class SingleplayerGameVisualInterface : virtual public VisualInterface
 {
 protected:
+	TextEntity turnLabelTextEntity;
+	TextEntity playerNameLabelTextEntity;
+	TextEntity opponentNameLabelTextEntity;
+
 	TextEntity turnTextEntity;
 	TextEntity playerNameTextEntity;
 	TextEntity opponentNameTextEntity;
@@ -24,7 +28,9 @@ protected:
 	std::string boardStartSoundName;
 
 public:
-	SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+	SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
+		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
+		, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity);
 	virtual ~SingleplayerGameVisualInterface();
 

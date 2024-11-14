@@ -74,6 +74,8 @@ private:
 
 	std::map<std::string, ClientData> connectedClients;
 
+	std::string serverCreatorClientKey;
+
 	// Atentie aici la unicitatea cheii
 	inline std::string getClientKey(const ENetAddress& address) const { return std::to_string(address.host) + ":" + std::to_string(address.port); }
 

@@ -18,12 +18,18 @@
 
 #include <string>
 
-JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
+	, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
+	, TextEntity turnTextEntity
 	, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity
+	, TextEntity serverConnectionStatusLabelTextEntity, TextEntity opponentConnectionStatusLabelTextEntity, TextEntity serverPortLabelTextEntity
 	, TextEntity serverConnectionStatusTextEntity, TextEntity opponentConnectionStatusTextEntity
 	, TextEntity serverPortTextEntity)
 	: VisualInterface(backgroundEntity, respondsToEscapeKey)
-	, SingleplayerGameVisualInterface(backgroundEntity, respondsToEscapeKey, turnTextEntity, playerNameTextEntity, opponentNameTextEntity, finalMessageTextEntity)
+	, SingleplayerGameVisualInterface(backgroundEntity, respondsToEscapeKey, turnLabelTextEntity, playerNameLabelTextEntity, opponentNameLabelTextEntity, turnTextEntity, playerNameTextEntity, opponentNameTextEntity, finalMessageTextEntity)
+	, serverConnectionStatusLabelTextEntity(serverConnectionStatusLabelTextEntity)
+	, opponentConnectionStatusLabelTextEntity(opponentConnectionStatusLabelTextEntity)
+	, serverPortLabelTextEntity(serverPortLabelTextEntity)
 	, serverConnectionStatusTextEntity(serverConnectionStatusTextEntity)
 	, opponentConnectionStatusTextEntity(opponentConnectionStatusTextEntity)
 	, serverPortTextEntity(serverPortTextEntity)
@@ -77,41 +83,76 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 						),
 						false,
 
-
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"Turn: ERROR"
+							"Turn:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"Player: ERROR"
+							"Player:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 1.0f, 1.0f),
+							"arialFont",
+							"Opponent:"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"Opp: ERROR"
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							9.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
 						),
 
 						TextEntity
@@ -129,37 +170,73 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"ServConn: ERROR"
+							"Server Connection:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
-							glm::vec3(1.0f, 0.0f, 0.0f),
+							glm::vec3(1.0f, 1.0f, 1.0f),
 							"arialFont",
-							"OppConn: ERROR"
+							"Opponent Connection:"
 						),
 
 						TextEntity
 						(
 							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
-							2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
+							2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
 							0.1f * WindowManager::get().getWindowWidth(),
-							0.1f * WindowManager::get().getWindowHeight(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 1.0f, 1.0f),
+							"arialFont",
+							"Server Port:"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							7.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
 							"arialFont",
-							"ServPort: ERROR"
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							8.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
+						),
+
+						TextEntity
+						(
+							9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+							2.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+							0.1f * WindowManager::get().getWindowWidth(),
+							0.05f * WindowManager::get().getWindowHeight(),
+							0.0f,
+							glm::vec3(1.0f, 0.0f, 0.0f),
+							"arialFont",
+							"ERROR"
 						)
 	);
 
@@ -176,25 +253,25 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 	// Tot SingleplayerGameVisualInterface ruleaza si sunetul de Board Start
 
 
-	this->turnTextEntity.setText("Turn: ERROR");
+	this->turnTextEntity.setText("ERROR");
 	this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	this->playerNameTextEntity.setText("Player: ERROR");
+	this->playerNameTextEntity.setText("ERROR");
 	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	this->opponentNameTextEntity.setText("Opp: ERROR");
+	this->opponentNameTextEntity.setText("ERROR");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
 	this->finalMessageTextEntity.setText("ERROR!");
 	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
+	this->serverConnectionStatusTextEntity.setText("ERROR");
 	this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
+	this->opponentConnectionStatusTextEntity.setText("ERROR");
 	this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	this->serverPortTextEntity.setText("ServPort: ERROR");
+	this->serverPortTextEntity.setText("ERROR");
 	this->serverPortTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
 
@@ -204,7 +281,7 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 
 	///
 
-	this->playerNameTextEntity.setText("Player: " + this->playerName);
+	this->playerNameTextEntity.setText(this->playerName);
 	this->playerNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
@@ -223,7 +300,7 @@ void JoinedMultiplayerGameVisualInterface::initialize()
 		serverPort = serverPort * 10 + (int)(this->serverAddress[i] - '0');
 	}
 
-	this->serverPortTextEntity.setText("ServPort: " + std::to_string(serverPort));
+	this->serverPortTextEntity.setText(std::to_string(serverPort));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 
 	Client::get().start(serverIP, serverPort, this->playerName, "", "");
@@ -233,6 +310,10 @@ void JoinedMultiplayerGameVisualInterface::draw()
 {
 	SingleplayerGameVisualInterface::draw();
 
+	this->serverConnectionStatusLabelTextEntity.draw();
+	this->opponentConnectionStatusLabelTextEntity.draw();
+	this->serverPortLabelTextEntity.draw();
+
 	this->serverConnectionStatusTextEntity.draw();
 	this->opponentConnectionStatusTextEntity.draw();
 	this->serverPortTextEntity.draw();
@@ -241,6 +322,10 @@ void JoinedMultiplayerGameVisualInterface::draw()
 void JoinedMultiplayerGameVisualInterface::update()
 {
 	SingleplayerGameVisualInterface::update();
+
+	this->serverConnectionStatusLabelTextEntity.update();
+	this->opponentConnectionStatusLabelTextEntity.update();
+	this->serverPortLabelTextEntity.update();
 
 	this->serverConnectionStatusTextEntity.update();
 	this->opponentConnectionStatusTextEntity.update();
@@ -273,54 +358,54 @@ void JoinedMultiplayerGameVisualInterface::update()
 	{
 		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] == 'w')
 		{
-			this->turnTextEntity.setText("Turn: WHITE");
+			this->turnTextEntity.setText("WHITE");
 			this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		else
 		{
-			this->turnTextEntity.setText("Turn: BLACK");
+			this->turnTextEntity.setText("BLACK");
 			this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 	}
 	else
 	{
-		this->turnTextEntity.setText("Turn: ERROR");
+		this->turnTextEntity.setText("ERROR");
 		this->turnTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	// Opponent
 	if (Client::get().getOpponentName() != "")
 	{
-		this->opponentNameTextEntity.setText("Opp: " + Client::get().getOpponentName());
+		this->opponentNameTextEntity.setText(Client::get().getOpponentName());
 		this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 	else
 	{
-		this->opponentNameTextEntity.setText("Opp: ERROR");
+		this->opponentNameTextEntity.setText("ERROR");
 		this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	// Server Connection
 	if (Client::get().getWorkingServerConnection())
 	{
-		this->serverConnectionStatusTextEntity.setText("ServConn: OK");
+		this->serverConnectionStatusTextEntity.setText("OK");
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		this->serverConnectionStatusTextEntity.setText("ServConn: ERROR");
+		this->serverConnectionStatusTextEntity.setText("ERROR");
 		this->serverConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	// Opponent Connection
 	if (Client::get().getWorkingOpponentConnection())
 	{
-		this->opponentConnectionStatusTextEntity.setText("OppConn: OK");
+		this->opponentConnectionStatusTextEntity.setText("OK");
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		this->opponentConnectionStatusTextEntity.setText("OppConn: ERROR");
+		this->opponentConnectionStatusTextEntity.setText("ERROR");
 		this->opponentConnectionStatusTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 }

@@ -14,6 +14,7 @@ Server::Server()
 	, succesfullyCreated(false), lastTimeTriedCreation(0.0f), RETRY_CREATION_DELTA_TIME(1.0f)
 	, TIME_BETWEEN_PINGS(1.0f), MAXIMUM_TIME_BEFORE_DECLARING_CONNECTION_LOST(5.0f)
 	, lastKnownBoardConfiguration("")
+	, serverCreatorClientKey("")
 {
 	this->address.host = ENET_HOST_ANY;
 	this->address.port = 0;
@@ -96,13 +97,19 @@ void Server::handleReceivedPacket()
 
 
 
-	if (receivedMessage == "color:white")
+
+	if (receivedMessage.find("color:") == 0) // Are prefixul "color:"
 	{
-		this->connectedClients.find(clientKey)->second.color = Color::WHITE;
-	}
-	else if (receivedMessage == "color:black")
-	{
-		this->connectedClients.find(clientKey)->second.color = Color::BLACK;
+		this->serverCreatorClientKey = clientKey; // Conventie: Clientul care isi cunoaste culoarea de la inceput este considerat creatorul serverului.
+
+		if (receivedMessage == "color:white")
+		{
+			this->connectedClients.find(clientKey)->second.color = Color::WHITE;
+		}
+		else if (receivedMessage == "color:black")
+		{
+			this->connectedClients.find(clientKey)->second.color = Color::BLACK;
+		}
 	}
 	else if (receivedMessage.find("name:") == 0) // Are prefixul "name:"
 	{
@@ -113,7 +120,7 @@ void Server::handleReceivedPacket()
 		std::set<Server::Color> availableColors = { Server::Color::WHITE, Server::Color::BLACK };
 		for (const auto& connectedClient : this->connectedClients)
 		{
-			availableColors.erase(connectedClient.second.color);
+			availableColors.erase(connectedClient.second.color); // E ok daca acea culoare nu se gaseste in set si tot ii facem erase.
 		}
 
 		std::string messageToSend;
@@ -290,10 +297,10 @@ void Server::update()
 	}
 
 
-	// Eliminam din structura de date clientii pierduti.
+	// Eliminam din structura de date clientii pierduti. (Cu exceptia celui ce a initiat serverul, se poate pierde conexiunea daca dam drag and drop lent la fereastra aplicatiei.)
 	for (auto connectedClient = this->connectedClients.begin(); connectedClient != this->connectedClients.end(); )
 	{
-		if (!connectedClient->second.workingConnection && connectedClient->second.lastTimeReceivedPing != 0.0f)
+		if (!connectedClient->second.workingConnection && connectedClient->second.lastTimeReceivedPing != 0.0f && connectedClient->first != this->serverCreatorClientKey)
 		{
 			enet_peer_disconnect(connectedClient->second.peer, 0);
 			connectedClient = this->connectedClients.erase(connectedClient);
@@ -329,5 +336,7 @@ void Server::stop()
 	this->lastKnownBoardConfiguration = "";
 
 	this->connectedClients.clear();
+
+	this->serverCreatorClientKey = "";
 }
 

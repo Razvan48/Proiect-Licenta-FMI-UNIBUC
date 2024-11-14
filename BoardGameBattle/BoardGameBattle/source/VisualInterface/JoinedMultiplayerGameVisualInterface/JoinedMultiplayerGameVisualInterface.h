@@ -13,6 +13,10 @@
 class JoinedMultiplayerGameVisualInterface : virtual public SingleplayerGameVisualInterface
 {
 protected:
+	TextEntity serverConnectionStatusLabelTextEntity;
+	TextEntity opponentConnectionStatusLabelTextEntity;
+	TextEntity serverPortLabelTextEntity;
+
 	TextEntity serverConnectionStatusTextEntity;
 	TextEntity opponentConnectionStatusTextEntity;
 	TextEntity serverPortTextEntity;
@@ -25,8 +29,11 @@ protected:
 	bool clientColorSet;
 
 public:
-	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey, TextEntity turnTextEntity
+	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
+		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
+		, TextEntity turnTextEntity
 		, TextEntity playerNameTextEntity, TextEntity opponentNameTextEntity, TextEntity finalMessageTextEntity
+		, TextEntity serverConnectionStatusLabelTextEntity, TextEntity opponentConnectionStatusLabelTextEntity, TextEntity serverPortLabelTextEntity
 		, TextEntity serverConnectionStatusTextEntity, TextEntity opponentConnectionStatusTextEntity
 		, TextEntity serverPortTextEntity);
 	virtual ~JoinedMultiplayerGameVisualInterface();
