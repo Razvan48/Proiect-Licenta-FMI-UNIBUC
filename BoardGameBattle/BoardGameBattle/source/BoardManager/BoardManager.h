@@ -16,15 +16,16 @@ private:
 	BoardManager& operator= (const BoardManager&& other) = delete;
 
 
-	std::string piecesConfiguration;
-
-	bool whiteTurn;
-
 	long long rankBitMasks[GameMetadata::NUM_TILES_HEIGHT];
 	long long fileBitMasks[GameMetadata::NUM_TILES_WIDTH];
 
 	long long precalculatedKingAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	long long precalculatedKnightAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+
+	std::string piecesConfiguration;
+
+	bool whiteTurn;
 
 	void printBitBoard(long long bitBoard) const;
 
