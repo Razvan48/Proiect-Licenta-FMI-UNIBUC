@@ -53,8 +53,6 @@ private:
 
 	Game::Status status;
 
-	bool soundEnabled;
-
 	std::map<Game::Status, std::shared_ptr<VisualInterface>> visualInterfaces;
 
 	Game::Mode mode;
@@ -73,9 +71,6 @@ private:
 public:
 	static Game& get();
 	void start();
-
-	inline bool getSoundEnabled() const { return this->soundEnabled; }
-	inline void setSoundEnabled(bool soundEnabled) { this->soundEnabled = soundEnabled; }
 
 	inline Game::Status getStatus() const { return this->status; }
 	inline Game::Mode getMode() const { return this->mode; }

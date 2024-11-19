@@ -11,7 +11,7 @@
 #include "../Game/Game.h"
 
 AssetManager::AssetManager()
-	: FONT_SIZE(48)
+	: FONT_SIZE(48), soundEnabled(true)
 {
 	stbi_set_flip_vertically_on_load(true);
 
@@ -216,7 +216,7 @@ void AssetManager::playSound(const std::string& soundName, bool isLooping)
 		return;
 	}
 
-	if (Game::get().getSoundEnabled())
+	if (this->soundEnabled)
 	{
 		if (!this->soundEngine->isCurrentlyPlaying(this->sounds[soundName].c_str()))
 		{

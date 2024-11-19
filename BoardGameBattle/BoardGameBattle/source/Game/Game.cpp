@@ -26,7 +26,6 @@
 
 Game::Game()
 	: status(Game::Status::IN_MAIN_MENU)
-	, soundEnabled(true)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
 {
 	// IN_MAIN_MENU
