@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "../GameMetadata/GameMetadata.h"
+
 class BoardManager
 {
 private:
@@ -17,6 +19,14 @@ private:
 	std::string piecesConfiguration;
 
 	bool whiteTurn;
+
+	long long rankBitMasks[GameMetadata::NUM_TILES_HEIGHT];
+	long long fileBitMasks[GameMetadata::NUM_TILES_WIDTH];
+
+	long long precalculatedKingAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	long long precalculatedKnightAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	void printBitBoard(long long bitBoard) const;
 
 public:
 	static BoardManager& get();
