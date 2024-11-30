@@ -5,6 +5,7 @@
 
 #include "../GameMetadata/GameMetadata.h"
 
+
 class BoardManager
 {
 private:
@@ -15,6 +16,8 @@ private:
 	BoardManager(const BoardManager&& other) = delete;
 	BoardManager& operator= (const BoardManager&& other) = delete;
 
+	static const int MODULO_LOG_POWER_2 = 67;
+	int logPower2[BoardManager::MODULO_LOG_POWER_2];
 
 	unsigned long long rankBitMasks[GameMetadata::NUM_TILES_HEIGHT];
 	unsigned long long fileBitMasks[GameMetadata::NUM_TILES_WIDTH];
@@ -54,16 +57,27 @@ private:
 		unsigned long long allPieces;
 		unsigned long long emptyTiles;
 
-		unsigned long long piecesPinnedFromLeft;
-		unsigned long long piecesPinnedFromRight;
-		unsigned long long piecesPinnedFromTop;
-		unsigned long long piecesPinnedFromBottom;
+		unsigned long long whitePiecesPinnedFromLeft;
+		unsigned long long whitePiecesPinnedFromRight;
+		unsigned long long whitePiecesPinnedFromTop;
+		unsigned long long whitePiecesPinnedFromBottom;
 
-		unsigned long long piecesPinnedFromTopRight;
-		unsigned long long piecesPinnedFromBottomLeft;
+		unsigned long long whitePiecesPinnedFromTopRight;
+		unsigned long long whitePiecesPinnedFromBottomLeft;
 
-		unsigned long long piecesPinnedFromTopLeft;
-		unsigned long long piecesPinnedFromBottomRight;
+		unsigned long long whitePiecesPinnedFromTopLeft;
+		unsigned long long whitePiecesPinnedFromBottomRight;
+
+		unsigned long long blackPiecesPinnedFromLeft;
+		unsigned long long blackPiecesPinnedFromRight;
+		unsigned long long blackPiecesPinnedFromTop;
+		unsigned long long blackPiecesPinnedFromBottom;
+
+		unsigned long long blackPiecesPinnedFromTopRight;
+		unsigned long long blackPiecesPinnedFromBottomLeft;
+
+		unsigned long long blackPiecesPinnedFromTopLeft;
+		unsigned long long blackPiecesPinnedFromBottomRight;
 	};
 
 
@@ -80,3 +94,4 @@ public:
 
 	inline bool getWhiteTurn() const { return this->whiteTurn; }
 };
+

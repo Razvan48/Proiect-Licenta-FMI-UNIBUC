@@ -16,6 +16,10 @@ BoardManager::BoardManager()
 	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000")
 	, whiteTurn(true)
 {
+	// Log Power 2
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->logPower2[(1ull << i) % BoardManager::MODULO_LOG_POWER_2] = i;
+
 	// Rank Bit Masks
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 	{
