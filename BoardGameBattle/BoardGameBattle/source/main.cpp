@@ -4,10 +4,12 @@ int main()
 {
     Game::get().start();
 
+	// TODO: de verificat ca attack zone-urile pt sliding pieces (linie, coloana, ambele diagonale), cat si log-ul sunt facute corect
+
 	// TODO: generare de mutari / mutari legale / mutari ilegale
 	// TODO: implementare BOT pentru Singleplayer
 
-	// TODO: constructor copiere si initializare cu string pt configurationMetadata si initializare simple (va trebui asa ca sa putem face multithreading)
+	// TODO: constructor copiere si initializare cu string pt configurationMetadata si initializare simpla (va trebui asa ca sa putem face multithreading)
 	// de adaugat ulterior promovare pion, en passant, castling
 
 	// TODO: este o problema unde daca utilizatorul face hold si nu da drop la fereastra,

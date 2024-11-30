@@ -11,7 +11,6 @@
 
 #include <iostream>
 
-
 BoardManager::BoardManager()
 	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000")
 	, whiteTurn(true)
@@ -190,6 +189,122 @@ BoardManager::BoardManager()
 	}
 
 	// Precalculated Top Left Bottom Right Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_WIDTH); ++j)
+		{
+			this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j] = std::make_pair(0ull, std::make_pair(std::make_pair(-1, -1), std::make_pair(-1, -1)));
+
+			if (((1ull << min(row, column)) & j) == 0ull)
+				continue;
+
+			int upLeftPos0 = -1;
+			int upLeftPos1 = -1;
+			int currentRow = row - 1;
+			int currentColumn = column - 1;
+			while (currentRow >= 0 && currentColumn >= 0)
+			{
+				if (((1ull << min(currentRow, currentColumn)) & j) != 0ull)
+				{
+					if (upLeftPos0 == -1)
+						upLeftPos0 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+					else if (upLeftPos1 == -1)
+						upLeftPos1 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+				}
+				if (upLeftPos0 == -1)
+					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].first |= (1ull << (currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn));
+				--currentRow;
+				--currentColumn;
+			}
+
+			int downRightPos0 = -1;
+			int downRightPos1 = -1;
+			currentRow = row + 1;
+			currentColumn = column + 1;
+			while (currentRow < GameMetadata::NUM_TILES_HEIGHT && currentColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				if (((1ull << min(currentRow, currentColumn)) & j) != 0ull)
+				{
+					if (downRightPos0 == -1)
+						downRightPos0 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+					else if (downRightPos1 == -1)
+						downRightPos1 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+				}
+				if (downRightPos0 == -1)
+					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].first |= (1ull << (currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn));
+				++currentRow;
+				++currentColumn;
+			}
+
+			this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].second.first.first = upLeftPos0;
+			this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].second.first.second = upLeftPos1;
+			this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].second.second.first = downRightPos0;
+			this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j].second.second.second = downRightPos1;
+		}
+	}
+
+	// Precalculated Top Right Bottom Left Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_HEIGHT); ++j)
+		{
+			this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j] = std::make_pair(0ull, std::make_pair(std::make_pair(-1, -1), std::make_pair(-1, -1)));
+
+			if (((1ull << min(row, GameMetadata::NUM_TILES_WIDTH - (column + 1))) & j) == 0ull)
+				continue;
+
+			int upRightPos0 = -1;
+			int upRightPos1 = -1;
+			int currentRow = row - 1;
+			int currentColumn = column + 1;
+			while (currentRow >= 0 && currentColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				if (((1ull << min(currentRow, GameMetadata::NUM_TILES_WIDTH - (currentColumn + 1))) & j) != 0ull)
+				{
+					if (upRightPos0 == -1)
+						upRightPos0 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+					else if (upRightPos1 == -1)
+						upRightPos1 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+				}
+				if (upRightPos0 == -1)
+					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].first |= (1ull << (currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn));
+				--currentRow;
+				++currentColumn;
+			}
+
+			int downLeftPos0 = -1;
+			int downLeftPos1 = -1;
+			currentRow = row + 1;
+			currentColumn = column - 1;
+			while (currentRow < GameMetadata::NUM_TILES_HEIGHT && currentColumn >= 0)
+			{
+				if (((1ull << min(currentRow, GameMetadata::NUM_TILES_WIDTH - (currentColumn + 1))) & j) != 0ull)
+				{
+					if (downLeftPos0 == -1)
+						downLeftPos0 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+					else if (downLeftPos1 == -1)
+						downLeftPos1 = currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn;
+				}
+				if (downLeftPos0 == -1)
+					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].first |= (1ull << (currentRow * GameMetadata::NUM_TILES_WIDTH + currentColumn));
+				++currentRow;
+				--currentColumn;
+			}
+
+			this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].second.first.first = upRightPos0;
+			this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].second.first.second = upRightPos1;
+			this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].second.second.first = downLeftPos0;
+			this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j].second.second.second = downLeftPos1;
+		}
+	}
+
+
 }
 
 BoardManager::~BoardManager()
