@@ -783,6 +783,9 @@ void Game::run()
 
 void Game::draw()
 {
+	if (this->status == Game::Status::EXITING)
+		return;
+
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
@@ -796,6 +799,12 @@ void Game::draw()
 
 void Game::update()
 {
+	if (this->status == Game::Status::EXITING)
+	{
+		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
+		return;
+	}
+
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 	if (visualInterface != this->visualInterfaces.end())
 	{
@@ -807,11 +816,6 @@ void Game::update()
 	}
 
 	InputManager::get().update(); // Trebuie sa fie ultimul update, deoarece curata ce butoane s-au apasat.
-
-	if (this->status == Game::Status::EXITING)
-	{
-		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
-	}
 
 	// this->printGameStatuses(); // Doar pentru debug
 }
@@ -825,6 +829,9 @@ void Game::start()
 void Game::setStatus(const Game::Status& status)
 {
 	this->status = status;
+
+	if (this->status == Game::Status::EXITING)
+		return;
 
 	const auto& visualInterface = this->visualInterfaces.find(this->status);
 

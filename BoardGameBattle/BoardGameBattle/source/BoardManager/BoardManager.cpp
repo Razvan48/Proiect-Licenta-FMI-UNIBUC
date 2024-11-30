@@ -19,70 +19,70 @@ BoardManager::BoardManager()
 	// Rank Bit Masks
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 	{
-		this->rankBitMasks[i] = 0LL;
+		this->rankBitMasks[i] = 0ull;
 		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
-			this->rankBitMasks[i] |= (1LL << (i * GameMetadata::NUM_TILES_WIDTH + j));
+			this->rankBitMasks[i] |= (1ull << (i * GameMetadata::NUM_TILES_WIDTH + j));
 	}
 
 	// File Bit Masks
 	for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 	{
-		this->fileBitMasks[j] = 0LL;
+		this->fileBitMasks[j] = 0ull;
 		for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
-			this->fileBitMasks[j] |= (1LL << (i * GameMetadata::NUM_TILES_WIDTH + j));
+			this->fileBitMasks[j] |= (1ull << (i * GameMetadata::NUM_TILES_WIDTH + j));
 	}
 
 	// Precalculated King Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
-		this->precalculatedKingAttackZones[i] = 0LL;
+		this->precalculatedKingAttackZones[i] = 0ull;
 
 		int row = i / GameMetadata::NUM_TILES_WIDTH;
 		int column = i % GameMetadata::NUM_TILES_WIDTH;
 
 		if (row > 0)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 1)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column));
 		if (column > 0)
-			this->precalculatedKingAttackZones[i] |= (1LL << (row * GameMetadata::NUM_TILES_WIDTH + column - 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + column - 1));
 		if (column < GameMetadata::NUM_TILES_WIDTH - 1)
-			this->precalculatedKingAttackZones[i] |= (1LL << (row * GameMetadata::NUM_TILES_WIDTH + column + 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + column + 1));
 		if (row > 0 && column > 0)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 1));
 		if (row > 0 && column < GameMetadata::NUM_TILES_WIDTH - 1)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column + 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column + 1));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 1 && column > 0)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column - 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column - 1));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 1 && column < GameMetadata::NUM_TILES_WIDTH - 1)
-			this->precalculatedKingAttackZones[i] |= (1LL << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column + 1));
+			this->precalculatedKingAttackZones[i] |= (1ull << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column + 1));
 	}
 
 	// Precalculated Knight Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
-		this->precalculatedKnightAttackZones[i] = 0LL;
+		this->precalculatedKnightAttackZones[i] = 0ull;
 
 		int row = i / GameMetadata::NUM_TILES_WIDTH;
 		int column = i % GameMetadata::NUM_TILES_WIDTH;
 
 		// In sens trigonometric
 		if (row > 1 && column > 0)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row - 2) * GameMetadata::NUM_TILES_WIDTH + column - 1));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 2) * GameMetadata::NUM_TILES_WIDTH + column - 1));
 		if (row > 1 && column < GameMetadata::NUM_TILES_WIDTH - 1)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row - 2) * GameMetadata::NUM_TILES_WIDTH + column + 1));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 2) * GameMetadata::NUM_TILES_WIDTH + column + 1));
 		if (row > 0 && column < GameMetadata::NUM_TILES_WIDTH - 2)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column + 2));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column + 2));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 1 && column < GameMetadata::NUM_TILES_WIDTH - 2)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column + 2));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column + 2));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 2 && column < GameMetadata::NUM_TILES_WIDTH - 1)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row + 2) * GameMetadata::NUM_TILES_WIDTH + column + 1));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row + 2) * GameMetadata::NUM_TILES_WIDTH + column + 1));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 2 && column > 0)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row + 2) * GameMetadata::NUM_TILES_WIDTH + column - 1));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row + 2) * GameMetadata::NUM_TILES_WIDTH + column - 1));
 		if (row < GameMetadata::NUM_TILES_HEIGHT - 1 && column > 1)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row + 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
 		if (row > 0 && column > 1)
-			this->precalculatedKnightAttackZones[i] |= (1LL << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
+			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
 	}
 }
 
@@ -222,11 +222,11 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 	return moves;
 }
 
-void BoardManager::printBitBoard(long long bitBoard) const
+void BoardManager::printBitBoard(unsigned long long bitBoard) const
 {
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
-		if ((1ll << i) & bitBoard)
+		if ((1ull << i) & bitBoard)
 			std::cout << '1';
 		else
 			std::cout << '0';
