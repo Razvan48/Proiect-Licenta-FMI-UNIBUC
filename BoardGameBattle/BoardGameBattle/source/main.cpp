@@ -8,6 +8,7 @@ int main()
 	// TODO: implementare BOT pentru Singleplayer
 
 	// TODO: constructor copiere si initializare cu string pt configurationMetadata si initializare simple (va trebui asa ca sa putem face multithreading)
+	// de adaugat ulterior promovare pion, en passant, castling
 
 	// TODO: este o problema unde daca utilizatorul face hold si nu da drop la fereastra,
 	// atunci aplicatia nu mai ruleaza si serverul crede ca a picat client-ul si implicit il deconecteaza.

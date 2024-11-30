@@ -88,6 +88,108 @@ BoardManager::BoardManager()
 		if (row > 0 && column > 1)
 			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
 	}
+
+	// Precalculated Rank Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_WIDTH); ++j)
+		{
+			this->precalculatedRankAttackZones[i][j] = std::make_pair(0ull, std::make_pair(std::make_pair(-1, -1), std::make_pair(-1, -1)));
+
+			if (((1ull << column) & j) == 0ull)
+				continue;
+
+			int leftColumn0 = -1;
+			int leftColumn1 = -1;
+			for (int currentLeftColumn = column - 1; currentLeftColumn >= 0; --currentLeftColumn)
+			{
+				if (((1ull << currentLeftColumn) & j) != 0ull)
+				{
+					if (leftColumn0 == -1)
+						leftColumn0 = row * GameMetadata::NUM_TILES_WIDTH + currentLeftColumn;
+					else if (leftColumn1 == -1)
+						leftColumn1 = row * GameMetadata::NUM_TILES_WIDTH + currentLeftColumn;
+				}
+				if (leftColumn0 == -1)
+					this->precalculatedRankAttackZones[i][j].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + currentLeftColumn));
+			}
+
+			int rightColumn0 = -1;
+			int rightColumn1 = -1;
+			for (int currentRightColumn = column + 1; currentRightColumn < GameMetadata::NUM_TILES_WIDTH; ++currentRightColumn)
+			{
+				if (((1ull << currentRightColumn) & j) != 0ull)
+				{
+					if (rightColumn0 == -1)
+						rightColumn0 = row * GameMetadata::NUM_TILES_WIDTH + currentRightColumn;
+					else if (rightColumn1 == -1)
+						rightColumn1 = row * GameMetadata::NUM_TILES_WIDTH + currentRightColumn;
+				}
+				if (rightColumn0 == -1)
+					this->precalculatedRankAttackZones[i][j].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + currentRightColumn));
+			}
+
+			this->precalculatedRankAttackZones[i][j].second.first.first = leftColumn0;
+			this->precalculatedRankAttackZones[i][j].second.first.second = leftColumn1;
+			this->precalculatedRankAttackZones[i][j].second.second.first = rightColumn0;
+			this->precalculatedRankAttackZones[i][j].second.second.second = rightColumn1;
+		}
+	}
+
+	// Precalculated File Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_HEIGHT); ++j)
+		{
+			this->precalculatedFileAttackZones[i][j] = std::make_pair(0ull, std::make_pair(std::make_pair(-1, -1), std::make_pair(-1, -1)));
+
+			if (((1ull << row) & j) == 0ull)
+				continue;
+
+			int upRow0 = -1;
+			int upRow1 = -1;
+			for (int currentUpRow = row - 1; currentUpRow >= 0; --currentUpRow)
+			{
+				if (((1ull << currentUpRow) & j) != 0ull)
+				{
+					if (upRow0 == -1)
+						upRow0 = currentUpRow * GameMetadata::NUM_TILES_WIDTH + column;
+					else if (upRow1 == -1)
+						upRow1 = currentUpRow * GameMetadata::NUM_TILES_WIDTH + column;
+				}
+				if (upRow0 == -1)
+					this->precalculatedFileAttackZones[i][j].first |= (1ull << (currentUpRow * GameMetadata::NUM_TILES_WIDTH + column));
+			}
+
+			int downRown0 = -1;
+			int downRow1 = -1;
+			for (int currentDownRow = row + 1; currentDownRow < GameMetadata::NUM_TILES_HEIGHT; ++currentDownRow)
+			{
+				if (((1ull << currentDownRow) & j) != 0ull)
+				{
+					if (downRown0 == -1)
+						downRown0 = currentDownRow * GameMetadata::NUM_TILES_WIDTH + column;
+					else if (downRow1 == -1)
+						downRow1 = currentDownRow * GameMetadata::NUM_TILES_WIDTH + column;
+				}
+				if (downRown0 == -1)
+					this->precalculatedFileAttackZones[i][j].first |= (1ull << (currentDownRow * GameMetadata::NUM_TILES_WIDTH + column));
+			}
+
+			this->precalculatedFileAttackZones[i][j].second.first.first = upRow0;
+			this->precalculatedFileAttackZones[i][j].second.first.second = upRow1;
+			this->precalculatedFileAttackZones[i][j].second.second.first = downRown0;
+			this->precalculatedFileAttackZones[i][j].second.second.second = downRow1;
+		}
+	}
+
+	// Precalculated Top Left Bottom Right Diagonal Attack Zones
 }
 
 BoardManager::~BoardManager()
