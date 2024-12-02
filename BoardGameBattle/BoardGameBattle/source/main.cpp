@@ -4,7 +4,21 @@ int main()
 {
     Game::get().start();
 
+	// TODO: de scris extract file bitmask, diagonal bitmask 
+
+
+
 	// TODO: de verificat ca attack zone-urile pt sliding pieces (linie, coloana, ambele diagonale), cat si log-ul sunt facute corect
+
+	// TODO: de schimbat attack zone-urile
+	// dp[i][j][k] = i pozitie, j e masca pt piesele jucatorului curent pe linie/coloana/diagonala respectiva,
+	// j e acelasi lucru dar pt jucatorul inamic
+	// dp[i][j][k] = pair(masca, masca) <- masca raw attack zones(nu tin cont daca piesa e pinned) + pinned pieces mask (numai pt piesele adversarului) (pinned fata de orice alta piesa a adversarului)
+	// pentru piesele pinned ele pot merge numai pe pozitiile de pe aceeasi linie/coloana/diagonala
+
+	// cum hash-uim in O(1) o linie/coloana/diagonala (nu cred ca se poate, facem in O(8), aproape constant, aia e)
+
+	// la pin nu cred ca trb si stanga/dreapta/sus/jos, e suficient doar linie/coloana/diagonala0/diagonala1
 
 	// TODO: generare de mutari / mutari legale / mutari ilegale
 	// TODO: implementare BOT pentru Singleplayer

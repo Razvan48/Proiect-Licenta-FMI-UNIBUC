@@ -24,11 +24,11 @@ private:
 
 	unsigned long long precalculatedKingAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	unsigned long long precalculatedKnightAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
-	
-	std::pair<unsigned long long, std::pair<std::pair<int, int>, std::pair<int, int>>> precalculatedRankAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][(1 << GameMetadata::NUM_TILES_WIDTH)];
-	std::pair<unsigned long long, std::pair<std::pair<int, int>, std::pair<int, int>>> precalculatedFileAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][(1 << GameMetadata::NUM_TILES_HEIGHT)];
-	std::pair<unsigned long long, std::pair<std::pair<int, int>, std::pair<int, int>>> precalculatedTopLeftBottomRightDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][(1 << GameMetadata::NUM_TILES_WIDTH)];
-	std::pair<unsigned long long, std::pair<std::pair<int, int>, std::pair<int, int>>> precalculatedTopRightBottomLeftDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][(1 << GameMetadata::NUM_TILES_HEIGHT)];
+
+	std::pair<unsigned long long, unsigned long long> precalculatedRankAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH];
+	std::pair<unsigned long long, unsigned long long> precalculatedFileAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT][1 << GameMetadata::NUM_TILES_HEIGHT];
+	std::pair<unsigned long long, unsigned long long> precalculatedTopLeftBottomRightDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT][1 << GameMetadata::NUM_TILES_HEIGHT];
+	std::pair<unsigned long long, unsigned long long> precalculatedTopRightBottomLeftDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT][1 << GameMetadata::NUM_TILES_HEIGHT];
 
 	std::string piecesConfiguration;
 
@@ -84,6 +84,10 @@ private:
 		unsigned long long blackPiecesPinnedFromBottomRight;
 	};
 
+	unsigned long long extractRank(unsigned long long bitBoard, int pos) const;
+	unsigned long long extractFile(unsigned long long bitBoard, int pos) const;
+	unsigned long long extractTopLeftBottomRightDiagonal(unsigned long long bitBoard, int pos) const;
+	unsigned long long extractTopRightBottomLeftDiagonal(unsigned long long bitBoard, int pos) const;
 
 public:
 	static BoardManager& get();
