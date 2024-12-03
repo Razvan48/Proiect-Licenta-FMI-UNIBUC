@@ -6,6 +6,9 @@ int main()
 
 	// TODO: de scris extract file bitmask, diagonal bitmask 
 
+	// cand generam mutarile si le punem intr-un vector dam vectorul ca referinta
+	// analog cand schimbam bitmask-urile, dam ca referinta toata structura de config
+	// singurul loc unde nu dam referinta e cand avansam in minimax, acolo facem o copie a structurii de config
 
 
 	// TODO: de verificat ca attack zone-urile pt sliding pieces (linie, coloana, ambele diagonale), cat si log-ul sunt facute corect

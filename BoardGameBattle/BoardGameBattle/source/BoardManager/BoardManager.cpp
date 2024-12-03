@@ -20,19 +20,59 @@ BoardManager::BoardManager()
 		this->logPower2[(1ull << i) % BoardManager::MODULO_LOG_POWER_2] = i;
 
 	// Rank Bit Masks
-	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
 		this->rankBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
 		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
-			this->rankBitMasks[i] |= (1ull << (i * GameMetadata::NUM_TILES_WIDTH + j));
+			this->rankBitMasks[i] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + j));
 	}
 
 	// File Bit Masks
-	for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
-		this->fileBitMasks[j] = 0ull;
-		for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
-			this->fileBitMasks[j] |= (1ull << (i * GameMetadata::NUM_TILES_WIDTH + j));
+		this->fileBitMasks[i] = 0ull;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		for (int j = 0; j < GameMetadata::NUM_TILES_HEIGHT; ++j)
+			this->fileBitMasks[i] |= (1ull << (j * GameMetadata::NUM_TILES_WIDTH + column));
+	}
+
+	// Top Left Bottom Right Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->topLeftBottomRightDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int minDiff = min(row, column);
+		int crtRow = row - minDiff;
+		int crtColumn = column - minDiff;
+
+		while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+		{
+			this->topLeftBottomRightDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			++crtRow;
+			++crtColumn;
+		}
+	}
+
+	// Top Right Bottom Left Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->topRightBottomLeftDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int minDiff = min(row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+		int crtRow = row - minDiff;
+		int crtColumn = column + minDiff;
+
+		while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn >= 0)
+		{
+			this->topRightBottomLeftDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			++crtRow;
+			--crtColumn;
+		}
 	}
 
 	// Precalculated King Attack Zones
@@ -441,22 +481,48 @@ BoardManager::~BoardManager()
 
 unsigned long long BoardManager::extractRank(unsigned long long bitBoard, int pos) const
 {
-	return (bitBoard & this->rankBitMasks[pos / GameMetadata::NUM_TILES_WIDTH]) >> (pos / GameMetadata::NUM_TILES_WIDTH * GameMetadata::NUM_TILES_WIDTH);
+	return (bitBoard & this->rankBitMasks[pos]) >> (pos / GameMetadata::NUM_TILES_WIDTH * GameMetadata::NUM_TILES_WIDTH);
 }
 
 unsigned long long BoardManager::extractFile(unsigned long long bitBoard, int pos) const
 {
-	// TODO:
+	unsigned long long sol = 0ull;
+	bitBoard &= this->fileBitMasks[pos];
+	while (bitBoard)
+	{
+		unsigned long long lsb = (bitBoard & ((~bitBoard) + 1));
+		sol |= (1ull << (this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2] / GameMetadata::NUM_TILES_WIDTH));
+		bitBoard ^= lsb;
+	}
+	return sol;
 }
 
 unsigned long long BoardManager::extractTopLeftBottomRightDiagonal(unsigned long long bitBoard, int pos) const
 {
-	// TODO:
+	unsigned long long sol = 0ull;
+	bitBoard &= this->topLeftBottomRightDiagonalBitMasks[pos];
+	int firstRowDiag = max(0, pos / GameMetadata::NUM_TILES_WIDTH - pos % GameMetadata::NUM_TILES_WIDTH);
+	while (bitBoard)
+	{
+		unsigned long long lsb = (bitBoard & ((~bitBoard) + 1));
+		sol |= (1ull << (pos / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
+		bitBoard ^= lsb;
+	}
+	return sol;
 }
 
 unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long long bitBoard, int pos) const
 {
-	// TODO:
+	unsigned long long sol = 0ull;
+	bitBoard &= this->topRightBottomLeftDiagonalBitMasks[pos];
+	int firstRowDiag = max(0, pos / GameMetadata::NUM_TILES_WIDTH - (GameMetadata::NUM_TILES_WIDTH - 1 - pos % GameMetadata::NUM_TILES_WIDTH));
+	while (bitBoard)
+	{
+		unsigned long long lsb = (bitBoard & ((~bitBoard) + 1));
+		sol |= (1ull << (pos / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
+		bitBoard ^= lsb;
+	}
+	return sol;
 }
 
 void BoardManager::initialize()
