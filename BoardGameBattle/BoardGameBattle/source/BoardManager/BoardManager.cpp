@@ -656,6 +656,216 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 	return moves;
 }
 
+// White Pieces Attack Zones Generation
+
+void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteKnightAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	configurationMetadata.whiteKnightAttackZone = 0ull;
+	unsigned long long whiteKnights = configurationMetadata.whiteKnights;
+
+	while (whiteKnights)
+	{
+		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
+		configurationMetadata.whiteKnightAttackZone |= this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteKnights ^= lsb;
+	}
+}
+
+void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	configurationMetadata.whiteKingAttackZone = 0ull;
+	unsigned long long whiteKings = configurationMetadata.whiteKings;
+
+	while (whiteKings)
+	{
+		unsigned long long lsb = (whiteKings & ((~whiteKings) + 1));
+		configurationMetadata.whiteKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteKings ^= lsb;
+	}
+}
+
+// Black Pieces Attack Zones Generation
+
+void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackKnightAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	configurationMetadata.blackKnightAttackZone = 0ull;
+	unsigned long long blackKnights = configurationMetadata.blackKnights;
+
+	while (blackKnights)
+	{
+		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
+		configurationMetadata.blackKnightAttackZone |= this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackKnights ^= lsb;
+	}
+}
+
+void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata)
+{
+	configurationMetadata.blackKingAttackZone = 0ull;
+	unsigned long long blackKings = configurationMetadata.blackKings;
+
+	while (blackKings)
+	{
+		unsigned long long lsb = (blackKings & ((~blackKings) + 1));
+		configurationMetadata.blackKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackKings ^= lsb;
+	}
+}
+
+// Attack Zones Generation
+
+void BoardManager::generateWhiteAttackZones(ConfigurationMetadata& configurationMetadata)
+{
+	generateWhitePawnAttackZone(configurationMetadata);
+	generateWhiteRookAttackZone(configurationMetadata);
+	generateWhiteKnightAttackZone(configurationMetadata);
+	generateWhiteBishopAttackZone(configurationMetadata);
+	generateWhiteQueenAttackZone(configurationMetadata);
+	generateWhiteKingAttackZone(configurationMetadata);
+}
+
+void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configurationMetadata)
+{
+	generateBlackPawnAttackZone(configurationMetadata);
+	generateBlackRookAttackZone(configurationMetadata);
+	generateBlackKnightAttackZone(configurationMetadata);
+	generateBlackBishopAttackZone(configurationMetadata);
+	generateBlackQueenAttackZone(configurationMetadata);
+	generateBlackKingAttackZone(configurationMetadata);
+}
+
+// White Pieces Moves Generation
+
+void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+// Black Pieces Moves Generation
+
+void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	// TODO:
+}
+
+// All Pieces Moves Generation
+
+void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	generateBlackAttackZones(configurationMetadata);
+
+	generateWhitePawnMoves(configurationMetadata, moves);
+	generateWhiteRookMoves(configurationMetadata, moves);
+	generateWhiteKnightMoves(configurationMetadata, moves);
+	generateWhiteBishopMoves(configurationMetadata, moves);
+	generateWhiteQueenMoves(configurationMetadata, moves);
+	generateWhiteKingMoves(configurationMetadata, moves);
+}
+
+void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+{
+	generateWhiteAttackZones(configurationMetadata);
+
+	generateBlackPawnMoves(configurationMetadata, moves);
+	generateBlackRookMoves(configurationMetadata, moves);
+	generateBlackKnightMoves(configurationMetadata, moves);
+	generateBlackBishopMoves(configurationMetadata, moves);
+	generateBlackQueenMoves(configurationMetadata, moves);
+	generateBlackKingMoves(configurationMetadata, moves);
+}
+
+//
+
 void BoardManager::printBitBoard(unsigned long long bitBoard) const
 {
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)

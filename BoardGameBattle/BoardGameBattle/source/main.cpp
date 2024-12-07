@@ -4,6 +4,8 @@ int main()
 {
     Game::get().start();
 
+	// TODO: de facut toate todo-urile din BoardManager.cpp + nu exista castling si en passant!!!!
+
 	// TODO: de scris extract file bitmask, diagonal bitmask 
 
 	// cand generam mutarile si le punem intr-un vector dam vectorul ca referinta

@@ -36,10 +36,24 @@ private:
 
 	bool whiteTurn;
 
-	void printBitBoard(unsigned long long bitBoard) const;
-
 	struct ConfigurationMetadata
 	{
+		unsigned long long whitePawns;
+		unsigned long long whiteRooks;
+		unsigned long long whiteKnights;
+		unsigned long long whiteBishops;
+		unsigned long long whiteQueens;
+		unsigned long long whiteKings;
+
+		unsigned long long blackPawns;
+		unsigned long long blackRooks;
+		unsigned long long blackKnights;
+		unsigned long long blackBishops;
+		unsigned long long blackQueens;
+		unsigned long long blackKings;
+
+
+
 		unsigned long long whitePawnAttackZone;
 		unsigned long long whiteRookAttackZone;
 		unsigned long long whiteKnightAttackZone;
@@ -91,6 +105,44 @@ private:
 	unsigned long long extractTopLeftBottomRightDiagonal(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractTopRightBottomLeftDiagonal(unsigned long long bitBoard, int pos) const;
 
+
+
+	void generateWhitePawnAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateWhiteRookAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateWhiteKnightAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateWhiteBishopAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateWhiteQueenAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateWhiteKingAttackZone(ConfigurationMetadata& configurationMetadata);
+
+	void generateBlackPawnAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateBlackRookAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateBlackKnightAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateBlackBishopAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateBlackQueenAttackZone(ConfigurationMetadata& configurationMetadata);
+	void generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata);
+
+	void generateWhiteAttackZones(ConfigurationMetadata& configurationMetadata);
+	void generateBlackAttackZones(ConfigurationMetadata& configurationMetadata);
+
+	//
+
+	void generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+
+	void generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+
+	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+
 public:
 	static BoardManager& get();
 
@@ -103,5 +155,7 @@ public:
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
 
 	inline bool getWhiteTurn() const { return this->whiteTurn; }
+
+	void printBitBoard(unsigned long long bitBoard) const;
 };
 
