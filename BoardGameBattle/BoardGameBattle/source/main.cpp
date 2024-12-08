@@ -5,6 +5,9 @@ int main()
     Game::get().start();
 
 	// TODO: de facut toate todo-urile din BoardManager.cpp + nu exista castling si en passant!!!!
+	// de pus si turn-ul in configuration metadata si sa am o variabila de configuration metadata in clasa, elimin bool-ul de whites- turn
+
+	// promovarile se pot face si prin atacuri de pioni
 
 	// TODO: de scris extract file bitmask, diagonal bitmask 
 

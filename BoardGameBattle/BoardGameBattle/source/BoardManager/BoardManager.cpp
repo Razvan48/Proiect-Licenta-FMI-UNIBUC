@@ -13,8 +13,11 @@
 
 BoardManager::BoardManager()
 	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000")
-	, whiteTurn(true)
 {
+	// TODO: move this from here
+	this->configurationMetadata.whiteTurn = true;
+
+
 	// Log Power 2
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 		this->logPower2[(1ull << i) % BoardManager::MODULO_LOG_POWER_2] = i;
@@ -472,6 +475,17 @@ BoardManager::BoardManager()
 			}
 		}
 	}
+
+
+	this->precalculatedEmptyCastleTopLeft = (1ull << 1) | (1ull << 2) | (1ull << 3);
+	this->precalculatedEmptyCastleTopRight = (1ull << 5) | (1ull << 6);
+	this->precalculatedEmptyCastleBottomLeft = (1ull << 57) | (1ull << 58) | (1ull << 59);
+	this->precalculatedEmptyCastleBottomRight = (1ull << 61) | (1ull << 62);
+
+	this->precalculatedFullCastleTopLeft = (1ull << 0) | (1ull << 1) | (1ull << 2) | (1ull << 3) | (1ull << 4);
+	this->precalculatedFullCastleTopRight = (1ull << 4) | (1ull << 5) | (1ull << 6) | (1ull << 7);
+	this->precalculatedFullCastleBottomLeft = (1ull << 56) | (1ull << 57) | (1ull << 58) | (1ull << 59) | (1ull << 60);
+	this->precalculatedFullCastleBottomRight = (1ull << 60) | (1ull << 61) | (1ull << 62) | (1ull << 63);
 }
 
 BoardManager::~BoardManager()
@@ -528,7 +542,9 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 void BoardManager::initialize()
 {
 	this->piecesConfiguration = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000";
-	this->whiteTurn = true;
+
+	// TODO: move this
+	this->configurationMetadata.whiteTurn = true;
 }
 
 void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration)
@@ -536,7 +552,7 @@ void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration
 	this->piecesConfiguration = piecesConfiguration;
 	int whiteTurnPos = GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES;
 	if (whiteTurnPos < this->piecesConfiguration.size())
-		this->whiteTurn = (this->piecesConfiguration[whiteTurnPos] == 'w');
+		this->configurationMetadata.whiteTurn = (this->piecesConfiguration[whiteTurnPos] == 'w');
 	else
 	{
 		std::cout << "Error: Could not find whose turn is it inside the Pieces Configuration in BoardManager::setPiecesConfiguration. Set to default to white." << std::endl;
@@ -564,9 +580,9 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 		this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowEnd) * GameMetadata::NUM_TILES_WIDTH + columnEnd] = gamePiece;
 	}
 
-	this->whiteTurn = !this->whiteTurn;
+	this->configurationMetadata.whiteTurn = !this->configurationMetadata.whiteTurn;
 
-	if (this->whiteTurn)
+	if (this->configurationMetadata.whiteTurn)
 		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'w';
 	else
 		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'b';
@@ -592,10 +608,10 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 
 	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
 	{
-		if (Game::get().getColor() == Game::Color::WHITE && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
+		if (Game::get().getColor() == Game::Color::WHITE && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->configurationMetadata.whiteTurn)))
 			return moves;
 
-		if (Game::get().getColor() == Game::Color::BLACK && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
+		if (Game::get().getColor() == Game::Color::BLACK && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->configurationMetadata.whiteTurn))
 			return moves;
 	}
 	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
@@ -603,10 +619,10 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		if (Client::get().getColor() == "") // Suntem in Multiplayer si nu stim culoarea
 			return moves;
 
-		if (Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->whiteTurn)))
+		if (Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->configurationMetadata.whiteTurn)))
 			return moves;
 
-		if (Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->whiteTurn))
+		if (Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->configurationMetadata.whiteTurn))
 			return moves;
 	}
 	else // Game::Mode::NONE

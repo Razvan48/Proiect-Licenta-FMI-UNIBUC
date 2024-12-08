@@ -32,9 +32,17 @@ private:
 	std::pair<unsigned long long, unsigned long long> precalculatedTopLeftBottomRightDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT][1 << GameMetadata::NUM_TILES_HEIGHT];
 	std::pair<unsigned long long, unsigned long long> precalculatedTopRightBottomLeftDiagonalAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT][1 << GameMetadata::NUM_TILES_HEIGHT];
 
-	std::string piecesConfiguration;
+	unsigned long long precalculatedEmptyCastleTopLeft;
+	unsigned long long precalculatedEmptyCastleTopRight;
+	unsigned long long precalculatedEmptyCastleBottomLeft;
+	unsigned long long precalculatedEmptyCastleBottomRight;
 
-	bool whiteTurn;
+	unsigned long long precalculatedFullCastleTopLeft;
+	unsigned long long precalculatedFullCastleTopRight;
+	unsigned long long precalculatedFullCastleBottomLeft;
+	unsigned long long precalculatedFullCastleBottomRight;
+
+	std::string piecesConfiguration;
 
 	struct ConfigurationMetadata
 	{
@@ -52,7 +60,19 @@ private:
 		unsigned long long blackQueens;
 		unsigned long long blackKings;
 
+		bool whiteTurn;
 
+		int capturableEnPassantPosition;
+
+		bool whiteKingMoved;
+		bool whiteRookBottomLeftMoved;
+		bool whiteRookBottomRightMoved;
+
+		bool blackKingMoved;
+		bool blackRookTopLeftMoved;
+		bool blackRookTopRightMoved;
+
+		//
 
 		unsigned long long whitePawnAttackZone;
 		unsigned long long whiteRookAttackZone;
@@ -99,6 +119,7 @@ private:
 		unsigned long long blackPiecesPinnedFromTopLeft;
 		unsigned long long blackPiecesPinnedFromBottomRight;
 	};
+	ConfigurationMetadata configurationMetadata;
 
 	unsigned long long extractRank(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractFile(unsigned long long bitBoard, int pos) const;
@@ -154,7 +175,7 @@ public:
 	void applyMove(const std::string& move);
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
 
-	inline bool getWhiteTurn() const { return this->whiteTurn; }
+	inline bool getWhiteTurn() const { return this->configurationMetadata.whiteTurn; }
 
 	void printBitBoard(unsigned long long bitBoard) const;
 };
