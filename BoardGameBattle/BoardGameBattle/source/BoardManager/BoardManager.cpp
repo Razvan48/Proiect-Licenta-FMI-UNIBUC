@@ -519,7 +519,7 @@ unsigned long long BoardManager::extractTopLeftBottomRightDiagonal(unsigned long
 	while (bitBoard)
 	{
 		unsigned long long lsb = (bitBoard & ((~bitBoard) + 1));
-		sol |= (1ull << (pos / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
+		sol |= (1ull << (this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2] / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
 		bitBoard ^= lsb;
 	}
 	return sol;
@@ -533,7 +533,7 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 	while (bitBoard)
 	{
 		unsigned long long lsb = (bitBoard & ((~bitBoard) + 1));
-		sol |= (1ull << (pos / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
+		sol |= (1ull << (this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2] / GameMetadata::NUM_TILES_WIDTH - firstRowDiag));
 		bitBoard ^= lsb;
 	}
 	return sol;
