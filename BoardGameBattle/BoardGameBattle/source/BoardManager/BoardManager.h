@@ -97,27 +97,15 @@ private:
 		unsigned long long allPieces;
 		unsigned long long emptyTiles;
 
-		unsigned long long whitePiecesPinnedFromLeft;
-		unsigned long long whitePiecesPinnedFromRight;
-		unsigned long long whitePiecesPinnedFromTop;
-		unsigned long long whitePiecesPinnedFromBottom;
+		unsigned long long whitePiecesPinnedOnRank;
+		unsigned long long whitePiecesPinnedOnFile;
+		unsigned long long whitePiecesPinnedOnTopLeftBottomRight;
+		unsigned long long whitePiecesPinnedOnTopRightBottomLeft;
 
-		unsigned long long whitePiecesPinnedFromTopRight;
-		unsigned long long whitePiecesPinnedFromBottomLeft;
-
-		unsigned long long whitePiecesPinnedFromTopLeft;
-		unsigned long long whitePiecesPinnedFromBottomRight;
-
-		unsigned long long blackPiecesPinnedFromLeft;
-		unsigned long long blackPiecesPinnedFromRight;
-		unsigned long long blackPiecesPinnedFromTop;
-		unsigned long long blackPiecesPinnedFromBottom;
-
-		unsigned long long blackPiecesPinnedFromTopRight;
-		unsigned long long blackPiecesPinnedFromBottomLeft;
-
-		unsigned long long blackPiecesPinnedFromTopLeft;
-		unsigned long long blackPiecesPinnedFromBottomRight;
+		unsigned long long blackPiecesPinnedOnRank;
+		unsigned long long blackPiecesPinnedOnFile;
+		unsigned long long blackPiecesPinnedOnTopLeftBottomRight;
+		unsigned long long blackPiecesPinnedOnTopRightBottomLeft;
 	};
 	ConfigurationMetadata configurationMetadata;
 

@@ -4,6 +4,9 @@ int main()
 {
     Game::get().start();
 
+	// pin-urile trebuie initializate cu 0 in functia globala care apeleaza apoi pt fiecare piesa in parte, pt ca le share-uim intre piese => nu putem initializa cu 0 in metode
+	// de schimbat configuratia intreaga, nu mai tinem minte daca am facut rocade, tinem minte daca regii + turele s-au mutat de la inceputul jocului!!
+
 	// TODO: de facut toate todo-urile din BoardManager.cpp + nu exista castling si en passant!!!!
 	// de pus si turn-ul in configuration metadata si sa am o variabila de configuration metadata in clasa, elimin bool-ul de whites- turn
 

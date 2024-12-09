@@ -676,12 +676,48 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 
 void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	configurationMetadata.whitePawnAttackZone = 0ull;
+	unsigned long long validWhitePawns = (configurationMetadata.whitePawns & (~this->rankBitMasks[0]));
+
+	// Atac Stanga
+	configurationMetadata.whitePawnAttackZone |= (((validWhitePawns & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces);
+
+	// Atac Dreapta
+	configurationMetadata.whitePawnAttackZone |= (((validWhitePawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces);
+
+	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
 }
 
 void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.whiteRookAttackZone = 0ull;
+	unsigned long long whiteRooks = configurationMetadata.whiteRooks;
+
+	while (whiteRooks)
+	{
+		unsigned long long lsb = (whiteRooks & ((~whiteRooks) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Rank
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteRookAttackZone |= this->precalculatedRankAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first;
+		configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRankAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second;
+
+		// File
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteRookAttackZone |= this->precalculatedFileAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first;
+		configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedFileAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second;
+		//
+
+		whiteRooks ^= lsb;
+	}
 }
 
 void BoardManager::generateWhiteKnightAttackZone(ConfigurationMetadata& configurationMetadata)
@@ -724,7 +760,16 @@ void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurat
 
 void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	configurationMetadata.blackPawnAttackZone = 0ull;
+	unsigned long long validBlackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH - 1]));
+
+	// Atac Stanga
+	configurationMetadata.blackPawnAttackZone |= (((validBlackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces);
+
+	// Atac Dreapta
+	configurationMetadata.blackPawnAttackZone |= (((validBlackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces);
+
+	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
 }
 
 void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurationMetadata)
