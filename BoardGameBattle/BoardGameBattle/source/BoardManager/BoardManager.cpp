@@ -735,12 +735,80 @@ void BoardManager::generateWhiteKnightAttackZone(ConfigurationMetadata& configur
 
 void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.whiteBishopAttackZone = 0ull;
+	unsigned long long whiteBishops = configurationMetadata.whiteBishops;
+
+	while (whiteBishops)
+	{
+		unsigned long long lsb = (whiteBishops & ((~whiteBishops) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Top Left Bottom Right Diagonal
+		unsigned long long whitePiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteBishopAttackZone |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].first;
+		configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].second;
+
+		// Top Right Bottom Left Diagonal
+		whitePiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
+		blackPiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteBishopAttackZone |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].first;
+		configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].second;
+		//
+
+		whiteBishops ^= lsb;
+	}
 }
 
 void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.whiteQueenAttackZone = 0ull;
+	unsigned long long whiteQueens = configurationMetadata.whiteQueens;
+
+	while (whiteQueens)
+	{
+		unsigned long long lsb = (whiteQueens & ((~whiteQueens) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Rank
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteQueenAttackZone |= this->precalculatedRankAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first;
+		configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRankAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second;
+
+		// File
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteQueenAttackZone |= this->precalculatedFileAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first;
+		configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedFileAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second;
+
+		// Top Left Bottom Right Diagonal
+		unsigned long long whitePiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
+		unsigned long long blackPiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteQueenAttackZone |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].first;
+		configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].second;
+
+		// Top Right Bottom Left Diagonal
+		whitePiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
+		blackPiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
+
+		configurationMetadata.whiteQueenAttackZone |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].first;
+		configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal][blackPiecesSameDiagonal].second;
+		//
+
+		whiteQueens ^= lsb;
+	}
 }
 
 void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurationMetadata)
@@ -774,7 +842,34 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 
 void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.blackAttackZones = 0ull;
+	unsigned long long blackRooks = configurationMetadata.blackRooks;
+
+	while (blackRooks)
+	{
+		unsigned long long lsb = (blackRooks & ((~blackRooks) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Rank
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackRookAttackZone |= this->precalculatedRankAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first;
+		configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRankAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second;
+
+		// File
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackRookAttackZone |= this->precalculatedFileAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first;
+		configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedFileAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second;
+		//
+
+		blackRooks ^= lsb;
+	}
 }
 
 void BoardManager::generateBlackKnightAttackZone(ConfigurationMetadata& configurationMetadata)
@@ -792,12 +887,80 @@ void BoardManager::generateBlackKnightAttackZone(ConfigurationMetadata& configur
 
 void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.blackBishopAttackZone = 0ull;
+	unsigned long long blackBishops = configurationMetadata.blackBishops;
+
+	while (blackBishops)
+	{
+		unsigned long long lsb = (blackBishops & ((~blackBishops) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Top Left Bottom Right Diagonal
+		unsigned long long blackPiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackBishopAttackZone |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].first;
+		configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].second;
+
+		// Top Right Bottom Left Diagonal
+		blackPiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
+		whitePiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackBishopAttackZone |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].first;
+		configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].second;
+		//
+
+		blackBishops ^= lsb;
+	}
 }
 
 void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO:
+	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
+	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
+
+	configurationMetadata.blackQueenAttackZone = 0ull;
+	unsigned long long blackQueens = configurationMetadata.blackQueens;
+
+	while (blackQueens)
+	{
+		unsigned long long lsb = (blackQueens & ((~blackQueens) + 1));
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		// Rank
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackQueenAttackZone |= this->precalculatedRankAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first;
+		configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRankAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second;
+
+		// File
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackQueenAttackZone |= this->precalculatedFileAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first;
+		configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedFileAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second;
+
+		// Top Left Bottom Right Diagonal
+		unsigned long long blackPiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
+		unsigned long long whitePiecesSameDiagonal = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackQueenAttackZone |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].first;
+		configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].second;
+
+		// Top Right Bottom Left Diagonal
+		blackPiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
+		whitePiecesSameDiagonal = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
+
+		configurationMetadata.blackQueenAttackZone |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].first;
+		configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal][whitePiecesSameDiagonal].second;
+		//
+
+		blackQueens ^= lsb;
+	}
 }
 
 void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata)
@@ -823,6 +986,14 @@ void BoardManager::generateWhiteAttackZones(ConfigurationMetadata& configuration
 	generateWhiteBishopAttackZone(configurationMetadata);
 	generateWhiteQueenAttackZone(configurationMetadata);
 	generateWhiteKingAttackZone(configurationMetadata);
+
+	configurationMetadata.whiteAttackZones =
+		configurationMetadata.whitePawnAttackZone |
+		configurationMetadata.whiteRookAttackZone |
+		configurationMetadata.whiteKnightAttackZone |
+		configurationMetadata.whiteBishopAttackZone |
+		configurationMetadata.whiteQueenAttackZone |
+		configurationMetadata.whiteKingAttackZone;
 }
 
 void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configurationMetadata)
@@ -833,6 +1004,14 @@ void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configuration
 	generateBlackBishopAttackZone(configurationMetadata);
 	generateBlackQueenAttackZone(configurationMetadata);
 	generateBlackKingAttackZone(configurationMetadata);
+
+	configurationMetadata.blackAttackZones =
+		configurationMetadata.blackPawnAttackZone |
+		configurationMetadata.blackRookAttackZone |
+		configurationMetadata.blackKnightAttackZone |
+		configurationMetadata.blackBishopAttackZone |
+		configurationMetadata.blackQueenAttackZone |
+		configurationMetadata.blackKingAttackZone;
 }
 
 // White Pieces Moves Generation
@@ -903,6 +1082,11 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
 {
+	configurationMetadata.whitePiecesPinnedOnRank = 0ull;
+	configurationMetadata.whitePiecesPinnedOnFile = 0ull;
+	configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal = 0ull;
+	configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal = 0ull;
+
 	generateBlackAttackZones(configurationMetadata);
 
 	generateWhitePawnMoves(configurationMetadata, moves);
@@ -915,6 +1099,11 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 
 void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
 {
+	configurationMetadata.blackPiecesPinnedOnRank = 0ull;
+	configurationMetadata.blackPiecesPinnedOnFile = 0ull;
+	configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal = 0ull;
+	configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal = 0ull;
+
 	generateWhiteAttackZones(configurationMetadata);
 
 	generateBlackPawnMoves(configurationMetadata, moves);

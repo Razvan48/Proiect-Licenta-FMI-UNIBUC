@@ -4,7 +4,7 @@ int main()
 {
     Game::get().start();
 
-	// pin-urile trebuie initializate cu 0 in functia globala care apeleaza apoi pt fiecare piesa in parte, pt ca le share-uim intre piese => nu putem initializa cu 0 in metode
+
 	// de schimbat configuratia intreaga, nu mai tinem minte daca am facut rocade, tinem minte daca regii + turele s-au mutat de la inceputul jocului!!
 
 	// TODO: de facut toate todo-urile din BoardManager.cpp + nu exista castling si en passant!!!!
@@ -12,30 +12,19 @@ int main()
 
 	// promovarile se pot face si prin atacuri de pioni
 
-	// TODO: de scris extract file bitmask, diagonal bitmask 
-
-	// cand generam mutarile si le punem intr-un vector dam vectorul ca referinta
-	// analog cand schimbam bitmask-urile, dam ca referinta toata structura de config
 	// singurul loc unde nu dam referinta e cand avansam in minimax, acolo facem o copie a structurii de config
 
 
 	// TODO: de verificat ca attack zone-urile pt sliding pieces (linie, coloana, ambele diagonale), cat si log-ul sunt facute corect
 
-	// TODO: de schimbat attack zone-urile
-	// dp[i][j][k] = i pozitie, j e masca pt piesele jucatorului curent pe linie/coloana/diagonala respectiva,
-	// j e acelasi lucru dar pt jucatorul inamic
-	// dp[i][j][k] = pair(masca, masca) <- masca raw attack zones(nu tin cont daca piesa e pinned) + pinned pieces mask (numai pt piesele adversarului) (pinned fata de orice alta piesa a adversarului)
-	// pentru piesele pinned ele pot merge numai pe pozitiile de pe aceeasi linie/coloana/diagonala
-
-	// cum hash-uim in O(1) o linie/coloana/diagonala (nu cred ca se poate, facem in O(8), aproape constant, aia e)
-
-	// la pin nu cred ca trb si stanga/dreapta/sus/jos, e suficient doar linie/coloana/diagonala0/diagonala1
-
-	// TODO: generare de mutari / mutari legale / mutari ilegale
 	// TODO: implementare BOT pentru Singleplayer
 
 	// TODO: constructor copiere si initializare cu string pt configurationMetadata si initializare simpla (va trebui asa ca sa putem face multithreading)
 	// de adaugat ulterior promovare pion, en passant, castling
+
+
+
+
 
 	// TODO: este o problema unde daca utilizatorul face hold si nu da drop la fereastra,
 	// atunci aplicatia nu mai ruleaza si serverul crede ca a picat client-ul si implicit il deconecteaza.

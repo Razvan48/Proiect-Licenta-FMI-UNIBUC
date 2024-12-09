@@ -74,6 +74,14 @@ private:
 
 		//
 
+		unsigned long long allWhitePieces;
+		unsigned long long allBlackPieces;
+
+		unsigned long long allPieces;
+		unsigned long long emptyTiles;
+
+		//
+
 		unsigned long long whitePawnAttackZone;
 		unsigned long long whiteRookAttackZone;
 		unsigned long long whiteKnightAttackZone;
@@ -91,21 +99,15 @@ private:
 		unsigned long long whiteAttackZones;
 		unsigned long long blackAttackZones;
 
-		unsigned long long allWhitePieces;
-		unsigned long long allBlackPieces;
-
-		unsigned long long allPieces;
-		unsigned long long emptyTiles;
-
 		unsigned long long whitePiecesPinnedOnRank;
 		unsigned long long whitePiecesPinnedOnFile;
-		unsigned long long whitePiecesPinnedOnTopLeftBottomRight;
-		unsigned long long whitePiecesPinnedOnTopRightBottomLeft;
+		unsigned long long whitePiecesPinnedOnTopLeftBottomRightDiagonal;
+		unsigned long long whitePiecesPinnedOnTopRightBottomLeftDiagonal;
 
 		unsigned long long blackPiecesPinnedOnRank;
 		unsigned long long blackPiecesPinnedOnFile;
-		unsigned long long blackPiecesPinnedOnTopLeftBottomRight;
-		unsigned long long blackPiecesPinnedOnTopRightBottomLeft;
+		unsigned long long blackPiecesPinnedOnTopLeftBottomRightDiagonal;
+		unsigned long long blackPiecesPinnedOnTopRightBottomLeftDiagonal;
 	};
 	ConfigurationMetadata configurationMetadata;
 
