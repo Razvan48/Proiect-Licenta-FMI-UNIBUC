@@ -477,15 +477,15 @@ BoardManager::BoardManager()
 	}
 
 
-	this->precalculatedEmptyCastleTopLeft = (1ull << 1) | (1ull << 2) | (1ull << 3);
-	this->precalculatedEmptyCastleTopRight = (1ull << 5) | (1ull << 6);
-	this->precalculatedEmptyCastleBottomLeft = (1ull << 57) | (1ull << 58) | (1ull << 59);
-	this->precalculatedEmptyCastleBottomRight = (1ull << 61) | (1ull << 62);
+	this->precalculatedEmptyCastleTopLeft = ((1ull << 1) | (1ull << 2) | (1ull << 3));
+	this->precalculatedEmptyCastleTopRight = ((1ull << 5) | (1ull << 6));
+	this->precalculatedEmptyCastleBottomLeft = ((1ull << 57) | (1ull << 58) | (1ull << 59));
+	this->precalculatedEmptyCastleBottomRight = ((1ull << 61) | (1ull << 62));
 
-	this->precalculatedFullCastleTopLeft = (1ull << 0) | (1ull << 1) | (1ull << 2) | (1ull << 3) | (1ull << 4);
-	this->precalculatedFullCastleTopRight = (1ull << 4) | (1ull << 5) | (1ull << 6) | (1ull << 7);
-	this->precalculatedFullCastleBottomLeft = (1ull << 56) | (1ull << 57) | (1ull << 58) | (1ull << 59) | (1ull << 60);
-	this->precalculatedFullCastleBottomRight = (1ull << 60) | (1ull << 61) | (1ull << 62) | (1ull << 63);
+	this->precalculatedFullCastleTopLeft = ((1ull << 0) | (1ull << 1) | (1ull << 2) | (1ull << 3) | (1ull << 4));
+	this->precalculatedFullCastleTopRight = ((1ull << 4) | (1ull << 5) | (1ull << 6) | (1ull << 7));
+	this->precalculatedFullCastleBottomLeft = ((1ull << 56) | (1ull << 57) | (1ull << 58) | (1ull << 59) | (1ull << 60));
+	this->precalculatedFullCastleBottomRight = ((1ull << 60) | (1ull << 61) | (1ull << 62) | (1ull << 63));
 }
 
 BoardManager::~BoardManager()
