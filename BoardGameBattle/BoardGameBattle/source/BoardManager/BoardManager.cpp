@@ -78,6 +78,154 @@ BoardManager::BoardManager()
 		}
 	}
 
+	// Left Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->leftBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < column; ++j)
+			this->leftBitMasks[i] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + j));
+	}
+
+	// Right Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->rightBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = column + 1; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+			this->rightBitMasks[i] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + j));
+	}
+
+	// Top Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->topBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < row; ++j)
+			this->topBitMasks[i] |= (1ull << (j * GameMetadata::NUM_TILES_WIDTH + column));
+	}
+
+	// Bottom Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->bottomBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = row + 1; j < GameMetadata::NUM_TILES_HEIGHT; ++j)
+			this->bottomBitMasks[i] |= (1ull << (j * GameMetadata::NUM_TILES_WIDTH + column));
+	}
+
+	// Top Left Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->topLeftDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int crtRow = row - 1;
+		int crtColumn = column - 1;
+
+		while (crtRow >= 0 && crtColumn >= 0)
+		{
+			this->topLeftDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			--crtRow;
+			--crtColumn;
+		}
+	}
+
+	// Top Right Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->topRightDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int crtRow = row - 1;
+		int crtColumn = column + 1;
+
+		while (crtRow >= 0 && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+		{
+			this->topRightDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			--crtRow;
+			++crtColumn;
+		}
+	}
+
+	// Bottom Left Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->bottomLeftDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int crtRow = row + 1;
+		int crtColumn = column - 1;
+
+		while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn >= 0)
+		{
+			this->bottomLeftDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			++crtRow;
+			--crtColumn;
+		}
+	}
+
+	// Bottom Right Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->bottomRightDiagonalBitMasks[i] = 0ull;
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		int crtRow = row + 1;
+		int crtColumn = column + 1;
+
+		while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+		{
+			this->bottomRightDiagonalBitMasks[i] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+			++crtRow;
+			++crtColumn;
+		}
+	}
+
+	// Expanded Left Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedLeftBitMasks[i] = (this->leftBitMasks[i] | (1ull << i));
+
+	// Expanded Right Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedRightBitMasks[i] = (this->rightBitMasks[i] | (1ull << i));
+
+	// Expanded Top Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedTopBitMasks[i] = (this->topBitMasks[i] | (1ull << i));
+
+	// Expanded Bottom Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedBottomBitMasks[i] = (this->bottomBitMasks[i] | (1ull << i));
+
+	// Expanded Top Left Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedTopLeftDiagonalBitMasks[i] = (this->topLeftDiagonalBitMasks[i] | (1ull << i));
+
+	// Expanded Top Right Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedTopRightDiagonalBitMasks[i] = (this->topRightDiagonalBitMasks[i] | (1ull << i));
+
+	// Expanded Bottom Left Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedBottomLeftDiagonalBitMasks[i] = (this->bottomLeftDiagonalBitMasks[i] | (1ull << i));
+
+	// Expanded Bottom Right Diagonal Bit Masks
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+		this->expandedBottomRightDiagonalBitMasks[i] = (this->bottomRightDiagonalBitMasks[i] | (1ull << i));
+
 	// Precalculated King Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
@@ -1087,6 +1235,10 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal = 0ull;
 	configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal = 0ull;
 
+	configurationMetadata.numPiecesAttackingWhiteKing = 0;
+	configurationMetadata.whiteKingDefenseZone = (~(0ull));
+
+
 	generateBlackAttackZones(configurationMetadata);
 
 	generateWhitePawnMoves(configurationMetadata, moves);
@@ -1103,6 +1255,9 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 	configurationMetadata.blackPiecesPinnedOnFile = 0ull;
 	configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal = 0ull;
 	configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal = 0ull;
+
+	configurationMetadata.numPiecesAttackingBlackKing = 0;
+	configurationMetadata.blackKingDefenseZone = (~(0ull));
 
 	generateWhiteAttackZones(configurationMetadata);
 

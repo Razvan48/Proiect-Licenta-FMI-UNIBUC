@@ -4,6 +4,14 @@ int main()
 {
     Game::get().start();
 
+	// de schimbat sunetul de button hovered
+
+	// cand are loc o mutare de vazut acest lucru pe tabla de joc
+
+	// includem si bitul piesei ce ataca regele cand vrem sa aparam regele si regele e atacat de o singura piesa
+
+	// daca regele e atacat de o singura piesa asta include si cal si pion si celalalt rege, nu doar sliding pieces (ba chiar trebuie marcat cu 1 bitul lor)
+
 
 	// de schimbat configuratia intreaga, nu mai tinem minte daca am facut rocade, tinem minte daca regii + turele s-au mutat de la inceputul jocului!!
 
