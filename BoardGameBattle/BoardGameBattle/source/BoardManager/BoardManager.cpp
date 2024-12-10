@@ -289,7 +289,7 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << GameMetadata::NUM_TILES_WIDTH); ++k) // Masca pentru piesele adversarului
 			{
-				this->precalculatedRankAttackZones[i][j][k] = std::make_pair(0ull, 0ull);
+				this->precalculatedRankAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -318,7 +318,10 @@ BoardManager::BoardManager()
 					this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 
 					if (occColumn1 != -1 && (k & (1 << occColumn1)))
-						this->precalculatedRankAttackZones[i][j][k].second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedRankAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedRankAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 
 				occColumn0 = -1;
@@ -342,7 +345,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occColumn1 != -1 && (k & (1 << occColumn1)))
-						this->precalculatedRankAttackZones[i][j][k].second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedRankAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedRankAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 			}
 		}
@@ -358,7 +364,7 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << GameMetadata::NUM_TILES_HEIGHT); ++k) // Masca pentru piesele adversarului
 			{
-				this->precalculatedFileAttackZones[i][j][k] = std::make_pair(0ull, 0ull);
+				this->precalculatedFileAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -386,7 +392,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
 					if (occRow1 != -1 && (k & (1 << occRow1)))
-						this->precalculatedFileAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+					{
+						this->precalculatedFileAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedFileAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
+					}
 				}
 
 				occRow0 = -1;
@@ -410,7 +419,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
 					if (occRow1 != -1 && (k & (1 << occRow1)))
-						this->precalculatedFileAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+					{
+						this->precalculatedFileAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedFileAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
+					}
 				}
 			}
 		}
@@ -428,7 +440,7 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << diagonalLength); ++k)
 			{
-				this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k] = std::make_pair(0ull, 0ull);
+				this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -473,7 +485,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 
 				occPos0 = -1;
@@ -514,7 +529,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 			}
 		}
@@ -532,7 +550,7 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << diagonalLength); ++k)
 			{
-				this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k] = std::make_pair(0ull, 0ull);
+				this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -577,7 +595,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 
 				occPos0 = -1;
@@ -618,7 +639,10 @@ BoardManager::BoardManager()
 				{
 					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					{
+						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+					}
 				}
 			}
 		}
@@ -828,16 +852,30 @@ void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurat
 	unsigned long long validWhitePawns = (configurationMetadata.whitePawns & (~this->rankBitMasks[0]));
 
 	// Atac Stanga
-	configurationMetadata.whitePawnAttackZone |= (((validWhitePawns & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces);
+	unsigned long long leftAttackZone = (((validWhitePawns & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces);
+	configurationMetadata.whitePawnAttackZone |= leftAttackZone;
+	if (leftAttackZone & configurationMetadata.blackKing)
+	{
+		++configurationMetadata.numPiecesAttackingBlackKing;
+		configurationMetadata.blackKingDefenseZone |= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH + 1));
+	}
 
 	// Atac Dreapta
-	configurationMetadata.whitePawnAttackZone |= (((validWhitePawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces);
+	unsigned long long rightAttackZone = (((validWhitePawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces);
+	configurationMetadata.whitePawnAttackZone |= rightAttackZone;
+	if (rightAttackZone & configurationMetadata.blackKing)
+	{
+		++configurationMetadata.numPiecesAttackingBlackKing;
+		configurationMetadata.blackKingDefenseZone |= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH - 1));
+	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
 }
 
 void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO: 
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -876,13 +914,22 @@ void BoardManager::generateWhiteKnightAttackZone(ConfigurationMetadata& configur
 	while (whiteKnights)
 	{
 		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
+
 		configurationMetadata.whiteKnightAttackZone |= this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		if (this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
+		{
+			++configurationMetadata.numPiecesAttackingBlackKing;
+			configurationMetadata.blackKingDefenseZone |= lsb;
+		}
+
 		whiteKnights ^= lsb;
 	}
 }
 
 void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO:
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -915,6 +962,8 @@ void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configur
 
 void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO:
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -962,12 +1011,19 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurationMetadata)
 {
 	configurationMetadata.whiteKingAttackZone = 0ull;
-	unsigned long long whiteKings = configurationMetadata.whiteKings;
+	unsigned long long whiteKings = configurationMetadata.whiteKing;
 
 	while (whiteKings)
 	{
 		unsigned long long lsb = (whiteKings & ((~whiteKings) + 1));
+
 		configurationMetadata.whiteKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
+		{
+			++configurationMetadata.numPiecesAttackingBlackKing;
+			configurationMetadata.blackKingDefenseZone |= lsb;
+		}
+
 		whiteKings ^= lsb;
 	}
 }
@@ -980,16 +1036,30 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	unsigned long long validBlackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH - 1]));
 
 	// Atac Stanga
-	configurationMetadata.blackPawnAttackZone |= (((validBlackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces);
+	unsigned long long leftAttackZone = (((validBlackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces);
+	configurationMetadata.blackPawnAttackZone |= leftAttackZone;
+	if (leftAttackZone & configurationMetadata.whiteKing)
+	{
+		++configurationMetadata.numPiecesAttackingWhiteKing;
+		configurationMetadata.whiteKingDefenseZone |= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
+	}
 
 	// Atac Dreapta
-	configurationMetadata.blackPawnAttackZone |= (((validBlackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces);
+	unsigned long long rightAttackZone = (((validBlackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces);
+	configurationMetadata.blackPawnAttackZone |= rightAttackZone;
+	if (rightAttackZone & configurationMetadata.whiteKing)
+	{
+		++configurationMetadata.numPiecesAttackingWhiteKing;
+		configurationMetadata.whiteKingDefenseZone |= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
+	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
 }
 
 void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO:
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -1028,13 +1098,22 @@ void BoardManager::generateBlackKnightAttackZone(ConfigurationMetadata& configur
 	while (blackKnights)
 	{
 		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
+
 		configurationMetadata.blackKnightAttackZone |= this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		if (this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
+		{
+			++configurationMetadata.numPiecesAttackingWhiteKing;
+			configurationMetadata.whiteKingDefenseZone |= lsb;
+		}
+
 		blackKnights ^= lsb;
 	}
 }
 
 void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO:
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -1067,6 +1146,8 @@ void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configur
 
 void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configurationMetadata)
 {
+	// TODO:
+
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
@@ -1114,12 +1195,19 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata)
 {
 	configurationMetadata.blackKingAttackZone = 0ull;
-	unsigned long long blackKings = configurationMetadata.blackKings;
+	unsigned long long blackKings = configurationMetadata.blackKing;
 
 	while (blackKings)
 	{
 		unsigned long long lsb = (blackKings & ((~blackKings) + 1));
+
 		configurationMetadata.blackKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
+		{
+			++configurationMetadata.numPiecesAttackingWhiteKing;
+			configurationMetadata.whiteKingDefenseZone |= lsb;
+		}
+
 		blackKings ^= lsb;
 	}
 }

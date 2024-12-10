@@ -6,6 +6,10 @@ int main()
 
 	// de schimbat sunetul de button hovered
 
+	// todo-urile din functiile de generat attack zones sunt pt numPiecesAttackingKing si defense zone
+
+	// pin-ul la piese nu se intampla doar pt rege momentan, deci restrange prea mult mutarile (trebuie refacute precalcularile)
+
 	// cand are loc o mutare de vazut acest lucru pe tabla de joc
 
 	// includem si bitul piesei ce ataca regele cand vrem sa aparam regele si regele e atacat de o singura piesa
