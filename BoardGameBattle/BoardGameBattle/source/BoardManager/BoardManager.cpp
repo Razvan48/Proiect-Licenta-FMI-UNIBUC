@@ -279,7 +279,7 @@ BoardManager::BoardManager()
 			this->precalculatedKnightAttackZones[i] |= (1ull << ((row - 1) * GameMetadata::NUM_TILES_WIDTH + column - 2));
 	}
 
-	// Precalculated Rank Attack Zones
+	// Precalculated Left-Right Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
 		int row = i / GameMetadata::NUM_TILES_WIDTH;
@@ -289,7 +289,8 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << GameMetadata::NUM_TILES_WIDTH); ++k) // Masca pentru piesele adversarului
 			{
-				this->precalculatedRankAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedLeftAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedRightAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -311,16 +312,16 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occColumn0 == -1)
-						this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedLeftAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 				}
 				if (occColumn0 != -1 && (k & (1 << occColumn0)))
 				{
-					this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedLeftAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 
 					if (occColumn1 != -1 && (k & (1 << occColumn1)))
 					{
-						this->precalculatedRankAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedRankAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedLeftAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedLeftAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 
@@ -339,22 +340,22 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occColumn0 == -1)
-						this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedRightAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 				}
 				if (occColumn0 != -1 && (k & (1 << occColumn0)))
 				{
-					this->precalculatedRankAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedRightAttackZones[i][j][k].first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occColumn1 != -1 && (k & (1 << occColumn1)))
 					{
-						this->precalculatedRankAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedRankAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedRightAttackZones[i][j][k].second.first |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedRightAttackZones[i][j][k].second.second |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 			}
 		}
 	}
 
-	// Precalculated File Attack Zones
+	// Precalculated Top-Bottom Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
 		int row = i / GameMetadata::NUM_TILES_WIDTH;
@@ -364,7 +365,8 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << GameMetadata::NUM_TILES_HEIGHT); ++k) // Masca pentru piesele adversarului
 			{
-				this->precalculatedFileAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedTopAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedBottomAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -386,15 +388,15 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occRow0 == -1)
-						this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedTopAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + column));
 				}
 				if (occRow0 != -1 && (k & (1 << occRow0)))
 				{
-					this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+					this->precalculatedTopAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
 					if (occRow1 != -1 && (k & (1 << occRow1)))
 					{
-						this->precalculatedFileAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
-						this->precalculatedFileAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedTopAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedTopAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
 					}
 				}
 
@@ -413,15 +415,15 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occRow0 == -1)
-						this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedBottomAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + column));
 				}
 				if (occRow0 != -1 && (k & (1 << occRow0)))
 				{
-					this->precalculatedFileAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+					this->precalculatedBottomAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
 					if (occRow1 != -1 && (k & (1 << occRow1)))
 					{
-						this->precalculatedFileAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
-						this->precalculatedFileAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedBottomAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + column));
+						this->precalculatedBottomAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + column));
 					}
 				}
 			}
@@ -440,7 +442,8 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << diagonalLength); ++k)
 			{
-				this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedTopLeftDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedBottomRightDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -475,7 +478,7 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occPos0 == -1)
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedTopLeftDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 
 					--crtRow;
 					--crtColumn;
@@ -483,11 +486,11 @@ BoardManager::BoardManager()
 				}
 				if (occPos0 != -1 && (k & (1 << occPos0)))
 				{
-					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedTopLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
 					{
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedTopLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 
@@ -519,7 +522,7 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occPos0 == -1)
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 
 					++crtRow;
 					++crtColumn;
@@ -527,11 +530,11 @@ BoardManager::BoardManager()
 				}
 				if (occPos0 != -1 && (k & (1 << occPos0)))
 				{
-					this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedBottomRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
 					{
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedTopLeftBottomRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedBottomRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedBottomRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 			}
@@ -550,7 +553,8 @@ BoardManager::BoardManager()
 		{
 			for (int k = 0; k < (1 << diagonalLength); ++k)
 			{
-				this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedTopRightDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
+				this->precalculatedBottomLeftDiagonalAttackZones[i][j][k] = std::make_pair(0ull, std::make_pair(0ull, 0ull));
 
 				if (j & k)
 					continue;
@@ -585,7 +589,7 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occPos0 == -1)
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedTopRightDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 
 					--crtRow;
 					++crtColumn;
@@ -593,11 +597,11 @@ BoardManager::BoardManager()
 				}
 				if (occPos0 != -1 && (k & (1 << occPos0)))
 				{
-					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedTopRightDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
 					{
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedTopRightDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedTopRightDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 
@@ -629,7 +633,7 @@ BoardManager::BoardManager()
 						}
 					}
 					if (occPos0 == -1)
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+						this->precalculatedBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
 
 					++crtRow;
 					--crtColumn;
@@ -637,11 +641,11 @@ BoardManager::BoardManager()
 				}
 				if (occPos0 != -1 && (k & (1 << occPos0)))
 				{
-					this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+					this->precalculatedBottomLeftDiagonalAttackZones[i][j][k].first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
 					if (occPos1 != -1 && (k & (1 << occPos1)))
 					{
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
-						this->precalculatedTopRightBottomLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
+						this->precalculatedBottomLeftDiagonalAttackZones[i][j][k].second.first |= (1ull << (occRow0 * GameMetadata::NUM_TILES_WIDTH + occColumn0));
+						this->precalculatedBottomLeftDiagonalAttackZones[i][j][k].second.second |= (1ull << (occRow1 * GameMetadata::NUM_TILES_WIDTH + occColumn1));
 					}
 				}
 			}
