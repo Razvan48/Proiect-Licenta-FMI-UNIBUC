@@ -4,10 +4,6 @@ int main()
 {
     Game::get().start();
 
-	// de facut 2 tipuri de format pentru mutari, mutarile interne si cele primite de la utilizator sub forma de string-uri
-
-	// de implementat move generation pentru rege/cal (ambele culori) si apoi de testat in aplicatie
-
 	// de schimbat sunetul de button hovered
 
 	// cand are loc o mutare de vazut acest lucru pe tabla de joc

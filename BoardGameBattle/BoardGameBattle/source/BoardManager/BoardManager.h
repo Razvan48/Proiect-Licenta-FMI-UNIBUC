@@ -46,6 +46,14 @@ private:
 	unsigned long long precalculatedFullCastleBottomLeft;
 	unsigned long long precalculatedFullCastleBottomRight;
 
+	int whiteKingPos;
+	int whiteRookBottomLeftPos;
+	int whiteRookBottomRightPos;
+
+	int blackKingPos;
+	int blackRookTopLeftPos;
+	int blackRookTopRightPos;
+
 	struct ConfigurationMetadata
 	{
 		unsigned long long whitePawns;
@@ -170,6 +178,11 @@ private:
 	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
+	//
+
+	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
+	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove);
+
 public:
 	static BoardManager& get();
 
@@ -177,9 +190,14 @@ public:
 
 	std::string getPiecesConfiguration() const;
 
-	void applyMove(const std::vector<std::pair<char, int>>& move);
+	std::vector<std::pair<char, int>> convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const;
+	void applyMoveExternal(const std::string& externalMove);
 
 	inline bool getWhiteTurn() const { return this->configurationMetadata.whiteTurn; }
+
+	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
+
+	void setPiecesConfiguration(const std::string& piecesConfiguration) { this->configurationMetadata.initialize(piecesConfiguration); }
 
 	void printBitBoard(unsigned long long bitBoard) const;
 };

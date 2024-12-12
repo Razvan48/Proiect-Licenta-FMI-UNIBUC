@@ -275,7 +275,7 @@ void BoardVisualizer::update()
 						move.push_back((char)('a' + j));
 						move.push_back((char)('1' + i));
 
-						BoardManager::get().applyMove(move);
+						BoardManager::get().applyMoveExternal(move);
 						AssetManager::get().playSound(this->pieceMoveSoundName, false);
 
 						this->resetSelectedTiles();

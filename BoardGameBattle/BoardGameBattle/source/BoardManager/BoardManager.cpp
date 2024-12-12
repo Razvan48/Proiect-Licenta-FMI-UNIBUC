@@ -510,6 +510,14 @@ BoardManager::BoardManager()
 	this->precalculatedFullCastleTopRight = ((1ull << 4) | (1ull << 5) | (1ull << 6) | (1ull << 7));
 	this->precalculatedFullCastleBottomLeft = ((1ull << 56) | (1ull << 57) | (1ull << 58) | (1ull << 59) | (1ull << 60));
 	this->precalculatedFullCastleBottomRight = ((1ull << 60) | (1ull << 61) | (1ull << 62) | (1ull << 63));
+
+	this->whiteKingPos = 60;
+	this->whiteRookBottomLeftPos = 56;
+	this->whiteRookBottomRightPos = 63;
+
+	this->blackKingPos = 4;
+	this->blackRookTopLeftPos = 0;
+	this->blackRookTopRightPos = 7;
 }
 
 BoardManager::~BoardManager()
@@ -574,33 +582,310 @@ BoardManager& BoardManager::get()
 	return instance;
 }
 
-void BoardManager::applyMove(const std::vector<std::pair<char, int>>& move)
+std::string BoardManager::getPiecesConfiguration() const
 {
-	// TODO:
-}
+	std::string piecesConfiguration = "";
 
-void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mutarea este legala
-{
-	// TODO: de sters dupa ce applyMove de mai sus este rescris
-
-	for (int i = 0; i < move.size(); i += GameMetadata::NUM_CHARS_SUBMOVE)
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
-		char gamePiece = move[i];
-		int columnStart = move[i + 1] - 'a';
-		int rowStart = move[i + 2] - '1';
-		int columnEnd = move[i + 3] - 'a';
-		int rowEnd = move[i + 4] - '1';
-
-		this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowStart) * GameMetadata::NUM_TILES_WIDTH + columnStart] = '.';
-		this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - rowEnd) * GameMetadata::NUM_TILES_WIDTH + columnEnd] = gamePiece;
+		if (this->configurationMetadata.whitePawns & (1ull << i))
+			piecesConfiguration.push_back('P');
+		else if (this->configurationMetadata.whiteRooks & (1ull << i))
+			piecesConfiguration.push_back('R');
+		else if (this->configurationMetadata.whiteKnights & (1ull << i))
+			piecesConfiguration.push_back('N');
+		else if (this->configurationMetadata.whiteBishops & (1ull << i))
+			piecesConfiguration.push_back('B');
+		else if (this->configurationMetadata.whiteQueens & (1ull << i))
+			piecesConfiguration.push_back('Q');
+		else if (this->configurationMetadata.whiteKing & (1ull << i))
+			piecesConfiguration.push_back('K');
+		else if (this->configurationMetadata.blackPawns & (1ull << i))
+			piecesConfiguration.push_back('p');
+		else if (this->configurationMetadata.blackRooks & (1ull << i))
+			piecesConfiguration.push_back('r');
+		else if (this->configurationMetadata.blackKnights & (1ull << i))
+			piecesConfiguration.push_back('n');
+		else if (this->configurationMetadata.blackBishops & (1ull << i))
+			piecesConfiguration.push_back('b');
+		else if (this->configurationMetadata.blackQueens & (1ull << i))
+			piecesConfiguration.push_back('q');
+		else if (this->configurationMetadata.blackKing & (1ull << i))
+			piecesConfiguration.push_back('k');
+		else
+			piecesConfiguration.push_back('.');
 	}
 
-	this->configurationMetadata.whiteTurn = !this->configurationMetadata.whiteTurn;
+	piecesConfiguration.push_back(('0' + (int)this->configurationMetadata.whiteTurn));
 
-	if (this->configurationMetadata.whiteTurn)
-		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'w';
+	if (this->configurationMetadata.capturableEnPassantPosition <= 9)
+	{
+		piecesConfiguration.push_back('0');
+		piecesConfiguration.push_back('0' + this->configurationMetadata.capturableEnPassantPosition);
+	}
 	else
-		this->piecesConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] = 'b';
+	{
+		piecesConfiguration.push_back('0' + this->configurationMetadata.capturableEnPassantPosition / 10);
+		piecesConfiguration.push_back('0' + this->configurationMetadata.capturableEnPassantPosition % 10);
+	}
+
+	piecesConfiguration.push_back('0' + this->configurationMetadata.whiteKingMoved);
+	piecesConfiguration.push_back('0' + this->configurationMetadata.whiteRookBottomLeftMoved);
+	piecesConfiguration.push_back('0' + this->configurationMetadata.whiteRookBottomRightMoved);
+
+	piecesConfiguration.push_back('0' + this->configurationMetadata.blackKingMoved);
+	piecesConfiguration.push_back('0' + this->configurationMetadata.blackRookTopLeftMoved);
+	piecesConfiguration.push_back('0' + this->configurationMetadata.blackRookTopRightMoved);
+
+	return piecesConfiguration;
+}
+
+std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const
+{
+	if (internalMove.empty())
+	{
+		std::cout << "Error : Conversion to external move failed, internalMove is empty" << std::endl;
+		return "";
+	}
+	if (internalMove.size() < 2)
+	{
+		std::cout << "Error : Conversion to external move failed, internalMove has less than 2 elements" << std::endl;
+		return "";
+	}
+
+	std::string externalMove = "";
+	externalMove.push_back(internalMove[0].first);
+	for (int i = 0; i < 2; ++i)
+	{
+		int row = internalMove[i].second / GameMetadata::NUM_TILES_WIDTH;
+		int column = internalMove[i].second % GameMetadata::NUM_TILES_WIDTH;
+
+		externalMove.push_back((char)('a' + column));
+		externalMove.push_back((char)('1' + row));
+	}
+
+	return externalMove;
+}
+
+BoardManager::ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove)
+{
+	// INFO: Face presupunerea ca mutarea e legala (si apartine culorii care trebuie sa mute) (din motive de optimizare)
+
+	BoardManager::ConfigurationMetadata newConfigurationMetadata(configurationMetadata);
+
+	newConfigurationMetadata.capturableEnPassantPosition = 0; // INFO: 0 inseamna ca nu exista o astfel de pozitie (teoretic 0 exista pe tabla, practic nu se poate face un enpassant in 0, deci e ok)
+
+	for (int i = 0; i < internalMove.size(); ++i)
+	{
+		if (internalMove[i].first == 'P')
+		{
+			if (internalMove[i].second / GameMetadata::NUM_TILES_WIDTH == 4 && i >= 1 && internalMove[i - 1].first == 'P' && internalMove[i - 1].second / GameMetadata::NUM_TILES_WIDTH == 6)
+				newConfigurationMetadata.capturableEnPassantPosition = internalMove[i].second;
+
+			newConfigurationMetadata.whitePawns ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'R')
+		{
+			if (!newConfigurationMetadata.whiteRookBottomLeftMoved && internalMove[i].second == this->whiteRookBottomLeftPos)
+				newConfigurationMetadata.whiteRookBottomLeftMoved = true;
+			else if (!newConfigurationMetadata.whiteRookBottomRightMoved && internalMove[i].second == this->whiteRookBottomRightPos)
+				newConfigurationMetadata.whiteRookBottomRightMoved = true;
+
+			newConfigurationMetadata.whiteRooks ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'N')
+		{
+			newConfigurationMetadata.whiteKnights ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'B')
+		{
+			newConfigurationMetadata.whiteBishops ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'Q')
+		{
+			newConfigurationMetadata.whiteQueens ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'K')
+		{
+			newConfigurationMetadata.whiteKingMoved = true; // INFO: e simplificat, dar merge
+
+			newConfigurationMetadata.whiteKing ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'p')
+		{
+			if (internalMove[i].second / GameMetadata::NUM_TILES_WIDTH == 3 && i >= 1 && internalMove[i - 1].first == 'p' && internalMove[i - 1].second / GameMetadata::NUM_TILES_WIDTH == 1)
+				newConfigurationMetadata.capturableEnPassantPosition = internalMove[i].second;
+
+			newConfigurationMetadata.blackPawns ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'r')
+		{
+			if (!newConfigurationMetadata.blackRookTopLeftMoved && internalMove[i].second == this->blackRookTopLeftPos)
+				newConfigurationMetadata.blackRookTopLeftMoved = true;
+			else if (!newConfigurationMetadata.blackRookTopRightMoved && internalMove[i].second == this->blackRookTopRightPos)
+				newConfigurationMetadata.blackRookTopRightMoved = true;
+
+			newConfigurationMetadata.blackRooks ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'n')
+		{
+			newConfigurationMetadata.blackKnights ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'b')
+		{
+			newConfigurationMetadata.blackBishops ^= (1ull << internalMove[i].second);
+		}
+		else if (internalMove[i].first == 'q')
+		{
+			newConfigurationMetadata.blackQueens ^= (1ull << internalMove[i].second);
+		}
+		else // Black King (k)
+		{
+			newConfigurationMetadata.blackKingMoved = true; // INFO: e simplificat, dar merge
+
+			newConfigurationMetadata.blackKing ^= (1ull << internalMove[i].second);
+		}
+	}
+
+	if (newConfigurationMetadata.whiteTurn)
+	{
+		newConfigurationMetadata.allWhitePieces = newConfigurationMetadata.whitePawns | newConfigurationMetadata.whiteRooks | newConfigurationMetadata.whiteKnights | newConfigurationMetadata.whiteBishops | newConfigurationMetadata.whiteQueens | newConfigurationMetadata.whiteKing;
+
+		// INFO: Se elimina piesele capturate
+
+		newConfigurationMetadata.blackPawns ^= (newConfigurationMetadata.blackPawns & newConfigurationMetadata.allWhitePieces);
+		newConfigurationMetadata.blackRooks ^= (newConfigurationMetadata.blackRooks & newConfigurationMetadata.allWhitePieces);
+		newConfigurationMetadata.blackKnights ^= (newConfigurationMetadata.blackKnights & newConfigurationMetadata.allWhitePieces);
+		newConfigurationMetadata.blackBishops ^= (newConfigurationMetadata.blackBishops & newConfigurationMetadata.allWhitePieces);
+		newConfigurationMetadata.blackQueens ^= (newConfigurationMetadata.blackQueens & newConfigurationMetadata.allWhitePieces);
+		newConfigurationMetadata.blackKing ^= (newConfigurationMetadata.blackKing & newConfigurationMetadata.allWhitePieces);
+
+		newConfigurationMetadata.allBlackPieces = newConfigurationMetadata.blackPawns | newConfigurationMetadata.blackRooks | newConfigurationMetadata.blackKnights | newConfigurationMetadata.blackBishops | newConfigurationMetadata.blackQueens | newConfigurationMetadata.blackKing;
+	}
+	else
+	{
+		newConfigurationMetadata.allBlackPieces = newConfigurationMetadata.blackPawns | newConfigurationMetadata.blackRooks | newConfigurationMetadata.blackKnights | newConfigurationMetadata.blackBishops | newConfigurationMetadata.blackQueens | newConfigurationMetadata.blackKing;
+
+		// INFO: Se elimina piesele capturate
+
+		newConfigurationMetadata.whitePawns ^= (newConfigurationMetadata.whitePawns & newConfigurationMetadata.allBlackPieces);
+		newConfigurationMetadata.whiteRooks ^= (newConfigurationMetadata.whiteRooks & newConfigurationMetadata.allBlackPieces);
+		newConfigurationMetadata.whiteKnights ^= (newConfigurationMetadata.whiteKnights & newConfigurationMetadata.allBlackPieces);
+		newConfigurationMetadata.whiteBishops ^= (newConfigurationMetadata.whiteBishops & newConfigurationMetadata.allBlackPieces);
+		newConfigurationMetadata.whiteQueens ^= (newConfigurationMetadata.whiteQueens & newConfigurationMetadata.allBlackPieces);
+		newConfigurationMetadata.whiteKing ^= (newConfigurationMetadata.whiteKing & newConfigurationMetadata.allBlackPieces);
+
+		newConfigurationMetadata.allWhitePieces = newConfigurationMetadata.whitePawns | newConfigurationMetadata.whiteRooks | newConfigurationMetadata.whiteKnights | newConfigurationMetadata.whiteBishops | newConfigurationMetadata.whiteQueens | newConfigurationMetadata.whiteKing;
+	}
+
+
+	newConfigurationMetadata.allPieces = newConfigurationMetadata.allWhitePieces | newConfigurationMetadata.allBlackPieces;
+
+	newConfigurationMetadata.emptyTiles = (~newConfigurationMetadata.allPieces);
+
+	// 
+
+	newConfigurationMetadata.whiteTurn = !newConfigurationMetadata.whiteTurn;
+
+	return newConfigurationMetadata;
+}
+
+std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const
+{
+	// INFO: Ne permitem sa facem metoda aceasta mai ineficienta, deoarece bottleneck-ul in acest caz este interactiunea umana.
+
+	if (externalMove.empty())
+	{
+		std::cout << "Error : Conversion to internal move failed, externalMove is empty" << std::endl;
+		return std::vector<std::pair<char, int>>();
+	}
+	if (externalMove.size() < 5)
+	{
+		std::cout << "Error : Conversion to internal move failed, externalMove has less than 5 characters" << std::endl;
+		return std::vector<std::pair<char, int>>();
+	}
+
+	std::vector<std::pair<char, int>> internalMove;
+
+	char piece = externalMove[0];
+	int pos0 = (externalMove[2] - '1') * GameMetadata::NUM_TILES_WIDTH + (externalMove[1] - 'a');
+	int pos1 = (externalMove[4] - '1') * GameMetadata::NUM_TILES_WIDTH + (externalMove[3] - 'a');
+
+	internalMove.emplace_back(piece, pos0);
+	internalMove.emplace_back(piece, pos1);
+
+	// En Passant
+	if (piece == 'P' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 - GameMetadata::NUM_TILES_WIDTH)
+	{
+		internalMove.emplace_back('p', configurationMetadata.capturableEnPassantPosition);
+	}
+	else if (piece == 'p' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 + GameMetadata::NUM_TILES_WIDTH)
+	{
+		internalMove.emplace_back('P', configurationMetadata.capturableEnPassantPosition);
+	}
+
+	// Rocadele
+	if (piece == 'K' && pos0 == this->whiteKingPos)
+	{
+		if (pos1 == this->whiteKingPos - 2)
+		{
+			internalMove.emplace_back('R', this->whiteRookBottomLeftPos);
+			internalMove.emplace_back('R', this->whiteKingPos - 1);
+		}
+		else if (pos1 == this->whiteKingPos + 2)
+		{
+			internalMove.emplace_back('R', this->whiteRookBottomRightPos);
+			internalMove.emplace_back('R', this->whiteKingPos + 1);
+		}
+	}
+	else if (piece == 'k' && pos0 == this->blackKingPos)
+	{
+		if (pos1 == this->blackKingPos - 2)
+		{
+			internalMove.emplace_back('r', this->blackRookTopLeftPos);
+			internalMove.emplace_back('r', this->blackKingPos - 1);
+		}
+		else if (pos1 == this->blackKingPos + 2)
+		{
+			internalMove.emplace_back('r', this->blackRookTopRightPos);
+			internalMove.emplace_back('r', this->blackKingPos + 1);
+		}
+	}
+
+	// Promovare Pion
+	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
+	{
+		internalMove.pop_back();
+
+		if (externalMove.size() < 6)
+		{
+			std::cout << "Info : Conversion to internal move failed, externalMove is a pawn promotion but does not specify the promotion piece, using Queen as default" << std::endl;
+			internalMove.emplace_back('Q', pos1);
+		}
+		else
+			internalMove.emplace_back(externalMove[5], pos1);
+	}
+	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
+	{
+		internalMove.pop_back();
+
+		if (externalMove.size() < 6)
+		{
+			std::cout << "Info : Conversion to internal move failed, externalMove is a pawn promotion but does not specify the promotion piece, using Queen as default" << std::endl;
+			internalMove.emplace_back('q', pos1);
+		}
+		else
+			internalMove.emplace_back(externalMove[5], pos1);
+	}
+
+	return internalMove;
+}
+
+void BoardManager::applyMoveExternal(const std::string& externalMove)
+{
+	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(this->configurationMetadata, externalMove)));
+
+	//
 
 	if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
 		CreatedMultiplayerGameVisualInterface::get()->setHasToSendBoardConfiguration(true);
@@ -609,84 +894,45 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 	// else Singleplayer, nu trebuie sa trimita nimic
 }
 
-
 std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::string& piecePosition)
 {
-	// TODO: de sters dupa ce s-a realizat cu succes toata legatura intre board manager si board visualizer
+	// INFO: piecePosition are exact 2 char-uri.
 
-	std::vector<std::string> moves;
-
-	int column = piecePosition[0] - 'a';
-	int row = piecePosition[1] - '1';
-	char gamePiece = this->piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
-
-	if (gamePiece == '.')
-		return moves;
-
-	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
-	{
-		if (Game::get().getColor() == Game::Color::WHITE && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->configurationMetadata.whiteTurn)))
-			return moves;
-
-		if (Game::get().getColor() == Game::Color::BLACK && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->configurationMetadata.whiteTurn))
-			return moves;
-	}
-	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
-	{
-		if (Client::get().getColor() == "") // Suntem in Multiplayer si nu stim culoarea
-			return moves;
-
-		if (Client::get().getColor() == "white" && ((!('A' <= gamePiece && gamePiece <= 'Z')) || (!this->configurationMetadata.whiteTurn)))
-			return moves;
-
-		if (Client::get().getColor() == "black" && ((!('a' <= gamePiece && gamePiece <= 'z')) || this->configurationMetadata.whiteTurn))
-			return moves;
-	}
-	else // Game::Mode::NONE
+	if (Game::get().getMode() == Game::Mode::MULTIPLAYER && Client::get().getColor() == "")
+		return std::vector<std::string>();
+	else if (Game::get().getMode() == Game::Mode::NONE)
 	{
 		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
-		return moves;
+		return std::vector<std::string>();
 	}
 
-	if ('A' <= gamePiece && gamePiece <= 'Z' && row <= 6) // Piesa Alba
+	int row = piecePosition[1] - '1';
+	int column = piecePosition[0] - 'a';
+	std::string piecesConfiguration = this->getPiecesConfiguration();
+	char gamePiece = piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
+
+	if (gamePiece == '.')
+		return std::vector<std::string>();
+
+
+
+	std::vector<std::vector<std::pair<char, int>>> internalMoves;
+	if (this->configurationMetadata.whiteTurn)
+		this->generateWhiteMoves(this->configurationMetadata, internalMoves);
+	else
+		this->generateBlackMoves(this->configurationMetadata, internalMoves);
+
+
+	std::vector<std::string> externalMoves;
+	for (int i = 0; i < internalMoves.size(); ++i)
 	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row + 1));
-	}
-	if ('A' <= gamePiece && gamePiece <= 'Z' && row <= 5)
-	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row + 2));
+		std::string externalMove = this->convertToExternalMove(internalMoves[i]);
+
+		if (externalMove[0] == piecePosition[1] && externalMove[1] == piecePosition[0])
+			externalMoves.push_back(externalMove);
 	}
 
-	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 1) // Piesa Neagra
-	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row - 1));
-	}
-	if ('a' <= gamePiece && gamePiece <= 'z' && row >= 2)
-	{
-		moves.emplace_back();
-		moves.back().push_back(gamePiece);
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row));
-		moves.back().push_back((char)('a' + column));
-		moves.back().push_back((char)('1' + row - 2));
-	}
-
-	return moves;
+	return externalMoves;
 }
 
 // White Pieces Attack Zones Generation
