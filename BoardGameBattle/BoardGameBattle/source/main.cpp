@@ -4,11 +4,15 @@ int main()
 {
     Game::get().start();
 
-	// de vazut daca conversiile internal - external move sunt ok facute
+	// cred ca numPiecesAttackingWhiteKing si numPiecesAttackingBlackKing sunt redundante
+	// apply internal move mai poate fi optimizat (ar fi bine, ca va fi apelat in minmax)
+	// validWhitePawns si validBlackPawns sunt redundante, nu mai trb & negat, ca nu se va ajunge intr-o situatie de genul niciodata
 
-	// de schimbat sunetul de button hovered
+	// buton de undo in singleplayer
 
 	// cand are loc o mutare de vazut acest lucru pe tabla de joc
+
+	// de schimbat sunetul de button hovered
 
 
 

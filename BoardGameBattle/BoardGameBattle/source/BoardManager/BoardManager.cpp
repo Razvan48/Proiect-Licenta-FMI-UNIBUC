@@ -74,6 +74,38 @@ BoardManager::BoardManager()
 		}
 	}
 
+	// Precalculated Nearest Pieces On Rank
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_WIDTH); ++j)
+		{
+			this->precalculatedNearestPiecesOnRank[i][j] = std::make_pair(0ull, 0ull);
+
+			if ((j & (1 << column)) == 0)
+				continue;
+
+			for (int k = column - 1; k >= 0; --k)
+			{
+				if (j & (1 << k))
+				{
+					this->precalculatedNearestPiecesOnRank[i][j].first = (1ull << (row * GameMetadata::NUM_TILES_WIDTH + k));
+					break;
+				}
+			}
+			for (int k = column + 1; k < GameMetadata::NUM_TILES_WIDTH; ++k)
+			{
+				if (j & (1 << k))
+				{
+					this->precalculatedNearestPiecesOnRank[i][j].second = (1ull << (row * GameMetadata::NUM_TILES_WIDTH + k));
+					break;
+				}
+			}
+		}
+	}
+
 	// Precalculated King Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
@@ -815,11 +847,11 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const Conf
 	internalMove.emplace_back(piece, pos1);
 
 	// En Passant
-	if (piece == 'P' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 - GameMetadata::NUM_TILES_WIDTH)
+	if (piece == 'P' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 + GameMetadata::NUM_TILES_WIDTH)
 	{
 		internalMove.emplace_back('p', configurationMetadata.capturableEnPassantPosition);
 	}
-	else if (piece == 'p' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 + GameMetadata::NUM_TILES_WIDTH)
+	else if (piece == 'p' && pos0 % GameMetadata::NUM_TILES_WIDTH != pos1 % GameMetadata::NUM_TILES_WIDTH && configurationMetadata.capturableEnPassantPosition == pos1 - GameMetadata::NUM_TILES_WIDTH)
 	{
 		internalMove.emplace_back('P', configurationMetadata.capturableEnPassantPosition);
 	}
@@ -898,18 +930,18 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 {
 	// INFO: piecePosition are exact 2 char-uri.
 
-	if (Game::get().getMode() == Game::Mode::MULTIPLAYER && Client::get().getColor() == "")
-		return std::vector<std::string>();
-	else if (Game::get().getMode() == Game::Mode::NONE)
+	if (Game::get().getMode() == Game::Mode::NONE)
 	{
 		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
 		return std::vector<std::string>();
 	}
+	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER && Client::get().getColor() == "")
+		return std::vector<std::string>();
 
-	int row = piecePosition[1] - '1';
+	int row = GameMetadata::NUM_TILES_HEIGHT - 1 - (piecePosition[1] - '1');
 	int column = piecePosition[0] - 'a';
 	std::string piecesConfiguration = this->getPiecesConfiguration();
-	char gamePiece = piecesConfiguration[(GameMetadata::NUM_TILES_HEIGHT - 1 - row) * GameMetadata::NUM_TILES_WIDTH + column];
+	char gamePiece = piecesConfiguration[row * GameMetadata::NUM_TILES_WIDTH + column];
 
 	if (gamePiece == '.')
 		return std::vector<std::string>();
@@ -1209,20 +1241,14 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurationMetadata)
 {
 	configurationMetadata.whiteKingAttackZone = 0ull;
-	unsigned long long whiteKings = configurationMetadata.whiteKing;
 
-	while (whiteKings)
+	unsigned long long lsb = configurationMetadata.whiteKing;
+
+	configurationMetadata.whiteKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+	if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
 	{
-		unsigned long long lsb = (whiteKings & ((~whiteKings) + 1));
-
-		configurationMetadata.whiteKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
-		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
-		{
-			++configurationMetadata.numPiecesAttackingBlackKing;
-			configurationMetadata.blackKingDefenseZone &= lsb;
-		}
-
-		whiteKings ^= lsb;
+		++configurationMetadata.numPiecesAttackingBlackKing;
+		configurationMetadata.blackKingDefenseZone &= lsb;
 	}
 }
 
@@ -1500,20 +1526,14 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata)
 {
 	configurationMetadata.blackKingAttackZone = 0ull;
-	unsigned long long blackKings = configurationMetadata.blackKing;
 
-	while (blackKings)
+	unsigned long long lsb = configurationMetadata.blackKing;
+
+	configurationMetadata.blackKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+	if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
 	{
-		unsigned long long lsb = (blackKings & ((~blackKings) + 1));
-
-		configurationMetadata.blackKingAttackZone |= this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
-		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
-		{
-			++configurationMetadata.numPiecesAttackingWhiteKing;
-			configurationMetadata.whiteKingDefenseZone &= lsb;
-		}
-
-		blackKings ^= lsb;
+		++configurationMetadata.numPiecesAttackingWhiteKing;
+		configurationMetadata.whiteKingDefenseZone &= lsb;
 	}
 }
 
@@ -1559,7 +1579,206 @@ void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configuration
 
 void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	if (configurationMetadata.whiteKingDefenseZone == 0ull)
+		return;
+
+	unsigned long long whitePawns = configurationMetadata.whitePawns;
+
+	// Avansare Simpla (fara promovare)
+	unsigned long long singleAdvance = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & (~this->rankBitMasks[0]) & (~this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH])) >> GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.whiteKingDefenseZone);
+	while (singleAdvance)
+	{
+		unsigned long long lsb = (singleAdvance & ((~singleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('P', pos));
+
+		singleAdvance ^= lsb;
+	}
+
+	// Avansare Dubla
+	unsigned long long doubleAdvance = (((((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH]) >> GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces)) >> GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.whiteKingDefenseZone);
+	while (doubleAdvance)
+	{
+		unsigned long long lsb = (doubleAdvance & ((~doubleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + 2 * GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('P', pos));
+
+		doubleAdvance ^= lsb;
+	}
+
+	// Atac Stanga (fara promovare)
+	unsigned long long leftAttack = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & (~this->rankBitMasks[0]) & (~this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH]) & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces & configurationMetadata.whiteKingDefenseZone);
+	while (leftAttack)
+	{
+		unsigned long long lsb = (leftAttack & ((~leftAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('P', pos));
+
+		leftAttack ^= lsb;
+	}
+
+	// Atac Dreapta (fara promovare)
+	unsigned long long rightAttack = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & (~this->rankBitMasks[0]) & (~this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH]) & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces & configurationMetadata.whiteKingDefenseZone);
+	while (rightAttack)
+	{
+		unsigned long long lsb = (rightAttack & ((~rightAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('P', pos));
+
+		rightAttack ^= lsb;
+	}
+
+	// Promovare Avansare Simpla
+	unsigned long long promotionSingleAdvance = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH]) >> GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.whiteKingDefenseZone);
+	while (promotionSingleAdvance)
+	{
+		unsigned long long lsb = (promotionSingleAdvance & ((~promotionSingleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('R', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('N', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('B', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('Q', pos));
+
+		promotionSingleAdvance ^= lsb;
+	}
+
+	// Promovare Atac Stanga
+	unsigned long long promotionLeftAttack = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH] & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces & configurationMetadata.whiteKingDefenseZone);
+	while (promotionLeftAttack)
+	{
+		unsigned long long lsb = (promotionLeftAttack & ((~promotionLeftAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('R', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('N', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('B', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('Q', pos));
+
+		promotionLeftAttack ^= lsb;
+	}
+
+	// Promovare Atac Dreapta
+	unsigned long long promotionRightAttack = (((whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH] & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces & configurationMetadata.whiteKingDefenseZone);
+	while (promotionRightAttack)
+	{
+		unsigned long long lsb = (promotionRightAttack & ((~promotionRightAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('R', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('N', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('B', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', pos + GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('Q', pos));
+
+		promotionRightAttack ^= lsb;
+	}
+
+	// En Passant
+	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+
+	unsigned long long whitePawnEnPassantRight = (((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	if (whitePawnEnPassantRight &&
+			(
+				!
+				(
+					(
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & configurationMetadata.whiteKing)
+						&&
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					)
+					||
+					(
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & configurationMetadata.whiteKing)
+						&&
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					)
+				)
+			)
+		)
+	{
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition - 1));
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition));
+	}
+
+	unsigned long long whitePawnEnPassantLeft = (((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	if (whitePawnEnPassantLeft &&
+		(
+			!
+			(
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & configurationMetadata.whiteKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					)
+				||
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & configurationMetadata.whiteKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					)
+				)
+			)
+		)
+	{
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition + 1));
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition));
+	}
 }
 
 void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -1569,7 +1788,7 @@ void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	if (configurationMetadata.numPiecesAttackingWhiteKing >= 2)
+	if (configurationMetadata.whiteKingDefenseZone == 0ull)
 		return;
 
 	unsigned long long whiteKnights = configurationMetadata.whiteKnights;
@@ -1613,28 +1832,43 @@ void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationM
 
 void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	unsigned long long whiteKings = configurationMetadata.whiteKing;
+	unsigned long long lsbKing = configurationMetadata.whiteKing;
+	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
+	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.blackAttackZones) & (~configurationMetadata.allWhitePieces));
 
-	while (whiteKings)
+	while (kingAttackZone)
 	{
-		unsigned long long lsbKing = (whiteKings & ((~whiteKings) + 1));
-		int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
-		unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.blackAttackZones) & (~configurationMetadata.allWhitePieces));
+		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
 
-		while (kingAttackZone)
+		int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('K', posKing));
+		moves.back().emplace_back(std::make_pair('K', posAttack));
+
+		kingAttackZone ^= lsbAttack;
+	}
+
+	// Castling
+	if (!configurationMetadata.whiteKingMoved)
+	{
+		if (!configurationMetadata.whiteRookBottomLeftMoved && (configurationMetadata.blackAttackZones & this->precalculatedFullCastleBottomLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomLeft) == 0ull)
 		{
-			unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
-
-			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
-
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('K', posKing));
-			moves.back().emplace_back(std::make_pair('K', posAttack));
-
-			kingAttackZone ^= lsbAttack;
+			moves.back().emplace_back(std::make_pair('K', posKing - 2));
+			moves.back().emplace_back(std::make_pair('R', posKing - 4));
+			moves.back().emplace_back(std::make_pair('R', posKing - 1));
 		}
 
-		whiteKings ^= lsbKing;
+		if (!configurationMetadata.whiteRookBottomRightMoved && (configurationMetadata.blackAttackZones & this->precalculatedFullCastleBottomRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomRight) == 0ull)
+		{
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('K', posKing));
+			moves.back().emplace_back(std::make_pair('K', posKing + 2));
+			moves.back().emplace_back(std::make_pair('R', posKing + 3));
+			moves.back().emplace_back(std::make_pair('R', posKing + 1));
+		}
 	}
 }
 
@@ -1652,7 +1886,7 @@ void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	if (configurationMetadata.numPiecesAttackingBlackKing >= 2)
+	if (configurationMetadata.blackKingDefenseZone == 0ull)
 		return;
 
 	unsigned long long blackKnights = configurationMetadata.blackKnights;
@@ -1696,28 +1930,42 @@ void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationM
 
 void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	unsigned long long blackKings = configurationMetadata.blackKing;
+	unsigned long long lsbKing = configurationMetadata.blackKing;
+	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
+	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.whiteAttackZones) & (~configurationMetadata.allBlackPieces));
 
-	while (blackKings)
+	while (kingAttackZone)
 	{
-		unsigned long long lsbKing = (blackKings & ((~blackKings) + 1));
-		int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
-		unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.whiteAttackZones) & (~configurationMetadata.allBlackPieces));
+		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
 
-		while (kingAttackZone)
+		int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('k', posKing));
+		moves.back().emplace_back(std::make_pair('k', posAttack));
+
+		kingAttackZone ^= lsbAttack;
+	}
+
+	// Castling
+	if (!configurationMetadata.blackKingMoved)
+	{
+		if (!configurationMetadata.blackRookTopLeftMoved && (configurationMetadata.whiteAttackZones & this->precalculatedFullCastleTopLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopLeft) == 0ull)
 		{
-			unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
-
-			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
-
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('k', posKing));
-			moves.back().emplace_back(std::make_pair('k', posAttack));
-
-			kingAttackZone ^= lsbAttack;
+			moves.back().emplace_back(std::make_pair('k', posKing - 2));
+			moves.back().emplace_back(std::make_pair('r', posKing - 4));
+			moves.back().emplace_back(std::make_pair('r', posKing - 1));
 		}
-
-		blackKings ^= lsbKing;
+		if (!configurationMetadata.blackRookTopRightMoved && (configurationMetadata.whiteAttackZones & this->precalculatedFullCastleTopRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopRight) == 0ull)
+		{
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('k', posKing));
+			moves.back().emplace_back(std::make_pair('k', posKing + 2));
+			moves.back().emplace_back(std::make_pair('r', posKing + 3));
+			moves.back().emplace_back(std::make_pair('r', posKing + 1));
+		}
 	}
 }
 
