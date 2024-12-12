@@ -46,8 +46,6 @@ private:
 	unsigned long long precalculatedFullCastleBottomLeft;
 	unsigned long long precalculatedFullCastleBottomRight;
 
-	std::string piecesConfiguration;
-
 	struct ConfigurationMetadata
 	{
 		unsigned long long whitePawns;
@@ -118,6 +116,14 @@ private:
 
 		unsigned long long whiteKingDefenseZone;
 		unsigned long long blackKingDefenseZone;
+
+		//
+
+		ConfigurationMetadata(const std::string& configurationString);
+		ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
+
+		void initialize(const std::string& configurationString);
+		void initialize(const ConfigurationMetadata& configurationMetadata);
 	};
 	ConfigurationMetadata configurationMetadata;
 
@@ -147,33 +153,31 @@ private:
 
 	//
 
-	void generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
-	void generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
-	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
-	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves);
+	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
+	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
 public:
 	static BoardManager& get();
 
 	void initialize();
 
-	inline std::string getPiecesConfiguration() const { return this->piecesConfiguration; }
-	void setPiecesConfiguration(const std::string& piecesConfiguration);
+	std::string getPiecesConfiguration() const;
 
-	void applyMove(const std::string& move);
-	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
+	void applyMove(const std::vector<std::pair<char, int>>& move);
 
 	inline bool getWhiteTurn() const { return this->configurationMetadata.whiteTurn; }
 

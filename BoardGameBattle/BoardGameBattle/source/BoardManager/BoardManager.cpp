@@ -12,12 +12,8 @@
 #include <iostream>
 
 BoardManager::BoardManager()
-	: piecesConfiguration("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000")
+	: configurationMetadata("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000")
 {
-	// TODO: move this from here
-	this->configurationMetadata.whiteTurn = true;
-
-
 	// Log Power 2
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 		this->logPower2[(1ull << i) % BoardManager::MODULO_LOG_POWER_2] = i;
@@ -569,22 +565,7 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 
 void BoardManager::initialize()
 {
-	this->piecesConfiguration = "rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR1111w0000";
-
-	// TODO: move this
-	this->configurationMetadata.whiteTurn = true;
-}
-
-void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration)
-{
-	this->piecesConfiguration = piecesConfiguration;
-	int whiteTurnPos = GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES;
-	if (whiteTurnPos < this->piecesConfiguration.size())
-		this->configurationMetadata.whiteTurn = (this->piecesConfiguration[whiteTurnPos] == 'w');
-	else
-	{
-		std::cout << "Error: Could not find whose turn is it inside the Pieces Configuration in BoardManager::setPiecesConfiguration. Set to default to white." << std::endl;
-	}
+	this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
 }
 
 BoardManager& BoardManager::get()
@@ -593,9 +574,15 @@ BoardManager& BoardManager::get()
 	return instance;
 }
 
+void BoardManager::applyMove(const std::vector<std::pair<char, int>>& move)
+{
+	// TODO:
+}
 
 void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mutarea este legala
 {
+	// TODO: de sters dupa ce applyMove de mai sus este rescris
+
 	for (int i = 0; i < move.size(); i += GameMetadata::NUM_CHARS_SUBMOVE)
 	{
 		char gamePiece = move[i];
@@ -625,6 +612,8 @@ void BoardManager::applyMove(const std::string& move) // Face presupunerea ca mu
 
 std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::string& piecePosition)
 {
+	// TODO: de sters dupa ce s-a realizat cu succes toata legatura intre board manager si board visualizer
+
 	std::vector<std::string> moves;
 
 	int column = piecePosition[0] - 'a';
@@ -1322,71 +1311,173 @@ void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configuration
 
 // White Pieces Moves Generation
 
-void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
+{
+	if (configurationMetadata.numPiecesAttackingWhiteKing >= 2)
+		return;
+
+	unsigned long long whiteKnights = configurationMetadata.whiteKnights;
+
+	while (whiteKnights)
+	{
+		unsigned long long lsbKnight = (whiteKnights & ((~whiteKnights) + 1));
+
+		if (lsbKnight & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile | configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+			continue;
+
+		int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+		unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allWhitePieces) & configurationMetadata.whiteKingDefenseZone);
+
+		while (knightAttackZone)
+		{
+			unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('N', posKnight));
+			moves.back().emplace_back(std::make_pair('N', posAttack));
+
+			knightAttackZone ^= lsbAttack;
+		}
+
+		whiteKnights ^= lsbKnight;
+	}
+}
+
+void BoardManager::generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
-}
+	unsigned long long whiteKings = configurationMetadata.whiteKing;
 
-void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
-{
-	// TODO:
+	while (whiteKings)
+	{
+		unsigned long long lsbKing = (whiteKings & ((~whiteKings) + 1));
+		int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
+		unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.blackAttackZones) & (~configurationMetadata.allWhitePieces));
+
+		while (kingAttackZone)
+		{
+			unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('K', posKing));
+			moves.back().emplace_back(std::make_pair('K', posAttack));
+
+			kingAttackZone ^= lsbAttack;
+		}
+
+		whiteKings ^= lsbKing;
+	}
 }
 
 // Black Pieces Moves Generation
 
-void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
+{
+	if (configurationMetadata.numPiecesAttackingBlackKing >= 2)
+		return;
+
+	unsigned long long blackKnights = configurationMetadata.blackKnights;
+
+	while (blackKnights)
+	{
+		unsigned long long lsbKnight = (blackKnights & ((~blackKnights) + 1));
+
+		if (lsbKnight & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile | configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
+			continue;
+
+		int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+		unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allBlackPieces) & configurationMetadata.blackKingDefenseZone);
+
+		while (knightAttackZone)
+		{
+			unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('n', posKnight));
+			moves.back().emplace_back(std::make_pair('n', posAttack));
+
+			knightAttackZone ^= lsbAttack;
+		}
+
+		blackKnights ^= lsbKnight;
+	}
+}
+
+void BoardManager::generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	// TODO:
 }
 
-void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
-}
+	unsigned long long blackKings = configurationMetadata.blackKing;
 
-void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
-{
-	// TODO:
+	while (blackKings)
+	{
+		unsigned long long lsbKing = (blackKings & ((~blackKings) + 1));
+		int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
+		unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.whiteAttackZones) & (~configurationMetadata.allBlackPieces));
+
+		while (kingAttackZone)
+		{
+			unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('k', posKing));
+			moves.back().emplace_back(std::make_pair('k', posAttack));
+
+			kingAttackZone ^= lsbAttack;
+		}
+
+		blackKings ^= lsbKing;
+	}
 }
 
 // All Pieces Moves Generation
 
-void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	configurationMetadata.whitePiecesPinnedOnRank = 0ull;
 	configurationMetadata.whitePiecesPinnedOnFile = 0ull;
@@ -1407,7 +1498,7 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	generateWhiteKingMoves(configurationMetadata, moves);
 }
 
-void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::string>& moves)
+void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
 	configurationMetadata.blackPiecesPinnedOnRank = 0ull;
 	configurationMetadata.blackPiecesPinnedOnFile = 0ull;
@@ -1442,6 +1533,222 @@ void BoardManager::printBitBoard(unsigned long long bitBoard) const
 			std::cout << std::endl;
 	}
 }
+
+BoardManager::ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)
+{
+	this->whitePawns = 0ull;
+	this->whiteRooks = 0ull;
+	this->whiteKnights = 0ull;
+	this->whiteBishops = 0ull;
+	this->whiteQueens = 0ull;
+	this->whiteKing = 0ull;
+
+	this->blackPawns = 0ull;
+	this->blackRooks = 0ull;
+	this->blackKnights = 0ull;
+	this->blackBishops = 0ull;
+	this->blackQueens = 0ull;
+	this->blackKing = 0ull;
+
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		if (configurationString[i] == '.')
+			continue;
+
+		if (configurationString[i] == 'P')
+			this->whitePawns |= (1ull << i);
+		else if (configurationString[i] == 'R')
+			this->whiteRooks |= (1ull << i);
+		else if (configurationString[i] == 'N')
+			this->whiteKnights |= (1ull << i);
+		else if (configurationString[i] == 'B')
+			this->whiteBishops |= (1ull << i);
+		else if (configurationString[i] == 'Q')
+			this->whiteQueens |= (1ull << i);
+		else if (configurationString[i] == 'K')
+			this->whiteKing |= (1ull << i);
+		else if (configurationString[i] == 'p')
+			this->blackPawns |= (1ull << i);
+		else if (configurationString[i] == 'r')
+			this->blackRooks |= (1ull << i);
+		else if (configurationString[i] == 'n')
+			this->blackKnights |= (1ull << i);
+		else if (configurationString[i] == 'b')
+			this->blackBishops |= (1ull << i);
+		else if (configurationString[i] == 'q')
+			this->blackQueens |= (1ull << i);
+		else if (configurationString[i] == 'k')
+			this->blackKing |= (1ull << i);
+	}
+
+	this->whiteTurn = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] - '0');
+
+	this->capturableEnPassantPosition = (configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 1] - '0') * 10 + (configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 2] - '0');
+
+	this->whiteKingMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 3] - '0');
+	this->whiteRookBottomLeftMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 4] - '0');
+	this->whiteRookBottomRightMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 5] - '0');
+
+	this->blackKingMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 6] - '0');
+	this->blackRookTopLeftMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 7] - '0');
+	this->blackRookTopRightMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 8] - '0');
+
+	//
+
+	this->allWhitePieces = this->whitePawns | this->whiteRooks | this->whiteKnights | this->whiteBishops | this->whiteQueens | this->whiteKing;
+
+	this->allBlackPieces = this->blackPawns | this->blackRooks | this->blackKnights | this->blackBishops | this->blackQueens | this->blackKing;
+
+	this->allPieces = this->allWhitePieces | this->allBlackPieces;
+
+	this->emptyTiles = (~this->allPieces);
+}
+
+BoardManager::ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata)
+	: whitePawns(configurationMetadata.whitePawns)
+	, whiteRooks(configurationMetadata.whiteRooks)
+	, whiteKnights(configurationMetadata.whiteKnights)
+	, whiteBishops(configurationMetadata.whiteBishops)
+	, whiteQueens(configurationMetadata.whiteQueens)
+	, whiteKing(configurationMetadata.whiteKing)
+
+	, blackPawns(configurationMetadata.blackPawns)
+	, blackRooks(configurationMetadata.blackRooks)
+	, blackKnights(configurationMetadata.blackKnights)
+	, blackBishops(configurationMetadata.blackBishops)
+	, blackQueens(configurationMetadata.blackQueens)
+	, blackKing(configurationMetadata.blackKing)
+
+	, whiteTurn(configurationMetadata.whiteTurn)
+
+	, capturableEnPassantPosition(configurationMetadata.capturableEnPassantPosition)
+
+	, whiteKingMoved(configurationMetadata.whiteKingMoved)
+	, whiteRookBottomLeftMoved(configurationMetadata.whiteRookBottomLeftMoved)
+	, whiteRookBottomRightMoved(configurationMetadata.whiteRookBottomRightMoved)
+
+	, blackKingMoved(configurationMetadata.blackKingMoved)
+	, blackRookTopLeftMoved(configurationMetadata.blackRookTopLeftMoved)
+	, blackRookTopRightMoved(configurationMetadata.blackRookTopRightMoved)
+{
+	this->allWhitePieces = this->whitePawns | this->whiteRooks | this->whiteKnights | this->whiteBishops | this->whiteQueens | this->whiteKing;
+
+	this->allBlackPieces = this->blackPawns | this->blackRooks | this->blackKnights | this->blackBishops | this->blackQueens | this->blackKing;
+
+	this->allPieces = this->allWhitePieces | this->allBlackPieces;
+
+	this->emptyTiles = (~this->allPieces);
+}
+
+void BoardManager::ConfigurationMetadata::initialize(const std::string& configurationString)
+{
+	this->whitePawns = 0ull;
+	this->whiteRooks = 0ull;
+	this->whiteKnights = 0ull;
+	this->whiteBishops = 0ull;
+	this->whiteQueens = 0ull;
+	this->whiteKing = 0ull;
+
+	this->blackPawns = 0ull;
+	this->blackRooks = 0ull;
+	this->blackKnights = 0ull;
+	this->blackBishops = 0ull;
+	this->blackQueens = 0ull;
+	this->blackKing = 0ull;
+
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		if (configurationString[i] == '.')
+			continue;
+
+		if (configurationString[i] == 'P')
+			this->whitePawns |= (1ull << i);
+		else if (configurationString[i] == 'R')
+			this->whiteRooks |= (1ull << i);
+		else if (configurationString[i] == 'N')
+			this->whiteKnights |= (1ull << i);
+		else if (configurationString[i] == 'B')
+			this->whiteBishops |= (1ull << i);
+		else if (configurationString[i] == 'Q')
+			this->whiteQueens |= (1ull << i);
+		else if (configurationString[i] == 'K')
+			this->whiteKing |= (1ull << i);
+		else if (configurationString[i] == 'p')
+			this->blackPawns |= (1ull << i);
+		else if (configurationString[i] == 'r')
+			this->blackRooks |= (1ull << i);
+		else if (configurationString[i] == 'n')
+			this->blackKnights |= (1ull << i);
+		else if (configurationString[i] == 'b')
+			this->blackBishops |= (1ull << i);
+		else if (configurationString[i] == 'q')
+			this->blackQueens |= (1ull << i);
+		else if (configurationString[i] == 'k')
+			this->blackKing |= (1ull << i);
+	}
+
+	this->whiteTurn = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] - '0');
+
+	this->capturableEnPassantPosition = (configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 1] - '0') * 10 + (configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 2] - '0');
+
+	this->whiteKingMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 3] - '0');
+	this->whiteRookBottomLeftMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 4] - '0');
+	this->whiteRookBottomRightMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 5] - '0');
+
+	this->blackKingMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 6] - '0');
+	this->blackRookTopLeftMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 7] - '0');
+	this->blackRookTopRightMoved = (bool)(configurationString[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 8] - '0');
+
+	//
+
+	this->allWhitePieces = this->whitePawns | this->whiteRooks | this->whiteKnights | this->whiteBishops | this->whiteQueens | this->whiteKing;
+
+	this->allBlackPieces = this->blackPawns | this->blackRooks | this->blackKnights | this->blackBishops | this->blackQueens | this->blackKing;
+
+	this->allPieces = this->allWhitePieces | this->allBlackPieces;
+
+	this->emptyTiles = (~this->allPieces);
+}
+
+void BoardManager::ConfigurationMetadata::initialize(const ConfigurationMetadata& configurationMetadata)
+{
+	this->whitePawns = configurationMetadata.whitePawns;
+	this->whiteRooks = configurationMetadata.whiteRooks;
+	this->whiteKnights = configurationMetadata.whiteKnights;
+	this->whiteBishops = configurationMetadata.whiteBishops;
+	this->whiteQueens = configurationMetadata.whiteQueens;
+	this->whiteKing = configurationMetadata.whiteKing;
+
+	this->blackPawns = configurationMetadata.blackPawns;
+	this->blackRooks = configurationMetadata.blackRooks;
+	this->blackKnights = configurationMetadata.blackKnights;
+	this->blackBishops = configurationMetadata.blackBishops;
+	this->blackQueens = configurationMetadata.blackQueens;
+	this->blackKing = configurationMetadata.blackKing;
+
+	this->whiteTurn = configurationMetadata.whiteTurn;
+
+	this->capturableEnPassantPosition = configurationMetadata.capturableEnPassantPosition;
+
+	this->whiteKingMoved = configurationMetadata.whiteKingMoved;
+	this->whiteRookBottomLeftMoved = configurationMetadata.whiteRookBottomLeftMoved;
+	this->whiteRookBottomRightMoved = configurationMetadata.whiteRookBottomRightMoved;
+
+	this->blackKingMoved = configurationMetadata.blackKingMoved;
+	this->blackRookTopLeftMoved = configurationMetadata.blackRookTopLeftMoved;
+	this->blackRookTopRightMoved = configurationMetadata.blackRookTopRightMoved;
+
+
+
+	this->allWhitePieces = this->whitePawns | this->whiteRooks | this->whiteKnights | this->whiteBishops | this->whiteQueens | this->whiteKing;
+
+	this->allBlackPieces = this->blackPawns | this->blackRooks | this->blackKnights | this->blackBishops | this->blackQueens | this->blackKing;
+
+	this->allPieces = this->allWhitePieces | this->allBlackPieces;
+
+	this->emptyTiles = (~this->allPieces);
+}
+
 
 
 
