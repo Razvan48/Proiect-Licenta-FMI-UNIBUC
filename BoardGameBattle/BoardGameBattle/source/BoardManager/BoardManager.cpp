@@ -661,7 +661,7 @@ std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char
 		int column = internalMove[i].second % GameMetadata::NUM_TILES_WIDTH;
 
 		externalMove.push_back((char)('a' + column));
-		externalMove.push_back((char)('1' + row));
+		externalMove.push_back((char)('1' + GameMetadata::NUM_TILES_HEIGHT - 1 - row));
 	}
 
 	return externalMove;
@@ -808,8 +808,8 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const Conf
 	std::vector<std::pair<char, int>> internalMove;
 
 	char piece = externalMove[0];
-	int pos0 = (externalMove[2] - '1') * GameMetadata::NUM_TILES_WIDTH + (externalMove[1] - 'a');
-	int pos1 = (externalMove[4] - '1') * GameMetadata::NUM_TILES_WIDTH + (externalMove[3] - 'a');
+	int pos0 = (GameMetadata::NUM_TILES_HEIGHT - 1 - (externalMove[2] - '1')) * GameMetadata::NUM_TILES_WIDTH + (externalMove[1] - 'a');
+	int pos1 = (GameMetadata::NUM_TILES_HEIGHT - 1 - (externalMove[4] - '1')) * GameMetadata::NUM_TILES_WIDTH + (externalMove[3] - 'a');
 
 	internalMove.emplace_back(piece, pos0);
 	internalMove.emplace_back(piece, pos1);
@@ -928,7 +928,7 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 	{
 		std::string externalMove = this->convertToExternalMove(internalMoves[i]);
 
-		if (externalMove[0] == piecePosition[1] && externalMove[1] == piecePosition[0])
+		if (externalMove[1] == piecePosition[0] && externalMove[2] == piecePosition[1])
 			externalMoves.push_back(externalMove);
 	}
 
@@ -948,7 +948,7 @@ void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurat
 	if (leftAttackZone & configurationMetadata.blackKing)
 	{
 		++configurationMetadata.numPiecesAttackingBlackKing;
-		configurationMetadata.blackKingDefenseZone |= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH + 1));
+		configurationMetadata.blackKingDefenseZone &= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH + 1));
 	}
 
 	// Atac Dreapta
@@ -957,7 +957,7 @@ void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurat
 	if (rightAttackZone & configurationMetadata.blackKing)
 	{
 		++configurationMetadata.numPiecesAttackingBlackKing;
-		configurationMetadata.blackKingDefenseZone |= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH - 1));
+		configurationMetadata.blackKingDefenseZone &= (configurationMetadata.blackKing << (GameMetadata::NUM_TILES_WIDTH - 1));
 	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
@@ -1037,7 +1037,7 @@ void BoardManager::generateWhiteKnightAttackZone(ConfigurationMetadata& configur
 		if (this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
-			configurationMetadata.blackKingDefenseZone |= lsb;
+			configurationMetadata.blackKingDefenseZone &= lsb;
 		}
 
 		whiteKnights ^= lsb;
@@ -1219,7 +1219,7 @@ void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurat
 		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
-			configurationMetadata.blackKingDefenseZone |= lsb;
+			configurationMetadata.blackKingDefenseZone &= lsb;
 		}
 
 		whiteKings ^= lsb;
@@ -1239,7 +1239,7 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	if (leftAttackZone & configurationMetadata.whiteKing)
 	{
 		++configurationMetadata.numPiecesAttackingWhiteKing;
-		configurationMetadata.whiteKingDefenseZone |= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
 	}
 
 	// Atac Dreapta
@@ -1248,7 +1248,7 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	if (rightAttackZone & configurationMetadata.whiteKing)
 	{
 		++configurationMetadata.numPiecesAttackingWhiteKing;
-		configurationMetadata.whiteKingDefenseZone |= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
 	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
@@ -1328,7 +1328,7 @@ void BoardManager::generateBlackKnightAttackZone(ConfigurationMetadata& configur
 		if (this->precalculatedKnightAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
-			configurationMetadata.whiteKingDefenseZone |= lsb;
+			configurationMetadata.whiteKingDefenseZone &= lsb;
 		}
 
 		blackKnights ^= lsb;
@@ -1510,7 +1510,7 @@ void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurat
 		if (this->precalculatedKingAttackZones[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]] & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
-			configurationMetadata.whiteKingDefenseZone |= lsb;
+			configurationMetadata.whiteKingDefenseZone &= lsb;
 		}
 
 		blackKings ^= lsb;

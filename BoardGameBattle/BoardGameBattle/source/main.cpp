@@ -4,27 +4,21 @@ int main()
 {
     Game::get().start();
 
+	// de vazut daca conversiile internal - external move sunt ok facute
+
 	// de schimbat sunetul de button hovered
 
 	// cand are loc o mutare de vazut acest lucru pe tabla de joc
 
 
-	// de schimbat configuratia intreaga, nu mai tinem minte daca am facut rocade, tinem minte daca regii + turele s-au mutat de la inceputul jocului!!
-
-	// TODO: de facut toate todo-urile din BoardManager.cpp + nu exista castling si en passant!!!!
-	// de pus si turn-ul in configuration metadata si sa am o variabila de configuration metadata in clasa, elimin bool-ul de whites- turn
 
 	// promovarile se pot face si prin atacuri de pioni
 
 	// singurul loc unde nu dam referinta e cand avansam in minimax, acolo facem o copie a structurii de config
 
 
-	// TODO: de verificat ca attack zone-urile pt sliding pieces (linie, coloana, ambele diagonale), cat si log-ul sunt facute corect
 
 	// TODO: implementare BOT pentru Singleplayer
-
-	// TODO: constructor copiere si initializare cu string pt configurationMetadata si initializare simpla (va trebui asa ca sa putem face multithreading)
-	// de adaugat ulterior promovare pion, en passant, castling
 
 
 
