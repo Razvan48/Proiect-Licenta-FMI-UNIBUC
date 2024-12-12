@@ -1728,21 +1728,21 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 	// En Passant
 	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
 
-	unsigned long long whitePawnEnPassantRight = (((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	unsigned long long whitePawnEnPassantRight = (((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
 	if (whitePawnEnPassantRight &&
 			(
 				!
 				(
 					(
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				)
 			)
@@ -1754,21 +1754,21 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition));
 	}
 
-	unsigned long long whitePawnEnPassantLeft = (((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	unsigned long long whitePawnEnPassantLeft = (((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
 	if (whitePawnEnPassantLeft &&
 		(
 			!
 			(
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & configurationMetadata.whiteKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & configurationMetadata.whiteKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				||
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].second & configurationMetadata.whiteKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & configurationMetadata.whiteKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				)
 			)
