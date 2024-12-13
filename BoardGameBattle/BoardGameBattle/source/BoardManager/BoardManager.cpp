@@ -2051,7 +2051,41 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 		promotionRightAttack ^= lsb;
 	}
 
-	// En Passant
+	// En Passant // INFO: En Passant da return prematur.
+	if (configurationMetadata.capturableEnPassantPosition == 0) // INFO: Daca nu exista o pozitie de capturare en passant, atunci capturableEnPassantPosition este 0.
+		return;
+
+	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+
+	if (
+			(
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & configurationMetadata.whiteKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & configurationMetadata.whiteKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & configurationMetadata.whiteKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & configurationMetadata.whiteKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+			)
+	)
+		return;
+
+
 	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
 
 	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)));
@@ -2496,7 +2530,41 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 		promotionRightAttack ^= lsb;
 	}
 
-	// En Passant
+	// En Passant // INFO: En Passant da return prematur.
+	if (configurationMetadata.capturableEnPassantPosition == 0) // INFO: Daca nu exista o pozitie de capturare en passant, atunci capturableEnPassantPosition este 0.
+		return;
+
+	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+
+	if (
+			(
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & configurationMetadata.blackKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & configurationMetadata.blackKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & configurationMetadata.blackKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+			)
+			||
+			(
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & configurationMetadata.blackKing)
+				&&
+				(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+			)
+		)
+		return;
+
+
 	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
 
 	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)));
