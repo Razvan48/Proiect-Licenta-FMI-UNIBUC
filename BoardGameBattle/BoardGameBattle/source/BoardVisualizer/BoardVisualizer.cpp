@@ -285,15 +285,15 @@ void BoardVisualizer::update()
 
 			if (!selectedTile) // Nu s-a selectat una din celulele ce puteau face o mutare
 			{
+				int previousSelectedTileRow = this->selectedTileRow;
+				int previousSelectedTileColumn = this->selectedTileColumn;
 				this->resetSelectedTiles();
-				this->selectedTileRow = -1;
-				this->selectedTileColumn = -1;
 
 				for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 				{
 					for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 					{
-						if (this->boardTiles[i][j].isInCompleteMouseCollision())
+						if (this->boardTiles[i][j].isInCompleteMouseCollision() && (i != previousSelectedTileRow || j != previousSelectedTileColumn))
 						{
 							this->boardTiles[i][j].setIsSelected(true);
 							this->selectedTileRow = i;

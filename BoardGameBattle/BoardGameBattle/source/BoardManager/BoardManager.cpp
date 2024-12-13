@@ -1031,25 +1031,33 @@ void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurat
 		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.second & configurationMetadata.blackKing)
 			this->configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
 
-		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first & configurationMetadata.blackKing)
+		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnFile = false;
 		}
 
 		whiteRooks ^= lsb;
@@ -1112,25 +1120,33 @@ void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configur
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
 			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 
-		if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first & configurationMetadata.blackKing)
+		if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
-		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
 
 		whiteBishops ^= lsb;
@@ -1193,45 +1209,61 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
 			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 
-		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first & configurationMetadata.blackKing)
+		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
-		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first & configurationMetadata.blackKing)
+		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
+
+			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
 
 		whiteQueens ^= lsb;
@@ -1316,25 +1348,33 @@ void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurat
 		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.second & configurationMetadata.whiteKing)
 			this->configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
 
-		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first & configurationMetadata.whiteKing)
+		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnFile = false;
 		}
 
 		blackRooks ^= lsb;
@@ -1397,25 +1437,33 @@ void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configur
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
 			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 
-		if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first & configurationMetadata.whiteKing)
+		if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
-		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
 
 		blackBishops ^= lsb;
@@ -1478,45 +1526,61 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
 			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 
-		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first & configurationMetadata.whiteKing)
+		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnRank = false;
 		}
-		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnFile = false;
 		}
-		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
 		}
-		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
-		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first & configurationMetadata.whiteKing)
+		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
+
+			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
 		}
 
 		blackQueens ^= lsb;
@@ -1975,6 +2039,15 @@ void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMe
 	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
 	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.blackAttackZones) & (~configurationMetadata.allWhitePieces));
 
+	if (!configurationMetadata.whiteKingCanStayOnRank)
+		kingAttackZone &= (~this->rankBitMasks[posKing]);
+	if (!configurationMetadata.whiteKingCanStayOnFile)
+		kingAttackZone &= (~this->fileBitMasks[posKing]);
+	if (!configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal)
+		kingAttackZone &= (~this->topLeftBottomRightDiagonalBitMasks[posKing]);
+	if (!configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal)
+		kingAttackZone &= (~this->topRightBottomLeftDiagonalBitMasks[posKing]);
+
 	while (kingAttackZone)
 	{
 		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
@@ -2411,6 +2484,15 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
 	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.whiteAttackZones) & (~configurationMetadata.allBlackPieces));
 
+	if (!configurationMetadata.blackKingCanStayOnRank)
+		kingAttackZone &= (~this->rankBitMasks[posKing]);
+	if (!configurationMetadata.blackKingCanStayOnFile)
+		kingAttackZone &= (~this->fileBitMasks[posKing]);
+	if (!configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal)
+		kingAttackZone &= (~this->topLeftBottomRightDiagonalBitMasks[posKing]);
+	if (!configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal)
+		kingAttackZone &= (~this->topRightBottomLeftDiagonalBitMasks[posKing]);
+
 	while (kingAttackZone)
 	{
 		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
@@ -2458,6 +2540,10 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	configurationMetadata.numPiecesAttackingWhiteKing = 0;
 	configurationMetadata.whiteKingDefenseZone = (~(0ull));
 
+	configurationMetadata.whiteKingCanStayOnRank = true;
+	configurationMetadata.whiteKingCanStayOnFile = true;
+	configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = true;
+	configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = true;
 
 	generateBlackAttackZones(configurationMetadata);
 
@@ -2479,6 +2565,11 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 
 	configurationMetadata.numPiecesAttackingBlackKing = 0;
 	configurationMetadata.blackKingDefenseZone = (~(0ull));
+
+	configurationMetadata.blackKingCanStayOnRank = true;
+	configurationMetadata.blackKingCanStayOnFile = true;
+	configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = true;
+	configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = true;
 
 	generateWhiteAttackZones(configurationMetadata);
 
