@@ -1917,7 +1917,56 @@ void BoardManager::generateWhiteBishopMoves(ConfigurationMetadata& configuration
 
 void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long whiteQueens = configurationMetadata.whiteQueens;
+
+	while (whiteQueens)
+	{
+		unsigned long long lsbQueen = (whiteQueens & ((~whiteQueens) + 1));
+
+		int posQueen = this->logPower2[lsbQueen % BoardManager::MODULO_LOG_POWER_2];
+
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, posQueen);
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, posQueen);
+
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, posQueen);
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, posQueen);
+
+		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, posQueen);
+		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, posQueen);
+
+		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, posQueen);
+		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, posQueen);
+
+		unsigned long long queenAttackZone = (this->precalculatedLeftAttackZones[posQueen][whitePiecesSameRank][blackPiecesSameRank].first | this->precalculatedRightAttackZones[posQueen][whitePiecesSameRank][blackPiecesSameRank].first
+			| this->precalculatedTopAttackZones[posQueen][whitePiecesSameFile][blackPiecesSameFile].first | this->precalculatedBottomAttackZones[posQueen][whitePiecesSameFile][blackPiecesSameFile].first
+			| this->precalculatedTopLeftDiagonalAttackZones[posQueen][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[posQueen][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first
+			| this->precalculatedTopRightDiagonalAttackZones[posQueen][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[posQueen][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first);
+		queenAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnRank)
+			queenAttackZone &= this->rankBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnFile)
+			queenAttackZone &= this->fileBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal)
+			queenAttackZone &= this->topLeftBottomRightDiagonalBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)
+			queenAttackZone &= this->topRightBottomLeftDiagonalBitMasks[posQueen];
+
+		while (queenAttackZone)
+		{
+			unsigned long long lsbAttack = (queenAttackZone & ((~queenAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('Q', posQueen));
+			moves.back().emplace_back(std::make_pair('Q', posAttack));
+
+			queenAttackZone ^= lsbAttack;
+		}
+
+		whiteQueens ^= lsbQueen;
+	}
 }
 
 void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2304,7 +2353,56 @@ void BoardManager::generateBlackBishopMoves(ConfigurationMetadata& configuration
 
 void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long blackQueens = configurationMetadata.blackQueens;
+
+	while (blackQueens)
+	{
+		unsigned long long lsbQueen = (blackQueens & ((~blackQueens) + 1));
+
+		int posQueen = this->logPower2[lsbQueen % BoardManager::MODULO_LOG_POWER_2];
+
+		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, posQueen);
+		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, posQueen);
+
+		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, posQueen);
+		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, posQueen);
+
+		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, posQueen);
+		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, posQueen);
+
+		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, posQueen);
+		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, posQueen);
+
+		unsigned long long queenAttackZone = (this->precalculatedLeftAttackZones[posQueen][blackPiecesSameRank][whitePiecesSameRank].first | this->precalculatedRightAttackZones[posQueen][blackPiecesSameRank][whitePiecesSameRank].first
+			| this->precalculatedTopAttackZones[posQueen][blackPiecesSameFile][whitePiecesSameFile].first | this->precalculatedBottomAttackZones[posQueen][blackPiecesSameFile][whitePiecesSameFile].first
+			| this->precalculatedTopLeftDiagonalAttackZones[posQueen][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[posQueen][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first
+			| this->precalculatedTopRightDiagonalAttackZones[posQueen][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[posQueen][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first);
+		queenAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnRank)
+			queenAttackZone &= this->rankBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnFile)
+			queenAttackZone &= this->fileBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal)
+			queenAttackZone &= this->topLeftBottomRightDiagonalBitMasks[posQueen];
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)
+			queenAttackZone &= this->topRightBottomLeftDiagonalBitMasks[posQueen];
+
+		while (queenAttackZone)
+		{
+			unsigned long long lsbAttack = (queenAttackZone & ((~queenAttackZone) + 1));
+
+			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			moves.emplace_back();
+			moves.back().emplace_back(std::make_pair('q', posQueen));
+			moves.back().emplace_back(std::make_pair('q', posAttack));
+
+			queenAttackZone ^= lsbAttack;
+		}
+
+		blackQueens ^= lsbQueen;
+	}
 }
 
 void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
