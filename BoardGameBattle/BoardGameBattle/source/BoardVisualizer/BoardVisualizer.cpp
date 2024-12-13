@@ -283,11 +283,38 @@ void BoardVisualizer::update()
 				}
 			}
 
-			if (!selectedTile)
+			if (!selectedTile) // Nu s-a selectat una din celule ce puteau face o mutare
 			{
 				this->resetSelectedTiles();
 				this->selectedTileRow = -1;
 				this->selectedTileColumn = -1;
+
+				for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+				{
+					for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+					{
+						if (this->boardTiles[i][j].isInCompleteMouseCollision())
+						{
+							this->boardTiles[i][j].setIsSelected(true);
+							this->selectedTileRow = i;
+							this->selectedTileColumn = j;
+
+							std::string piecePosition = "";
+							piecePosition.push_back((char)('a' + j));
+							piecePosition.push_back((char)('1' + i));
+
+							std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(piecePosition);
+
+							for (int k = 0; k < moves.size(); ++k)
+							{
+								int rowEnd = (int)(moves[k][4] - '1');
+								int columnEnd = (int)(moves[k][3] - 'a');
+
+								this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
+							}
+						}
+					}
+				}
 			}
 		}
 		else
