@@ -4,18 +4,10 @@ int main()
 {
     Game::get().start();
 
-	// regii nu mai pot ataca piesa care ii ataca acuma, de rezolvat (din cauza la boolene-le alea 4 adaugate)
-	// de asemenea, exista cazuri cand o piesa e aparata de alta piesa si teoretic regii nu o pot captura dar aplicatia nu observa asta
+	// de documentat tot ce am facut (ca pare ca merge, de tinut minte pe viitor)
 
+	// de trecut inca o data prin move creation, (attack zone generation-ul e ok)
 	// en passant-ul de asemenea nu tine cont de king defense zone
-
-	// posibile solutii:
-	// de inteles faptul ca attack zone-urile sunt utile doar regelui, atat, deci putem altera putin ce e in ele fara sa patim nimic
-	// trebuie ca piesele cand genereaza attack zone-urile sa extinda putin aceste attack zone-uri, de exemplu pionii au attack zone si stanga si dreapta chiar daca nu e o piesa inamica acolo
-	// sliding piece-urile sa includa si ultimul bit chiar daca e piesa de aceeasi culoare, ca asa simbolizam faptul ca daca piesa aia ar fi capturata piesa ce a capturat ar putea fi atacata
-
-	// e o problema cand regele e in sah de un sliding piece, inca poate da inapoi, chiar daca e o mutare ilegala
-	// se poate rezolva precalculand nearest bits si pt coloana si diagonale si apoi pt regele pin-ul la rege va avea alta conotatie, dar va merge
 
 	// cred ca numPiecesAttackingWhiteKing si numPiecesAttackingBlackKing sunt redundante
 	// apply internal move mai poate fi optimizat (ar fi bine, ca va fi apelat in minmax)
@@ -30,7 +22,6 @@ int main()
 
 
 
-	// singurul loc unde nu dam referinta e cand avansam in minimax, acolo facem o copie a structurii de config
 
 
 
