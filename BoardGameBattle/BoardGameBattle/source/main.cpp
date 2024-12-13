@@ -4,9 +4,8 @@ int main()
 {
     Game::get().start();
 
-	// move ordering pt minimax, doar schimbam ordinea in care apelam in metoda de move generator
-
-	// la sliding pieces putem calcula tot attack zone-ul de o data si apoi filtram cu mastile de biti in caz ca piesa e pinuita si/sau nu e in king defense zone (pare cel mai simplu si eficient asa)
+	// e o problema cand regele e in sah de un sliding piece, inca poate da inapoi, chiar daca e o mutare ilegala
+	// se poate rezolva precalculand nearest bits si pt coloana si diagonale si apoi pt regele pin-ul la rege va avea alta conotatie, dar va merge
 
 	// cred ca numPiecesAttackingWhiteKing si numPiecesAttackingBlackKing sunt redundante
 	// apply internal move mai poate fi optimizat (ar fi bine, ca va fi apelat in minmax)

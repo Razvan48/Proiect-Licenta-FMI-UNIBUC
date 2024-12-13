@@ -1790,12 +1790,12 @@ void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMe
 		unsigned long long lsbRook = (whiteRooks & ((~whiteRooks) + 1));
 
 		if (!
-				(
-					(lsbRook & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
-					||
-					(lsbRook & (configurationMetadata.whitePiecesPinnedOnRank & configurationMetadata.whitePiecesPinnedOnFile))
+			(
+				(lsbRook & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+				||
+				(lsbRook & (configurationMetadata.whitePiecesPinnedOnRank & configurationMetadata.whitePiecesPinnedOnFile))
 				)
-		)
+			)
 		{
 			int posRook = this->logPower2[lsbRook % BoardManager::MODULO_LOG_POWER_2];
 
@@ -1867,7 +1867,52 @@ void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configuration
 
 void BoardManager::generateWhiteBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long whiteBishops = configurationMetadata.whiteBishops;
+
+	while (whiteBishops)
+	{
+		unsigned long long lsbBishop = (whiteBishops & ((~whiteBishops) + 1));
+
+		if (!
+				(
+					(lsbBishop & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile))
+					||
+					(lsbBishop & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+				)
+		)
+		{
+			int posBishop = this->logPower2[lsbBishop % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, posBishop);
+			unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, posBishop);
+
+			unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, posBishop);
+			unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, posBishop);
+
+			unsigned long long bishopAttackZone = (this->precalculatedTopLeftDiagonalAttackZones[posBishop][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[posBishop][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first | this->precalculatedTopRightDiagonalAttackZones[posBishop][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[posBishop][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first);
+			bishopAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+			if (lsbBishop & configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal)
+				bishopAttackZone &= this->topLeftBottomRightDiagonalBitMasks[posBishop];
+			if (lsbBishop & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)
+				bishopAttackZone &= this->topRightBottomLeftDiagonalBitMasks[posBishop];
+
+			while (bishopAttackZone)
+			{
+				unsigned long long lsbAttack = (bishopAttackZone & ((~bishopAttackZone) + 1));
+
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('B', posBishop));
+				moves.back().emplace_back(std::make_pair('B', posAttack));
+
+				bishopAttackZone ^= lsbAttack;
+			}
+		}
+
+		whiteBishops ^= lsbBishop;
+	}
 }
 
 void BoardManager::generateWhiteQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2209,7 +2254,52 @@ void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configuration
 
 void BoardManager::generateBlackBishopMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long blackBishops = configurationMetadata.blackBishops;
+
+	while (blackBishops)
+	{
+		unsigned long long lsbBishop = (blackBishops & ((~blackBishops) + 1));
+
+		if (!
+			(
+				(lsbBishop & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile))
+				||
+				(lsbBishop & (configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
+				)
+			)
+		{
+			int posBishop = this->logPower2[lsbBishop % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, posBishop);
+			unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, posBishop);
+
+			unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, posBishop);
+			unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, posBishop);
+
+			unsigned long long bishopAttackZone = (this->precalculatedTopLeftDiagonalAttackZones[posBishop][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[posBishop][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first | this->precalculatedTopRightDiagonalAttackZones[posBishop][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[posBishop][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first);
+			bishopAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+			if (lsbBishop & configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal)
+				bishopAttackZone &= this->topLeftBottomRightDiagonalBitMasks[posBishop];
+			if (lsbBishop & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)
+				bishopAttackZone &= this->topRightBottomLeftDiagonalBitMasks[posBishop];
+
+			while (bishopAttackZone)
+			{
+				unsigned long long lsbAttack = (bishopAttackZone & ((~bishopAttackZone) + 1));
+
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('b', posBishop));
+				moves.back().emplace_back(std::make_pair('b', posAttack));
+
+				bishopAttackZone ^= lsbAttack;
+			}
+		}
+
+		blackBishops ^= lsbBishop;
+	}
 }
 
 void BoardManager::generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2273,11 +2363,12 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 
 	generateBlackAttackZones(configurationMetadata);
 
-	generateWhitePawnMoves(configurationMetadata, moves);
-	generateWhiteRookMoves(configurationMetadata, moves);
-	generateWhiteKnightMoves(configurationMetadata, moves);
-	generateWhiteBishopMoves(configurationMetadata, moves);
+	// INFO: Sunt in alta ordine decat cea obisnuita pentru a face practic un move ordering pentru MinMax.
 	generateWhiteQueenMoves(configurationMetadata, moves);
+	generateWhiteRookMoves(configurationMetadata, moves);
+	generateWhiteBishopMoves(configurationMetadata, moves);
+	generateWhiteKnightMoves(configurationMetadata, moves);
+	generateWhitePawnMoves(configurationMetadata, moves);
 	generateWhiteKingMoves(configurationMetadata, moves);
 }
 
@@ -2293,11 +2384,12 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 
 	generateWhiteAttackZones(configurationMetadata);
 
-	generateBlackPawnMoves(configurationMetadata, moves);
-	generateBlackRookMoves(configurationMetadata, moves);
-	generateBlackKnightMoves(configurationMetadata, moves);
-	generateBlackBishopMoves(configurationMetadata, moves);
+	// INFO: Sunt in alta ordine decat cea obisnuita pentru a face practic un move ordering pentru MinMax.
 	generateBlackQueenMoves(configurationMetadata, moves);
+	generateBlackRookMoves(configurationMetadata, moves);
+	generateBlackBishopMoves(configurationMetadata, moves);
+	generateBlackKnightMoves(configurationMetadata, moves);
+	generateBlackPawnMoves(configurationMetadata, moves);
 	generateBlackKingMoves(configurationMetadata, moves);
 }
 
