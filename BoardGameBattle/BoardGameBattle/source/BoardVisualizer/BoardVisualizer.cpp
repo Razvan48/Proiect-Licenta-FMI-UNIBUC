@@ -283,7 +283,7 @@ void BoardVisualizer::update()
 				}
 			}
 
-			if (!selectedTile) // Nu s-a selectat una din celule ce puteau face o mutare
+			if (!selectedTile) // Nu s-a selectat una din celulele ce puteau face o mutare
 			{
 				this->resetSelectedTiles();
 				this->selectedTileRow = -1;
