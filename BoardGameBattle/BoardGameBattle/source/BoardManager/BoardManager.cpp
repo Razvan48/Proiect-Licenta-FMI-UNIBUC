@@ -1876,7 +1876,206 @@ void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	if (configurationMetadata.blackKingDefenseZone == 0ull)
+		return;
+
+	unsigned long long blackPawns = configurationMetadata.blackPawns;
+
+	// Avansare Simpla (fara promovare)
+	unsigned long long singleAdvance = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & (~this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH]) & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH])) << GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.blackKingDefenseZone);
+	while (singleAdvance)
+	{
+		unsigned long long lsb = (singleAdvance & ((~singleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('p', pos));
+
+		singleAdvance ^= lsb;
+	}
+
+	// Avansare Dubla
+	unsigned long long doubleAdvance = (((((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[GameMetadata::NUM_TILES_WIDTH]) << GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces)) << GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.blackKingDefenseZone);
+	while (doubleAdvance)
+	{
+		unsigned long long lsb = (doubleAdvance & ((~doubleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - 2 * GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('p', pos));
+
+		doubleAdvance ^= lsb;
+	}
+
+	// Atac Stanga (fara promovare)
+	unsigned long long leftAttack = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & (~this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH]) & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH]) & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces & configurationMetadata.blackKingDefenseZone);
+	while (leftAttack)
+	{
+		unsigned long long lsb = (leftAttack & ((~leftAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('p', pos));
+
+		leftAttack ^= lsb;
+	}
+
+	// Atac Dreapta (fara promovare)
+	unsigned long long rightAttack = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & (~this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH]) & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH]) & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces & configurationMetadata.blackKingDefenseZone);
+	while (rightAttack)
+	{
+		unsigned long long lsb = (rightAttack & ((~rightAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('p', pos));
+
+		rightAttack ^= lsb;
+	}
+
+	// Promovare Avansare Simpla
+	unsigned long long promotionSingleAdvance = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH]) << GameMetadata::NUM_TILES_WIDTH) & (~configurationMetadata.allPieces) & configurationMetadata.blackKingDefenseZone);
+	while (promotionSingleAdvance)
+	{
+		unsigned long long lsb = (promotionSingleAdvance & ((~promotionSingleAdvance) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('r', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('n', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('b', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('q', pos));
+
+		promotionSingleAdvance ^= lsb;
+	}
+
+	// Promovare Atac Stanga
+	unsigned long long promotionLeftAttack = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH] & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces & configurationMetadata.blackKingDefenseZone);
+	while (promotionLeftAttack)
+	{
+		unsigned long long lsb = (promotionLeftAttack & ((~promotionLeftAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('r', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('n', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('b', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH + 1));
+		moves.back().emplace_back(std::make_pair('q', pos));
+
+		promotionLeftAttack ^= lsb;
+	}
+
+	// Promovare Atac Dreapta
+	unsigned long long promotionRightAttack = (((blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[6 * GameMetadata::NUM_TILES_WIDTH] & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces & configurationMetadata.blackKingDefenseZone);
+	while (promotionRightAttack)
+	{
+		unsigned long long lsb = (promotionRightAttack & ((~promotionRightAttack) + 1));
+
+		int pos = this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2];
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('r', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('n', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('b', pos));
+
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', pos - GameMetadata::NUM_TILES_WIDTH - 1));
+		moves.back().emplace_back(std::make_pair('q', pos));
+
+		promotionRightAttack ^= lsb;
+	}
+
+	// En Passant
+	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+
+	unsigned long long blackPawnEnPassantRight = (((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	if (blackPawnEnPassantRight &&
+		(
+			!
+			(
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & configurationMetadata.blackKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					)
+				||
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & configurationMetadata.blackKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					)
+				)
+			)
+		)
+	{
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition + 1));
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition));
+	}
+
+	unsigned long long blackPawnEnPassantLeft = (((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]);
+	if (blackPawnEnPassantLeft &&
+		(
+			!
+			(
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & configurationMetadata.blackKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					)
+				||
+				(
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & configurationMetadata.blackKing)
+					&&
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					)
+				)
+			)
+		)
+	{
+		moves.emplace_back();
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition - 1));
+		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition + GameMetadata::NUM_TILES_WIDTH));
+		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition));
+	}
 }
 
 void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
