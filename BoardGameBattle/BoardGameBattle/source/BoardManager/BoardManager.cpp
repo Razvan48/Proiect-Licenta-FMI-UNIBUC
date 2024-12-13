@@ -106,6 +106,214 @@ BoardManager::BoardManager()
 		}
 	}
 
+	// Precalculated Raw Left Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_WIDTH); ++j)
+		{
+			this->precalculatedRawLeftAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << column)) == 0)
+				continue;
+
+			for (int k = column - 1; k >= 0; --k)
+			{
+				this->precalculatedRawLeftAttackZones[i][j] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + k));
+				if (j & (1 << k))
+					break;
+			}
+		}
+	}
+
+	// Precalculated Raw Right Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_WIDTH); ++j)
+		{
+			this->precalculatedRawRightAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << column)) == 0)
+				continue;
+
+			for (int k = column + 1; k < GameMetadata::NUM_TILES_WIDTH; ++k)
+			{
+				this->precalculatedRawRightAttackZones[i][j] |= (1ull << (row * GameMetadata::NUM_TILES_WIDTH + k));
+				if (j & (1 << k))
+					break;
+			}
+		}
+	}
+
+	// Precalculated Raw Top Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_HEIGHT); ++j)
+		{
+			this->precalculatedRawTopAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << row)) == 0)
+				continue;
+
+			for (int k = row - 1; k >= 0; --k)
+			{
+				this->precalculatedRawTopAttackZones[i][j] |= (1ull << (k * GameMetadata::NUM_TILES_WIDTH + column));
+				if (j & (1 << k))
+					break;
+			}
+		}
+	}
+
+	// Precalculated Raw Bottom Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+
+		for (int j = 0; j < (1 << GameMetadata::NUM_TILES_HEIGHT); ++j)
+		{
+			this->precalculatedRawBottomAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << row)) == 0)
+				continue;
+
+			for (int k = row + 1; k < GameMetadata::NUM_TILES_HEIGHT; ++k)
+			{
+				this->precalculatedRawBottomAttackZones[i][j] |= (1ull << (k * GameMetadata::NUM_TILES_WIDTH + column));
+				if (j & (1 << k))
+					break;
+			}
+		}
+	}
+
+	// Precalculated Raw Top Left Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedRawTopLeftDiagonalAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row - 1;
+			int crtColumn = column - 1;
+			int crtPosInDiagonal = posInDiagonal - 1;
+			while (crtRow >= 0 && crtColumn >= 0)
+			{
+				this->precalculatedRawTopLeftDiagonalAttackZones[i][j] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+				if (j & (1 << crtPosInDiagonal))
+					break;
+				--crtRow;
+				--crtColumn;
+				--crtPosInDiagonal;
+			}
+		}
+	}
+
+	// Precalculated Raw Top Right Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedRawTopRightDiagonalAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row - 1;
+			int crtColumn = column + 1;
+			int crtPosInDiagonal = posInDiagonal - 1;
+			while (crtRow >= 0 && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				this->precalculatedRawTopRightDiagonalAttackZones[i][j] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+				if (j & (1 << crtPosInDiagonal))
+					break;
+				--crtRow;
+				++crtColumn;
+				--crtPosInDiagonal;
+			}
+		}
+	}
+
+	// Precalculated Raw Bottom Left Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedRawBottomLeftDiagonalAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row + 1;
+			int crtColumn = column - 1;
+			int crtPosInDiagonal = posInDiagonal + 1;
+			while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn >= 0)
+			{
+				this->precalculatedRawBottomLeftDiagonalAttackZones[i][j] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+				if (j & (1 << crtPosInDiagonal))
+					break;
+				++crtRow;
+				--crtColumn;
+				++crtPosInDiagonal;
+			}
+		}
+	}
+
+	// Precalculated Raw Bottom Right Diagonal Attack Zones
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedRawBottomRightDiagonalAttackZones[i][j] = 0ull;
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row + 1;
+			int crtColumn = column + 1;
+			int crtPosInDiagonal = posInDiagonal + 1;
+			while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				this->precalculatedRawBottomRightDiagonalAttackZones[i][j] |= (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+				if (j & (1 << crtPosInDiagonal))
+					break;
+				++crtRow;
+				++crtColumn;
+				++crtPosInDiagonal;
+			}
+		}
+	}
+
 	// Precalculated King Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
@@ -975,7 +1183,7 @@ void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurat
 	unsigned long long validWhitePawns = (configurationMetadata.whitePawns & (~this->rankBitMasks[0]));
 
 	// Atac Stanga
-	unsigned long long leftAttackZone = (((validWhitePawns & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allBlackPieces);
+	unsigned long long leftAttackZone = ((validWhitePawns & (~this->fileBitMasks[0])) >> (GameMetadata::NUM_TILES_WIDTH + 1));
 	configurationMetadata.whitePawnAttackZone |= leftAttackZone;
 	if (leftAttackZone & configurationMetadata.blackKing)
 	{
@@ -984,7 +1192,7 @@ void BoardManager::generateWhitePawnAttackZone(ConfigurationMetadata& configurat
 	}
 
 	// Atac Dreapta
-	unsigned long long rightAttackZone = (((validWhitePawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allBlackPieces);
+	unsigned long long rightAttackZone = ((validWhitePawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) >> (GameMetadata::NUM_TILES_WIDTH - 1));
 	configurationMetadata.whitePawnAttackZone |= rightAttackZone;
 	if (rightAttackZone & configurationMetadata.blackKing)
 	{
