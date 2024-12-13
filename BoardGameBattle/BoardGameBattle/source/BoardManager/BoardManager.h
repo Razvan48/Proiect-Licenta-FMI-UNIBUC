@@ -25,6 +25,8 @@ private:
 	unsigned long long topRightBottomLeftDiagonalBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
 	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnRank[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH];
+	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT];
+	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT];
 
 	unsigned long long precalculatedRawLeftAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH];
 	unsigned long long precalculatedRawRightAttackZones[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH];

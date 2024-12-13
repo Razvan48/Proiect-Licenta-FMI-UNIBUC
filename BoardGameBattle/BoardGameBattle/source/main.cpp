@@ -6,10 +6,6 @@ int main()
 
 	// de documentat tot ce am facut (ca pare ca merge, de tinut minte pe viitor)
 
-	// de trecut inca o data prin move creation, (attack zone generation-ul e ok)
-	// en passant-ul de asemenea nu tine cont de king defense zone
-
-	// cred ca numPiecesAttackingWhiteKing si numPiecesAttackingBlackKing sunt redundante
 	// apply internal move mai poate fi optimizat (ar fi bine, ca va fi apelat in minmax)
 	// validWhitePawns si validBlackPawns sunt redundante, nu mai trb & negat, ca nu se va ajunge intr-o situatie de genul niciodata
 

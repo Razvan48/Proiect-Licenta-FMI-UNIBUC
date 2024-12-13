@@ -106,6 +106,100 @@ BoardManager::BoardManager()
 		}
 	}
 
+	// Precalculated Nearest Pieces On Top Left Bottom Right Diagonal
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[i][j] = std::make_pair(0ull, 0ull);
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row - 1;
+			int crtColumn = column - 1;
+			int crtPosInDiagonal = posInDiagonal - 1;
+			while (crtRow >= 0 && crtColumn >= 0)
+			{
+				if (j & (1 << crtPosInDiagonal))
+				{
+					this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[i][j].first = (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+					break;
+				}
+				--crtRow;
+				--crtColumn;
+				--crtPosInDiagonal;
+			}
+
+			crtRow = row + 1;
+			crtColumn = column + 1;
+			crtPosInDiagonal = posInDiagonal + 1;
+			while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				if (j & (1 << crtPosInDiagonal))
+				{
+					this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[i][j].second = (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+					break;
+				}
+				++crtRow;
+				++crtColumn;
+				++crtPosInDiagonal;
+			}
+		}
+	}
+
+	// Precalculated Nearest Pieces On Top Right Bottom Left Diagonal
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		int row = i / GameMetadata::NUM_TILES_WIDTH;
+		int column = i % GameMetadata::NUM_TILES_WIDTH;
+		int posInDiagonal = min(row, GameMetadata::NUM_TILES_WIDTH - 1 - column);
+		int diagonalLength = posInDiagonal + 1 + min(GameMetadata::NUM_TILES_HEIGHT - 1 - row, column);
+
+		for (int j = 0; j < (1 << diagonalLength); ++j)
+		{
+			this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[i][j] = std::make_pair(0ull, 0ull);
+
+			if ((j & (1 << posInDiagonal)) == 0)
+				continue;
+
+			int crtRow = row - 1;
+			int crtColumn = column + 1;
+			int crtPosInDiagonal = posInDiagonal - 1;
+			while (crtRow >= 0 && crtColumn < GameMetadata::NUM_TILES_WIDTH)
+			{
+				if (j & (1 << crtPosInDiagonal))
+				{
+					this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[i][j].first = (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+					break;
+				}
+				--crtRow;
+				++crtColumn;
+				--crtPosInDiagonal;
+			}
+
+			crtRow = row + 1;
+			crtColumn = column - 1;
+			crtPosInDiagonal = posInDiagonal + 1;
+			while (crtRow < GameMetadata::NUM_TILES_HEIGHT && crtColumn >= 0)
+			{
+				if (j & (1 << crtPosInDiagonal))
+				{
+					this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[i][j].second = (1ull << (crtRow * GameMetadata::NUM_TILES_WIDTH + crtColumn));
+					break;
+				}
+				++crtRow;
+				--crtColumn;
+				++crtPosInDiagonal;
+			}
+		}
+	}
+
 	// Precalculated Raw Left Attack Zones
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
 	{
