@@ -130,9 +130,6 @@ private:
 		unsigned long long blackPiecesPinnedOnTopLeftBottomRightDiagonal;
 		unsigned long long blackPiecesPinnedOnTopRightBottomLeftDiagonal;
 
-		int numPiecesAttackingWhiteKing;
-		int numPiecesAttackingBlackKing;
-
 		unsigned long long whiteKingDefenseZone;
 		unsigned long long blackKingDefenseZone;
 
