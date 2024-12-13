@@ -1220,13 +1220,13 @@ void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurat
 		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteRookAttackZone |= (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first);
+		configurationMetadata.whiteRookAttackZone |= (this->precalculatedRawLeftAttackZones[pos][whitePiecesSameRank | blackPiecesSameRank] | this->precalculatedRawRightAttackZones[pos][whitePiecesSameRank | blackPiecesSameRank]);
 
 		// Top-Bottom
 		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteRookAttackZone |= (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first);
+		configurationMetadata.whiteRookAttackZone |= (this->precalculatedRawTopAttackZones[pos][whitePiecesSameFile | blackPiecesSameFile] | this->precalculatedRawBottomAttackZones[pos][whitePiecesSameFile | blackPiecesSameFile]);
 		//
 
 
@@ -1244,28 +1244,28 @@ void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurat
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnRank = false;
+			configurationMetadata.whiteRookAttackZone |= this->precalculatedRawLeftAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameRank | blackPiecesSameRank];
 		}
 		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnRank = false;
+			configurationMetadata.whiteRookAttackZone |= this->precalculatedRawRightAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameRank | blackPiecesSameRank];
 		}
 		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnFile = false;
+			configurationMetadata.whiteRookAttackZone |= this->precalculatedRawTopAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameFile | blackPiecesSameFile];
 		}
 		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnFile = false;
+			configurationMetadata.whiteRookAttackZone |= this->precalculatedRawBottomAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameFile | blackPiecesSameFile];
 		}
 
 		whiteRooks ^= lsb;
@@ -1309,13 +1309,13 @@ void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configur
 		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteBishopAttackZone |= (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first);
+		configurationMetadata.whiteBishopAttackZone |= (this->precalculatedRawTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0] | this->precalculatedRawBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0]);
 
 		// Top Right Bottom Left Diagonal
 		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteBishopAttackZone |= (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first);
+		configurationMetadata.whiteBishopAttackZone |= (this->precalculatedRawTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1] | this->precalculatedRawBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1]);
 		//
 
 
@@ -1333,28 +1333,28 @@ void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configur
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.whiteBishopAttackZone |= this->precalculatedRawTopLeftDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0];
 		}
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.whiteBishopAttackZone |= this->precalculatedRawBottomRightDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0];
 		}
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.whiteBishopAttackZone |= this->precalculatedRawTopRightDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1];
 		}
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.whiteBishopAttackZone |= this->precalculatedRawBottomLeftDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1];
 		}
 
 		whiteBishops ^= lsb;
@@ -1378,25 +1378,25 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first);
+		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedRawLeftAttackZones[pos][whitePiecesSameRank | blackPiecesSameRank] | this->precalculatedRawRightAttackZones[pos][whitePiecesSameRank | blackPiecesSameRank]);
 
 		// Top-Bottom
 		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first);
+		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedRawTopAttackZones[pos][whitePiecesSameFile | blackPiecesSameFile] | this->precalculatedRawBottomAttackZones[pos][whitePiecesSameFile | blackPiecesSameFile]);
 
 		// Top Left Bottom Right Diagonal
 		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first);
+		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedRawTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0] | this->precalculatedRawBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0]);
 
 		// Top Right Bottom Left Diagonal
 		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
 		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
 
-		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first);
+		configurationMetadata.whiteQueenAttackZone |= (this->precalculatedRawTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1] | this->precalculatedRawBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1]);
 		//
 
 
@@ -1422,56 +1422,56 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnRank = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawLeftAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameRank | blackPiecesSameRank];
 		}
 		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnRank = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawRightAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameRank | blackPiecesSameRank];
 		}
 		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnFile = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawTopAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameFile | blackPiecesSameFile];
 		}
 		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnFile = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawBottomAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameFile | blackPiecesSameFile];
 		}
 		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawTopLeftDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0];
 		}
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawBottomRightDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal0 | blackPiecesSameDiagonal0];
 		}
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawTopRightDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1];
 		}
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first & configurationMetadata.blackKing)
 		{
 			++configurationMetadata.numPiecesAttackingBlackKing;
 			configurationMetadata.blackKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].first) & (~configurationMetadata.blackKing));
 
-			configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.whiteQueenAttackZone |= this->precalculatedRawBottomLeftDiagonalAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]][whitePiecesSameDiagonal1 | blackPiecesSameDiagonal1];
 		}
 
 		whiteQueens ^= lsb;
@@ -1537,13 +1537,13 @@ void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurat
 		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackRookAttackZone |= (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first);
+		configurationMetadata.blackRookAttackZone |= (this->precalculatedRawLeftAttackZones[pos][blackPiecesSameRank | whitePiecesSameRank] | this->precalculatedRawRightAttackZones[pos][blackPiecesSameRank | whitePiecesSameRank]);
 
 		// Top-Bottom
 		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackRookAttackZone |= (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first);
+		configurationMetadata.blackRookAttackZone |= (this->precalculatedRawTopAttackZones[pos][blackPiecesSameFile | whitePiecesSameFile] | this->precalculatedRawBottomAttackZones[pos][blackPiecesSameFile | whitePiecesSameFile]);
 		//
 
 
@@ -1561,28 +1561,28 @@ void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurat
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnRank = false;
+			configurationMetadata.blackRookAttackZone |= this->precalculatedRawLeftAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameRank | whitePiecesSameRank];
 		}
 		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnRank = false;
+			configurationMetadata.blackRookAttackZone |= this->precalculatedRawRightAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameRank | whitePiecesSameRank];
 		}
 		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnFile = false;
+			configurationMetadata.blackRookAttackZone |= this->precalculatedRawTopAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameFile | whitePiecesSameFile];
 		}
 		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnFile = false;
+			configurationMetadata.blackRookAttackZone |= this->precalculatedRawBottomAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameFile | whitePiecesSameFile];
 		}
 
 		blackRooks ^= lsb;
@@ -1626,13 +1626,13 @@ void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configur
 		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackBishopAttackZone |= (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first);
+		configurationMetadata.blackBishopAttackZone |= (this->precalculatedRawTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0] | this->precalculatedRawBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0]);
 
 		// Top Right Bottom Left Diagonal
 		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackBishopAttackZone |= (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first);
+		configurationMetadata.blackBishopAttackZone |= (this->precalculatedRawTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1] | this->precalculatedRawBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1]);
 		//
 
 
@@ -1650,28 +1650,28 @@ void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configur
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.blackBishopAttackZone |= this->precalculatedRawTopLeftDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0];
 		}
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.blackBishopAttackZone |= this->precalculatedRawBottomRightDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0];
 		}
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.blackBishopAttackZone |= this->precalculatedRawTopRightDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1];
 		}
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.blackBishopAttackZone |= this->precalculatedRawBottomLeftDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1];
 		}
 
 		blackBishops ^= lsb;
@@ -1695,25 +1695,25 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 		unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackQueenAttackZone |= (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first);
+		configurationMetadata.blackQueenAttackZone |= (this->precalculatedRawLeftAttackZones[pos][blackPiecesSameRank | whitePiecesSameRank] | this->precalculatedRawRightAttackZones[pos][blackPiecesSameRank | whitePiecesSameRank]);
 
 		// Top-Bottom
 		unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackQueenAttackZone |= (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first);
+		configurationMetadata.blackQueenAttackZone |= (this->precalculatedRawTopAttackZones[pos][blackPiecesSameFile | whitePiecesSameFile] | this->precalculatedRawBottomAttackZones[pos][blackPiecesSameFile | whitePiecesSameFile]);
 
 		// Top Left Bottom Right Diagonal
 		unsigned long long blackPiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameDiagonal0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackQueenAttackZone |= (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first);
+		configurationMetadata.blackQueenAttackZone |= (this->precalculatedRawTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0] | this->precalculatedRawBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0]);
 
 		// Top Right Bottom Left Diagonal
 		unsigned long long blackPiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allBlackPieces, pos);
 		unsigned long long whitePiecesSameDiagonal1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allWhitePieces, pos);
 
-		configurationMetadata.blackQueenAttackZone |= (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first);
+		configurationMetadata.blackQueenAttackZone |= (this->precalculatedRawTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1] | this->precalculatedRawBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1]);
 		//
 
 
@@ -1739,56 +1739,56 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnRank = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawLeftAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameRank | whitePiecesSameRank];
 		}
 		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnRank = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawRightAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameRank | whitePiecesSameRank];
 		}
 		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnFile = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawTopAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameFile | whitePiecesSameFile];
 		}
 		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnFile = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawBottomAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameFile | whitePiecesSameFile];
 		}
 		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawTopLeftDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0];
 		}
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawBottomRightDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal0 | whitePiecesSameDiagonal0];
 		}
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawTopRightDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1];
 		}
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first & configurationMetadata.whiteKing)
 		{
 			++configurationMetadata.numPiecesAttackingWhiteKing;
 			configurationMetadata.whiteKingDefenseZone &= ((lsb | this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].first) & (~configurationMetadata.whiteKing));
 
-			configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = false;
+			configurationMetadata.blackQueenAttackZone |= this->precalculatedRawBottomLeftDiagonalAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]][blackPiecesSameDiagonal1 | whitePiecesSameDiagonal1];
 		}
 
 		blackQueens ^= lsb;
@@ -2247,15 +2247,6 @@ void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMe
 	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
 	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.blackAttackZones) & (~configurationMetadata.allWhitePieces));
 
-	if (!configurationMetadata.whiteKingCanStayOnRank)
-		kingAttackZone &= (~this->rankBitMasks[posKing]);
-	if (!configurationMetadata.whiteKingCanStayOnFile)
-		kingAttackZone &= (~this->fileBitMasks[posKing]);
-	if (!configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal)
-		kingAttackZone &= (~this->topLeftBottomRightDiagonalBitMasks[posKing]);
-	if (!configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal)
-		kingAttackZone &= (~this->topRightBottomLeftDiagonalBitMasks[posKing]);
-
 	while (kingAttackZone)
 	{
 		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
@@ -2692,15 +2683,6 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 	int posKing = this->logPower2[lsbKing % BoardManager::MODULO_LOG_POWER_2];
 	unsigned long long kingAttackZone = (this->precalculatedKingAttackZones[posKing] & (~configurationMetadata.whiteAttackZones) & (~configurationMetadata.allBlackPieces));
 
-	if (!configurationMetadata.blackKingCanStayOnRank)
-		kingAttackZone &= (~this->rankBitMasks[posKing]);
-	if (!configurationMetadata.blackKingCanStayOnFile)
-		kingAttackZone &= (~this->fileBitMasks[posKing]);
-	if (!configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal)
-		kingAttackZone &= (~this->topLeftBottomRightDiagonalBitMasks[posKing]);
-	if (!configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal)
-		kingAttackZone &= (~this->topRightBottomLeftDiagonalBitMasks[posKing]);
-
 	while (kingAttackZone)
 	{
 		unsigned long long lsbAttack = (kingAttackZone & ((~kingAttackZone) + 1));
@@ -2748,11 +2730,6 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	configurationMetadata.numPiecesAttackingWhiteKing = 0;
 	configurationMetadata.whiteKingDefenseZone = (~(0ull));
 
-	configurationMetadata.whiteKingCanStayOnRank = true;
-	configurationMetadata.whiteKingCanStayOnFile = true;
-	configurationMetadata.whiteKingCanStayOnTopLeftBottomRightDiagonal = true;
-	configurationMetadata.whiteKingCanStayOnTopRightBottomLeftDiagonal = true;
-
 	generateBlackAttackZones(configurationMetadata);
 
 	// INFO: Sunt in alta ordine decat cea obisnuita pentru a face practic un move ordering pentru MinMax.
@@ -2773,11 +2750,6 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 
 	configurationMetadata.numPiecesAttackingBlackKing = 0;
 	configurationMetadata.blackKingDefenseZone = (~(0ull));
-
-	configurationMetadata.blackKingCanStayOnRank = true;
-	configurationMetadata.blackKingCanStayOnFile = true;
-	configurationMetadata.blackKingCanStayOnTopLeftBottomRightDiagonal = true;
-	configurationMetadata.blackKingCanStayOnTopRightBottomLeftDiagonal = true;
 
 	generateWhiteAttackZones(configurationMetadata);
 

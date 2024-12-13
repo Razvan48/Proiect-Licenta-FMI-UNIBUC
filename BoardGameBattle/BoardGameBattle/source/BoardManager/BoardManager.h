@@ -138,18 +138,6 @@ private:
 
 		//
 
-		bool whiteKingCanStayOnRank;
-		bool whiteKingCanStayOnFile;
-		bool whiteKingCanStayOnTopLeftBottomRightDiagonal;
-		bool whiteKingCanStayOnTopRightBottomLeftDiagonal;
-
-		bool blackKingCanStayOnRank;
-		bool blackKingCanStayOnFile;
-		bool blackKingCanStayOnTopLeftBottomRightDiagonal;
-		bool blackKingCanStayOnTopRightBottomLeftDiagonal;
-
-		//
-
 		ConfigurationMetadata(const std::string& configurationString);
 		ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
 
