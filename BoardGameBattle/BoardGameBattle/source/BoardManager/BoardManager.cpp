@@ -1734,15 +1734,15 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 				!
 				(
 					(
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].first & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].second & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				)
 			)
@@ -1760,15 +1760,15 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 			!
 			(
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & configurationMetadata.whiteKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].first & configurationMetadata.whiteKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].second & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				||
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & configurationMetadata.whiteKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].second & configurationMetadata.whiteKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].first & (configurationMetadata.blackRooks | configurationMetadata.blackQueens))
 					)
 				)
 			)
@@ -2031,15 +2031,15 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 			!
 			(
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & configurationMetadata.blackKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].first & configurationMetadata.blackKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
 					)
 				||
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].second & configurationMetadata.blackKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].second & configurationMetadata.blackKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) << 1)].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH + 1))].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
 					)
 				)
 			)
@@ -2057,15 +2057,15 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 			!
 			(
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & configurationMetadata.blackKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].first & configurationMetadata.blackKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].second & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
 					)
 				||
 				(
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].second & configurationMetadata.blackKing)
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].second & configurationMetadata.blackKing)
 					&&
-					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ ((1ull << configurationMetadata.capturableEnPassantPosition) >> 1)].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
+					(this->precalculatedNearestPiecesOnRank[configurationMetadata.capturableEnPassantPosition][enPassantRankPieces ^ (1ull << (configurationMetadata.capturableEnPassantPosition % GameMetadata::NUM_TILES_WIDTH - 1))].first & (configurationMetadata.whiteRooks | configurationMetadata.whiteQueens))
 					)
 				)
 			)
