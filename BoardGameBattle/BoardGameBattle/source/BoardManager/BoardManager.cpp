@@ -1497,10 +1497,10 @@ void BoardManager::generateWhiteKingAttackZone(ConfigurationMetadata& configurat
 void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurationMetadata)
 {
 	configurationMetadata.blackPawnAttackZone = 0ull;
-	unsigned long long validBlackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH - 1]));
+	unsigned long long validBlackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH]));
 
 	// Atac Stanga
-	unsigned long long leftAttackZone = (((validBlackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.allWhitePieces);
+	unsigned long long leftAttackZone = ((validBlackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1));
 	configurationMetadata.blackPawnAttackZone |= leftAttackZone;
 	if (leftAttackZone & configurationMetadata.whiteKing)
 	{
@@ -1509,7 +1509,7 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	}
 
 	// Atac Dreapta
-	unsigned long long rightAttackZone = (((validBlackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.allWhitePieces);
+	unsigned long long rightAttackZone = ((validBlackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1));
 	configurationMetadata.blackPawnAttackZone |= rightAttackZone;
 	if (rightAttackZone & configurationMetadata.whiteKing)
 	{
