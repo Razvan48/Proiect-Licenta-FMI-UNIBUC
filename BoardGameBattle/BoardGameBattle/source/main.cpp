@@ -4,6 +4,8 @@ int main()
 {
     Game::get().start();
 
+	// move ordering pt minimax, doar schimbam ordinea in care apelam in metoda de move generator
+
 	// la sliding pieces putem calcula tot attack zone-ul de o data si apoi filtram cu mastile de biti in caz ca piesa e pinuita si/sau nu e in king defense zone (pare cel mai simplu si eficient asa)
 
 	// cred ca numPiecesAttackingWhiteKing si numPiecesAttackingBlackKing sunt redundante
@@ -18,7 +20,6 @@ int main()
 
 
 
-	// promovarile se pot face si prin atacuri de pioni
 
 	// singurul loc unde nu dam referinta e cand avansam in minimax, acolo facem o copie a structurii de config
 

@@ -1783,7 +1783,52 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long whiteRooks = configurationMetadata.whiteRooks;
+
+	while (whiteRooks)
+	{
+		unsigned long long lsbRook = (whiteRooks & ((~whiteRooks) + 1));
+
+		if (!
+				(
+					(lsbRook & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+					||
+					(lsbRook & (configurationMetadata.whitePiecesPinnedOnRank & configurationMetadata.whitePiecesPinnedOnFile))
+				)
+		)
+		{
+			int posRook = this->logPower2[lsbRook % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, posRook);
+			unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, posRook);
+
+			unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, posRook);
+			unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, posRook);
+
+			unsigned long long rookAttackZone = (this->precalculatedLeftAttackZones[posRook][whitePiecesSameRank][blackPiecesSameRank].first | this->precalculatedRightAttackZones[posRook][whitePiecesSameRank][blackPiecesSameRank].first | this->precalculatedTopAttackZones[posRook][whitePiecesSameFile][blackPiecesSameFile].first | this->precalculatedBottomAttackZones[posRook][whitePiecesSameFile][blackPiecesSameFile].first);
+			rookAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+			if (lsbRook & configurationMetadata.whitePiecesPinnedOnRank)
+				rookAttackZone &= this->rankBitMasks[posRook];
+			if (lsbRook & configurationMetadata.whitePiecesPinnedOnFile)
+				rookAttackZone &= this->fileBitMasks[posRook];
+
+			while (rookAttackZone)
+			{
+				unsigned long long lsbAttack = (rookAttackZone & ((~rookAttackZone) + 1));
+
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('R', posRook));
+				moves.back().emplace_back(std::make_pair('R', posAttack));
+
+				rookAttackZone ^= lsbAttack;
+			}
+		}
+
+		whiteRooks ^= lsbRook;
+	}
 }
 
 void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2080,7 +2125,52 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::generateBlackRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
 {
-	// TODO:
+	unsigned long long blackRooks = configurationMetadata.blackRooks;
+
+	while (blackRooks)
+	{
+		unsigned long long lsbRook = (blackRooks & ((~blackRooks) + 1));
+
+		if (!
+				(
+					(lsbRook & (configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
+					||
+					(lsbRook & (configurationMetadata.blackPiecesPinnedOnRank & configurationMetadata.blackPiecesPinnedOnFile))
+				)
+		)
+		{
+			int posRook = this->logPower2[lsbRook % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long blackPiecesSameRank = this->extractRank(configurationMetadata.allBlackPieces, posRook);
+			unsigned long long whitePiecesSameRank = this->extractRank(configurationMetadata.allWhitePieces, posRook);
+
+			unsigned long long blackPiecesSameFile = this->extractFile(configurationMetadata.allBlackPieces, posRook);
+			unsigned long long whitePiecesSameFile = this->extractFile(configurationMetadata.allWhitePieces, posRook);
+
+			unsigned long long rookAttackZone = (this->precalculatedLeftAttackZones[posRook][blackPiecesSameRank][whitePiecesSameRank].first | this->precalculatedRightAttackZones[posRook][blackPiecesSameRank][whitePiecesSameRank].first | this->precalculatedTopAttackZones[posRook][blackPiecesSameFile][whitePiecesSameFile].first | this->precalculatedBottomAttackZones[posRook][blackPiecesSameFile][whitePiecesSameFile].first);
+			rookAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+			if (lsbRook & configurationMetadata.blackPiecesPinnedOnRank)
+				rookAttackZone &= this->rankBitMasks[posRook];
+			if (lsbRook & configurationMetadata.blackPiecesPinnedOnFile)
+				rookAttackZone &= this->fileBitMasks[posRook];
+
+			while (rookAttackZone)
+			{
+				unsigned long long lsbAttack = (rookAttackZone & ((~rookAttackZone) + 1));
+
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('r', posRook));
+				moves.back().emplace_back(std::make_pair('r', posAttack));
+
+				rookAttackZone ^= lsbAttack;
+			}
+		}
+
+		blackRooks ^= lsbRook;
+	}
 }
 
 void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2225,6 +2315,8 @@ void BoardManager::printBitBoard(unsigned long long bitBoard) const
 		if (i % GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_WIDTH - 1)
 			std::cout << std::endl;
 	}
+
+	std::cout << std::endl;
 }
 
 BoardManager::ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)
