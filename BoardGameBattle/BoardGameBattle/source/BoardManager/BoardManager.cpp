@@ -2059,6 +2059,11 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
 	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
 
+	std::cout << "En Passant Diagonal:\n";
+	this->printBitBoard(enPassantDiagonalPieces0);
+	std::cout << this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first << "\n";
+	std::cout << this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second << "\n";
+
 	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)));
 	if (whitePawnEnPassantRight &&
 			(
