@@ -14,6 +14,10 @@
 
 #include "../Client/Client.h"
 
+// INFO: Agent
+#include "../GameAgent/GreedyMinMaxAgent/GreedyMinMaxAgent.h"
+
+
 #include <iostream>
 
 BoardVisualizer::BoardVisualizer()
