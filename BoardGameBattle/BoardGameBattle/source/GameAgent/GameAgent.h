@@ -14,6 +14,6 @@ protected:
 
 public:
 	virtual float evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const = 0;
-	virtual std::vector<std::pair<char, int>> findBestMove(const ConfigurationMetadata& configurationMetadata) const = 0;
+	virtual std::vector<std::pair<char, int>> findBestMove(ConfigurationMetadata& configurationMetadata) const = 0;
 
 };

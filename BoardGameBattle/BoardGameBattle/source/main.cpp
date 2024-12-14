@@ -7,6 +7,14 @@ int main()
 
 	// inca nu se genereaza toate mutarile corect...
 
+	// de inteles alpha-beta + de inteles futures/promises + multithreading
+
+	// de vazut de ce uneori crapa (cred ca are de a face cu uitarea la o configuratie cam ilegala (unde poate nu mai exista regele))
+	// mai e o problema la generat de mutari, cum am mentionat mai sus
+
+	// metoda de getBestMove pt GameAgent (clasa abstracta) ar fi mai bine sa fie o functie void si numita probabil altfel, care doar porneste pe alt thread cautarea la best move
+	// apoi avem un boolean + mutex care ne spune cand e gata si apoi clasa tine intern raspunsul si il colectam cand avem nevoie
+
 	// generateMovesForPiecePosition (din board visualizer) va genera mutari pt jucator doar daca e randul lui si jucatorul a apasat pe o celula unde e o piesa de culoarea lui (nu gol sau culoare opusa)
 	// nu exista mutari care au tile de inceput si tile de sfarsit acelasi tile (si board visualizer tine cont de acest lucru, deci e ok)
 

@@ -60,7 +60,7 @@ public:
 	static GreedyMinMaxAgent& get();
 
 	virtual float evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const override;
-	virtual std::vector<std::pair<char, int>> findBestMove(const ConfigurationMetadata& configurationMetadata) const override;
+	virtual std::vector<std::pair<char, int>> findBestMove(ConfigurationMetadata& configurationMetadata) const override;
 };
 
 
