@@ -166,11 +166,12 @@ private:
 	void generateBlackQueenAttackZone(ConfigurationMetadata& configurationMetadata);
 	void generateBlackKingAttackZone(ConfigurationMetadata& configurationMetadata);
 
+public:
 	void generateWhiteAttackZones(ConfigurationMetadata& configurationMetadata);
 	void generateBlackAttackZones(ConfigurationMetadata& configurationMetadata);
 
 	//
-
+private:
 	void generateWhitePawnMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateWhiteRookMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateWhiteKnightMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
@@ -185,10 +186,50 @@ private:
 	void generateBlackQueenMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
+public:
 	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
 	//
+public:
+	// INFO: Functiile de mai jos fac presupunerea ca attack si defense zone-urile sunt deja calculate.
+	inline bool isWhiteKingInCheck(const ConfigurationMetadata& configurationMetadata) const { return (configurationMetadata.whiteKing & configurationMetadata.blackAttackZones); }
+	inline bool isBlackKingInCheck(const ConfigurationMetadata& configurationMetadata) const { return (configurationMetadata.blackKing & configurationMetadata.whiteAttackZones); }
+
+	inline bool isWhiteKingInCheckmate(const ConfigurationMetadata& configurationMetadata) const
+	{
+		return configurationMetadata.whiteKingDefenseZone == 0ull
+			&&
+			(
+				(
+					(
+						configurationMetadata.whiteKing
+						|
+						(this->precalculatedKingAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]] & (~configurationMetadata.allWhitePieces))
+					)
+					&
+					(~configurationMetadata.blackAttackZones)
+				) == 0ull
+			);
+	}
+
+	inline bool isBlackKingInCheckmate(const ConfigurationMetadata& configurationMetadata) const
+	{
+		return configurationMetadata.blackKingDefenseZone == 0ull
+			&&
+			(
+				(
+					(
+						configurationMetadata.blackKing
+						|
+						(this->precalculatedKingAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]] & (~configurationMetadata.allBlackPieces))
+					)
+					&
+					(~configurationMetadata.whiteAttackZones)
+				) == 0ull
+			);
+	}
+private:
 
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
 	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove);
