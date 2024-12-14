@@ -152,7 +152,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 
 std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
-	// TODO: alpha-beta pruning
+	// TODO: alpha-beta pruning (de inteles, ca l-am implementat)
 
 	if (depth == 0)
 		return std::make_pair(this->evaluateConfiguration(configurationMetadata), std::vector<std::pair<char, int>>());
@@ -173,6 +173,10 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 			{
 				maximumScore = minMaxOutput.first;
 				bestMove = allWhiteMoves[i];
+
+				alpha = std::max(alpha, maximumScore);
+				if (alpha >= beta)
+					break;
 			}
 		}
 
@@ -194,6 +198,10 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 			{
 				minimumScore = minMaxOutput.first;
 				bestMove = allBlackMoves[i];
+
+				beta = std::min(beta, minimumScore);
+				if (alpha >= beta)
+					break;
 			}
 		}
 
@@ -207,7 +215,7 @@ std::vector<std::pair<char, int>> GreedyMinMaxAgent::findBestMove(const Configur
 	return this->minMax(configurationMetadata, GreedyMinMaxAgent::MAX_DEPTH, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF).second;
 }
 
-const int GreedyMinMaxAgent::MAX_DEPTH = 4;
+const int GreedyMinMaxAgent::MAX_DEPTH = 5;
 
 const float GreedyMinMaxAgent::INF = 65536.0f;
 

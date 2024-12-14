@@ -236,7 +236,7 @@ private:
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
 
 public: // INFO: Trebuie sa fie publica pentru a putea fi apelata din GameAgent.
-	const ConfigurationMetadata& getConfigurationMetadata() const { return this->configurationMetadata; }
+	ConfigurationMetadata& getConfigurationMetadata() { return this->configurationMetadata; }
 	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove);
 
 public:

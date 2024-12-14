@@ -283,6 +283,9 @@ void BoardVisualizer::update()
 						AssetManager::get().playSound(this->pieceMoveSoundName, false);
 
 						this->resetSelectedTiles();
+
+						// Agent
+						BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata())));
 					}
 				}
 			}

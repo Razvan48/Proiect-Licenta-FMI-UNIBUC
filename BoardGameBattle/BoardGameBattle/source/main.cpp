@@ -5,6 +5,8 @@ int main()
     Game::get().start();
 	
 
+	// inca nu se genereaza toate mutarile corect...
+
 	// generateMovesForPiecePosition (din board visualizer) va genera mutari pt jucator doar daca e randul lui si jucatorul a apasat pe o celula unde e o piesa de culoarea lui (nu gol sau culoare opusa)
 	// nu exista mutari care au tile de inceput si tile de sfarsit acelasi tile (si board visualizer tine cont de acest lucru, deci e ok)
 
