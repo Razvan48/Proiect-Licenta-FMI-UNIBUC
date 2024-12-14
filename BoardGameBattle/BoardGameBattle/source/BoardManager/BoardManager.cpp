@@ -2200,23 +2200,23 @@ void BoardManager::generateWhiteKnightMoves(ConfigurationMetadata& configuration
 	{
 		unsigned long long lsbKnight = (whiteKnights & ((~whiteKnights) + 1));
 
-		if (lsbKnight & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile | configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
-			continue;
-
-		int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
-		unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allWhitePieces) & configurationMetadata.whiteKingDefenseZone);
-
-		while (knightAttackZone)
+		if (!(lsbKnight & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile | configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)))
 		{
-			unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+			int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+			unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allWhitePieces) & configurationMetadata.whiteKingDefenseZone);
 
-			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+			while (knightAttackZone)
+			{
+				unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
 
-			moves.emplace_back();
-			moves.back().emplace_back(std::make_pair('N', posKnight));
-			moves.back().emplace_back(std::make_pair('N', posAttack));
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
 
-			knightAttackZone ^= lsbAttack;
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('N', posKnight));
+				moves.back().emplace_back(std::make_pair('N', posAttack));
+
+				knightAttackZone ^= lsbAttack;
+			}
 		}
 
 		whiteKnights ^= lsbKnight;
@@ -2674,23 +2674,23 @@ void BoardManager::generateBlackKnightMoves(ConfigurationMetadata& configuration
 	{
 		unsigned long long lsbKnight = (blackKnights & ((~blackKnights) + 1));
 
-		if (lsbKnight & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile | configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
-			continue;
-
-		int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
-		unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allBlackPieces) & configurationMetadata.blackKingDefenseZone);
-
-		while (knightAttackZone)
+		if (!(lsbKnight & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile | configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)))
 		{
-			unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+			int posKnight = this->logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+			unsigned long long knightAttackZone = (this->precalculatedKnightAttackZones[posKnight] & (~configurationMetadata.allBlackPieces) & configurationMetadata.blackKingDefenseZone);
 
-			int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+			while (knightAttackZone)
+			{
+				unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
 
-			moves.emplace_back();
-			moves.back().emplace_back(std::make_pair('n', posKnight));
-			moves.back().emplace_back(std::make_pair('n', posAttack));
+				int posAttack = this->logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
 
-			knightAttackZone ^= lsbAttack;
+				moves.emplace_back();
+				moves.back().emplace_back(std::make_pair('n', posKnight));
+				moves.back().emplace_back(std::make_pair('n', posAttack));
+
+				knightAttackZone ^= lsbAttack;
+			}
 		}
 
 		blackKnights ^= lsbKnight;
