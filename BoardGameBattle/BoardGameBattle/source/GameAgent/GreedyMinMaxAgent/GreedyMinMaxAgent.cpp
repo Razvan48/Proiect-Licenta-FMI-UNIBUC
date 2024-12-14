@@ -35,7 +35,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (whitePawns)
 	{
 		unsigned long long lsb = (whitePawns & ((~whitePawns) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::PAWN_SCORE + GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyMinMaxAgent::PAWN_SCORE + GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whitePawns ^= lsb;
 	}
 
@@ -43,7 +43,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (whiteRooks)
 	{
 		unsigned long long lsb = (whiteRooks & ((~whiteRooks) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::ROOK_SCORE + GreedyMinMaxAgent::WHITE_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyMinMaxAgent::ROOK_SCORE + GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteRooks ^= lsb;
 	}
 
@@ -51,7 +51,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (whiteKnights)
 	{
 		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::KNIGHT_SCORE + GreedyMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyMinMaxAgent::KNIGHT_SCORE + GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteKnights ^= lsb;
 	}
 
@@ -59,7 +59,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (whiteBishops)
 	{
 		unsigned long long lsb = (whiteBishops & ((~whiteBishops) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::BISHOP_SCORE + GreedyMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyMinMaxAgent::BISHOP_SCORE + GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteBishops ^= lsb;
 	}
 
@@ -67,11 +67,11 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (whiteQueens)
 	{
 		unsigned long long lsb = (whiteQueens & ((~whiteQueens) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::QUEEN_SCORE + GreedyMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyMinMaxAgent::QUEEN_SCORE + GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteQueens ^= lsb;
 	}
 
-	evaluationScore = evaluationScore + GreedyMinMaxAgent::KING_SCORE + GreedyMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
+	evaluationScore = evaluationScore + GreedyMinMaxAgent::KING_SCORE + GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
 
 	// Black Pieces
 
@@ -79,7 +79,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (blackPawns)
 	{
 		unsigned long long lsb = (blackPawns & ((~blackPawns) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::PAWN_SCORE - GreedyMinMaxAgent::BLACK_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyMinMaxAgent::PAWN_SCORE - GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackPawns ^= lsb;
 	}
 
@@ -87,7 +87,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (blackRooks)
 	{
 		unsigned long long lsb = (blackRooks & ((~blackRooks) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::ROOK_SCORE - GreedyMinMaxAgent::BLACK_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyMinMaxAgent::ROOK_SCORE - GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackRooks ^= lsb;
 	}
 
@@ -95,7 +95,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (blackKnights)
 	{
 		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::KNIGHT_SCORE - GreedyMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyMinMaxAgent::KNIGHT_SCORE - GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackKnights ^= lsb;
 	}
 
@@ -103,7 +103,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (blackBishops)
 	{
 		unsigned long long lsb = (blackBishops & ((~blackBishops) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::BISHOP_SCORE - GreedyMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyMinMaxAgent::BISHOP_SCORE - GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackBishops ^= lsb;
 	}
 
@@ -111,11 +111,11 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	while (blackQueens)
 	{
 		unsigned long long lsb = (blackQueens & ((~blackQueens) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::QUEEN_SCORE - GreedyMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyMinMaxAgent::QUEEN_SCORE - GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackQueens ^= lsb;
 	}
 
-	evaluationScore = evaluationScore - GreedyMinMaxAgent::KING_SCORE - GreedyMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
+	evaluationScore = evaluationScore - GreedyMinMaxAgent::KING_SCORE - GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
 
 	// Attack Zones
 
