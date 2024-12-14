@@ -97,6 +97,12 @@
     <Filter Include="Source Files\VisualInterface\MultiplayerColorMenuVisualInterface">
       <UniqueIdentifier>{bba05abd-94c7-4142-a877-c528b8b84acb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameAgent">
+      <UniqueIdentifier>{9cc2571a-dbf7-41b3-a6c9-4e2f359a7a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameAgent\GreedyMinMaxAgent">
+      <UniqueIdentifier>{879156ce-7be6-4cd7-9679-f2ca66a105a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -183,6 +189,12 @@
     <ClCompile Include="source\VisualInterface\MultiplayerColorMenuVisualInterface\MultiplayerColorMenuVisualInterface.cpp">
       <Filter>Source Files\VisualInterface\MultiplayerColorMenuVisualInterface</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameAgent\GameAgent.cpp">
+      <Filter>Source Files\GameAgent</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.cpp">
+      <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -265,6 +277,12 @@
     </ClInclude>
     <ClInclude Include="source\VisualInterface\MultiplayerColorMenuVisualInterface\MultiplayerColorMenuVisualInterface.h">
       <Filter>Source Files\VisualInterface\MultiplayerColorMenuVisualInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameAgent\GameAgent.h">
+      <Filter>Source Files\GameAgent</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.h">
+      <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

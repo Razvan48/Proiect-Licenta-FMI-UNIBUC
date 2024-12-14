@@ -5,6 +5,82 @@
 
 #include "../GameMetadata/GameMetadata.h"
 
+struct ConfigurationMetadata
+{
+	unsigned long long whitePawns;
+	unsigned long long whiteRooks;
+	unsigned long long whiteKnights;
+	unsigned long long whiteBishops;
+	unsigned long long whiteQueens;
+	unsigned long long whiteKing;
+
+	unsigned long long blackPawns;
+	unsigned long long blackRooks;
+	unsigned long long blackKnights;
+	unsigned long long blackBishops;
+	unsigned long long blackQueens;
+	unsigned long long blackKing;
+
+	bool whiteTurn;
+
+	int capturableEnPassantPosition;
+
+	bool whiteKingMoved;
+	bool whiteRookBottomLeftMoved;
+	bool whiteRookBottomRightMoved;
+
+	bool blackKingMoved;
+	bool blackRookTopLeftMoved;
+	bool blackRookTopRightMoved;
+
+	//
+
+	unsigned long long allWhitePieces;
+	unsigned long long allBlackPieces;
+
+	unsigned long long allPieces;
+	unsigned long long emptyTiles;
+
+	//
+
+	unsigned long long whitePawnAttackZone;
+	unsigned long long whiteRookAttackZone;
+	unsigned long long whiteKnightAttackZone;
+	unsigned long long whiteBishopAttackZone;
+	unsigned long long whiteQueenAttackZone;
+	unsigned long long whiteKingAttackZone;
+
+	unsigned long long blackPawnAttackZone;
+	unsigned long long blackRookAttackZone;
+	unsigned long long blackKnightAttackZone;
+	unsigned long long blackBishopAttackZone;
+	unsigned long long blackQueenAttackZone;
+	unsigned long long blackKingAttackZone;
+
+	unsigned long long whiteAttackZones;
+	unsigned long long blackAttackZones;
+
+	unsigned long long whitePiecesPinnedOnRank;
+	unsigned long long whitePiecesPinnedOnFile;
+	unsigned long long whitePiecesPinnedOnTopLeftBottomRightDiagonal;
+	unsigned long long whitePiecesPinnedOnTopRightBottomLeftDiagonal;
+
+	unsigned long long blackPiecesPinnedOnRank;
+	unsigned long long blackPiecesPinnedOnFile;
+	unsigned long long blackPiecesPinnedOnTopLeftBottomRightDiagonal;
+	unsigned long long blackPiecesPinnedOnTopRightBottomLeftDiagonal;
+
+	unsigned long long whiteKingDefenseZone;
+	unsigned long long blackKingDefenseZone;
+
+	//
+
+	ConfigurationMetadata(const std::string& configurationString);
+	ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
+
+	void initialize(const std::string& configurationString);
+	void initialize(const ConfigurationMetadata& configurationMetadata);
+};
 
 class BoardManager
 {
@@ -67,82 +143,6 @@ private:
 	int blackRookTopLeftPos;
 	int blackRookTopRightPos;
 
-	struct ConfigurationMetadata
-	{
-		unsigned long long whitePawns;
-		unsigned long long whiteRooks;
-		unsigned long long whiteKnights;
-		unsigned long long whiteBishops;
-		unsigned long long whiteQueens;
-		unsigned long long whiteKing;
-
-		unsigned long long blackPawns;
-		unsigned long long blackRooks;
-		unsigned long long blackKnights;
-		unsigned long long blackBishops;
-		unsigned long long blackQueens;
-		unsigned long long blackKing;
-
-		bool whiteTurn;
-
-		int capturableEnPassantPosition;
-
-		bool whiteKingMoved;
-		bool whiteRookBottomLeftMoved;
-		bool whiteRookBottomRightMoved;
-
-		bool blackKingMoved;
-		bool blackRookTopLeftMoved;
-		bool blackRookTopRightMoved;
-
-		//
-
-		unsigned long long allWhitePieces;
-		unsigned long long allBlackPieces;
-
-		unsigned long long allPieces;
-		unsigned long long emptyTiles;
-
-		//
-
-		unsigned long long whitePawnAttackZone;
-		unsigned long long whiteRookAttackZone;
-		unsigned long long whiteKnightAttackZone;
-		unsigned long long whiteBishopAttackZone;
-		unsigned long long whiteQueenAttackZone;
-		unsigned long long whiteKingAttackZone;
-
-		unsigned long long blackPawnAttackZone;
-		unsigned long long blackRookAttackZone;
-		unsigned long long blackKnightAttackZone;
-		unsigned long long blackBishopAttackZone;
-		unsigned long long blackQueenAttackZone;
-		unsigned long long blackKingAttackZone;
-
-		unsigned long long whiteAttackZones;
-		unsigned long long blackAttackZones;
-
-		unsigned long long whitePiecesPinnedOnRank;
-		unsigned long long whitePiecesPinnedOnFile;
-		unsigned long long whitePiecesPinnedOnTopLeftBottomRightDiagonal;
-		unsigned long long whitePiecesPinnedOnTopRightBottomLeftDiagonal;
-
-		unsigned long long blackPiecesPinnedOnRank;
-		unsigned long long blackPiecesPinnedOnFile;
-		unsigned long long blackPiecesPinnedOnTopLeftBottomRightDiagonal;
-		unsigned long long blackPiecesPinnedOnTopRightBottomLeftDiagonal;
-
-		unsigned long long whiteKingDefenseZone;
-		unsigned long long blackKingDefenseZone;
-
-		//
-
-		ConfigurationMetadata(const std::string& configurationString);
-		ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
-
-		void initialize(const std::string& configurationString);
-		void initialize(const ConfigurationMetadata& configurationMetadata);
-	};
 	ConfigurationMetadata configurationMetadata;
 
 	unsigned long long extractRank(unsigned long long bitBoard, int pos) const;

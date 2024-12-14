@@ -1001,11 +1001,11 @@ std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char
 	return externalMove;
 }
 
-BoardManager::ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove)
+ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove)
 {
 	// INFO: Face presupunerea ca mutarea e legala (si apartine culorii care trebuie sa mute) (din motive de optimizare)
 
-	BoardManager::ConfigurationMetadata newConfigurationMetadata(configurationMetadata);
+	ConfigurationMetadata newConfigurationMetadata(configurationMetadata);
 
 	newConfigurationMetadata.capturableEnPassantPosition = 0; // INFO: 0 inseamna ca nu exista o astfel de pozitie (teoretic 0 exista pe tabla, practic nu se poate face un enpassant in 0, deci e ok)
 
@@ -2908,7 +2908,7 @@ void BoardManager::printBitBoard(unsigned long long bitBoard) const
 	std::cout << std::endl;
 }
 
-BoardManager::ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)
+ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)
 {
 	this->whitePawns = 0ull;
 	this->whiteRooks = 0ull;
@@ -2978,7 +2978,7 @@ BoardManager::ConfigurationMetadata::ConfigurationMetadata(const std::string& co
 	this->emptyTiles = (~this->allPieces);
 }
 
-BoardManager::ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata)
+ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata)
 	: whitePawns(configurationMetadata.whitePawns)
 	, whiteRooks(configurationMetadata.whiteRooks)
 	, whiteKnights(configurationMetadata.whiteKnights)
@@ -3014,7 +3014,7 @@ BoardManager::ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMe
 	this->emptyTiles = (~this->allPieces);
 }
 
-void BoardManager::ConfigurationMetadata::initialize(const std::string& configurationString)
+void ConfigurationMetadata::initialize(const std::string& configurationString)
 {
 	this->whitePawns = 0ull;
 	this->whiteRooks = 0ull;
@@ -3084,7 +3084,7 @@ void BoardManager::ConfigurationMetadata::initialize(const std::string& configur
 	this->emptyTiles = (~this->allPieces);
 }
 
-void BoardManager::ConfigurationMetadata::initialize(const ConfigurationMetadata& configurationMetadata)
+void ConfigurationMetadata::initialize(const ConfigurationMetadata& configurationMetadata)
 {
 	this->whitePawns = configurationMetadata.whitePawns;
 	this->whiteRooks = configurationMetadata.whiteRooks;
