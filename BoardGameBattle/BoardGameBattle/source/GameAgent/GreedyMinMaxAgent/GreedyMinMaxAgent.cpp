@@ -141,17 +141,68 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
 		evaluationScore += GreedyMinMaxAgent::CHECK_SCORE;
 
+	// White Turn
+	if (configurationMetadata.whiteTurn)
+		evaluationScore += GreedyMinMaxAgent::WHITE_TURN_SCORE;
+	else
+		evaluationScore -= GreedyMinMaxAgent::WHITE_TURN_SCORE;
+
 	return evaluationScore;
 }
 
-std::vector<std::pair<char, int>> GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
+std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
-	// TODO:
-	return std::vector<std::pair<char, int>>();
+	// TODO: alpha-beta pruning
+
+	if (depth == 0)
+		return std::make_pair(this->evaluateConfiguration(configurationMetadata), std::vector<std::pair<char, int>>());
+
+	if (configurationMetadata.whiteTurn) // Maximizing
+	{
+		float maximumScore = -GreedyMinMaxAgent::INF;
+		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
+
+		std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
+		BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
+
+		for (int i = 0; i < allWhiteMoves.size(); ++i)
+		{
+			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), depth - 1, alpha, beta);
+
+			if (minMaxOutput.first > maximumScore)
+			{
+				maximumScore = minMaxOutput.first;
+				bestMove = allWhiteMoves[i];
+			}
+		}
+
+		return std::make_pair(maximumScore, bestMove);
+	}
+	else // Minimizing
+	{
+		float minimumScore = GreedyMinMaxAgent::INF;
+		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
+
+		std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
+		BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
+
+		for (int i = 0; i < allBlackMoves.size(); ++i)
+		{
+			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), depth - 1, alpha, beta);
+
+			if (minMaxOutput.first < minimumScore)
+			{
+				minimumScore = minMaxOutput.first;
+				bestMove = allBlackMoves[i];
+			}
+		}
+
+		return std::make_pair(minimumScore, bestMove);
+	}
 }
 
 std::vector<std::pair<char, int>> GreedyMinMaxAgent::findBestMove(const ConfigurationMetadata& configurationMetadata) const
 {
-	// TODO:
-	return std::vector<std::pair<char, int>>();
+	// TODO: multithreading
+	return this->minMax(configurationMetadata, GreedyMinMaxAgent::MAX_DEPTH, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF).second;
 }

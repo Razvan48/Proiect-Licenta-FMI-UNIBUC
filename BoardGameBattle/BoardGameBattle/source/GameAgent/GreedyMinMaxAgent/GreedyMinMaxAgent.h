@@ -37,6 +37,8 @@ protected:
 	static const float QUEEN_POSITION_SCORE_FACTOR;
 	static const float KING_POSITION_SCORE_FACTOR;
 
+	static const float WHITE_TURN_SCORE;
+
 	static const float WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float WHITE_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float WHITE_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
@@ -51,7 +53,7 @@ protected:
 	static const float BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
-	std::vector<std::pair<char, int>> minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const; // INFO: minMax primeste o copie a configuratiei.
+	std::pair<float, std::vector<std::pair<char, int>>> minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const; // INFO: minMax primeste o copie a configuratiei.
 
 public:
 	static GreedyMinMaxAgent& get();
@@ -78,6 +80,8 @@ const float GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 1.0f;
 const float GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 1.0f;
 const float GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 1.0f;
 const float GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR = 1.0f;
+
+const float GreedyMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
 
 const float GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
