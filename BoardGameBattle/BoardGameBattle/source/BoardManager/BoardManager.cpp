@@ -2056,13 +2056,8 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 		return;
 
 	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
-	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
-	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
-
-	std::cout << "En Passant Diagonal:\n";
-	this->printBitBoard(enPassantDiagonalPieces0);
-	std::cout << this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first << "\n";
-	std::cout << this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second << "\n";
+	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
+	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
 
 	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)));
 	if (whitePawnEnPassantRight &&
@@ -2082,15 +2077,15 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces0].first & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces0].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces0].second & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces0].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
 					)
 				)
 			)
@@ -2120,15 +2115,15 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces1].first & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces1].second & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & configurationMetadata.whiteKing)
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces1].second & configurationMetadata.whiteKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces1].first & (configurationMetadata.blackBishops | configurationMetadata.blackQueens))
 					)
 				)
 			)
@@ -2535,8 +2530,8 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 		return;
 
 	unsigned long long enPassantRankPieces = this->extractRank(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
-	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
-	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition);
+	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
+	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
 
 	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)));
 	if (blackPawnEnPassantRight &&
@@ -2556,15 +2551,15 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & configurationMetadata.blackKing)
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces0].first & configurationMetadata.blackKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces0].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].second & configurationMetadata.blackKing)
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces0].second & configurationMetadata.blackKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces0].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+						(this->precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[configurationMetadata.capturableEnPassantPosition + 1][enPassantDiagonalPieces0].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
 					)
 				)
 			)
@@ -2594,15 +2589,15 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & configurationMetadata.blackKing)
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces1].first & configurationMetadata.blackKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces1].second & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
 					)
 					||
 					(
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].second & configurationMetadata.blackKing)
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces1].second & configurationMetadata.blackKing)
 						&&
-						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition][enPassantDiagonalPieces1].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
+						(this->precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[configurationMetadata.capturableEnPassantPosition - 1][enPassantDiagonalPieces1].first & (configurationMetadata.whiteBishops | configurationMetadata.whiteQueens))
 					)
 				)
 			)
