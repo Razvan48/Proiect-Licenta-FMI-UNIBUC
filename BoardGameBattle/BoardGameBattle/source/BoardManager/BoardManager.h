@@ -229,6 +229,7 @@ public:
 				) == 0ull
 			);
 	}
+
 private:
 
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
