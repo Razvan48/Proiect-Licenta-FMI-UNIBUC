@@ -3,6 +3,12 @@
 int main()
 {
     Game::get().start();
+	
+
+	// generateMovesForPiecePosition (din board visualizer) va genera mutari pt jucator doar daca e randul lui si jucatorul a apasat pe o celula unde e o piesa de culoarea lui (nu gol sau culoare opusa)
+	// nu exista mutari care au tile de inceput si tile de sfarsit acelasi tile (si board visualizer tine cont de acest lucru, deci e ok)
+
+	// de populat position scores tables la agent
 
 	// de documentat tot ce am facut (ca pare ca merge, de tinut minte pe viitor)
 

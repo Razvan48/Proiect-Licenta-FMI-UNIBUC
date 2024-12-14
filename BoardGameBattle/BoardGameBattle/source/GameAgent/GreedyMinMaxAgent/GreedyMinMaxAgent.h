@@ -3,6 +3,8 @@
 #include "../GameAgent.h"
 #include "../../BoardManager/BoardManager.h"
 
+#include "../../GameMetadata/GameMetadata.h"
+
 class GreedyMinMaxAgent : virtual public GameAgent
 {
 private:
@@ -26,11 +28,23 @@ protected:
 	static const float KING_SCORE;
 
 	static const float ATTACK_ZONE_SCORE;
-	static const float CASTLE_SCORE;
 	static const float CHECK_SCORE;
-	
 
-	std::vector<std::pair<char, int>> minMax(ConfigurationMetadata configurationMetadata, int depth) const; // INFO: minMax primeste o copie a configuratiei.
+	static const float WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float WHITE_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float WHITE_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float WHITE_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float WHITE_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float WHITE_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	static const float BLACK_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float BLACK_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float BLACK_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float BLACK_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	static const float BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	std::vector<std::pair<char, int>> minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const; // INFO: minMax primeste o copie a configuratiei.
 
 public:
 	static GreedyMinMaxAgent& get();
@@ -49,5 +63,9 @@ const float GreedyMinMaxAgent::QUEEN_SCORE = 9.0f;
 const float GreedyMinMaxAgent::KING_SCORE = 100.0f;
 
 const float GreedyMinMaxAgent::ATTACK_ZONE_SCORE = 0.1f;
-const float GreedyMinMaxAgent::CASTLE_SCORE = 0.5f;
 const float GreedyMinMaxAgent::CHECK_SCORE = 0.2f;
+
+
+
+
+

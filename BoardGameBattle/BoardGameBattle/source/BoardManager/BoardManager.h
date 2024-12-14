@@ -92,9 +92,11 @@ private:
 	BoardManager(const BoardManager&& other) = delete;
 	BoardManager& operator= (const BoardManager&& other) = delete;
 
+public:
 	static const int MODULO_LOG_POWER_2 = 67;
 	int logPower2[BoardManager::MODULO_LOG_POWER_2];
 
+private:
 	unsigned long long rankBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	unsigned long long fileBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	unsigned long long topLeftBottomRightDiagonalBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
@@ -233,6 +235,8 @@ public:
 private:
 
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
+
+public: // INFO: Trebuie sa fie publica pentru a putea fi apelata din GameAgent.
 	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove);
 
 public:
