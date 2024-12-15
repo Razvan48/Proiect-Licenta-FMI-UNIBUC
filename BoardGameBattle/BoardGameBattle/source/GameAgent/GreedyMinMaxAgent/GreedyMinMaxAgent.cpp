@@ -304,12 +304,12 @@ const float GreedyMinMaxAgent::KING_SCORE = 100.0f;
 const float GreedyMinMaxAgent::ATTACK_ZONE_SCORE = 0.15f;
 const float GreedyMinMaxAgent::CHECK_SCORE = 0.2f;
 
-const float GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 1.0f;
-const float GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 1.0f;
-const float GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 1.0f;
-const float GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 1.0f;
-const float GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 1.0f;
-const float GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR = 1.0f;
+const float GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.18f;
 
 const float GreedyMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
 
