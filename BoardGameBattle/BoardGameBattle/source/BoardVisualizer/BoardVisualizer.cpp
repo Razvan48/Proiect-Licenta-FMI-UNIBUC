@@ -285,7 +285,7 @@ void BoardVisualizer::update()
 						this->resetSelectedTiles();
 
 						// Agent
-						BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata())));
+						//BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata())));
 					}
 				}
 			}

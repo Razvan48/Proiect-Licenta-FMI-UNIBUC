@@ -1237,8 +1237,22 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
 		return std::vector<std::string>();
 	}
-	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER && Client::get().getColor() == "")
-		return std::vector<std::string>();
+	else if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+	{
+		if (Game::get().getColor() == Game::Color::WHITE && !this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+		else if (Game::get().getColor() == Game::Color::BLACK && this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+	}
+	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+	{
+		if (Client::get().getColor() == "")
+			return std::vector<std::string>();
+		else if (Client::get().getColor() == "white" && !this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+		else if (Client::get().getColor() == "black" && this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+	}
 
 	int row = GameMetadata::NUM_TILES_HEIGHT - 1 - (piecePosition[1] - '1');
 	int column = piecePosition[0] - 'a';
