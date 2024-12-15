@@ -16,6 +16,8 @@
 
 #include "../../GameMetadata/GameMetadata.h"
 
+#include "../../AssetManager/AssetManager.h"
+
 #include <string>
 
 JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
@@ -37,6 +39,7 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 	, serverAddress("")
 	, hasToSendBoardConfiguration(false)
 	, clientColorSet(false)
+	, pieceMoveSoundName("pieceMoveSound")
 {
 	this->entities.push_back
 	(
@@ -342,8 +345,12 @@ void JoinedMultiplayerGameVisualInterface::update()
 		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
 	}
 
-	if (BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+	{
 		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+
+		AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+	}
 
 
 	if (!this->clientColorSet && Client::get().getColor() != "")
@@ -356,7 +363,7 @@ void JoinedMultiplayerGameVisualInterface::update()
 	std::string clientBoardConfiguration = Client::get().getLastKnownBoardConfiguration();
 	if (clientBoardConfiguration != "")
 	{
-		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] == 'w')
+		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] == '1')
 		{
 			this->turnTextEntity.setText("WHITE");
 			this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));

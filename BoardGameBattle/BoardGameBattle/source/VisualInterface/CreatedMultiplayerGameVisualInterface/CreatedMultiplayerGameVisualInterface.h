@@ -26,6 +26,8 @@ protected:
 
 	bool hasToSendBoardConfiguration;
 
+	std::string pieceMoveSoundName;
+
 public:
 	CreatedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity

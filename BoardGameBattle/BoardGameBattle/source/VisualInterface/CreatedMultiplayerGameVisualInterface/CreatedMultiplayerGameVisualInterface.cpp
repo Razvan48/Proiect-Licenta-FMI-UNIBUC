@@ -16,6 +16,8 @@
 
 #include "../../GameMetadata/GameMetadata.h"
 
+#include "../../AssetManager/AssetManager.h"
+
 #include <iostream>
 #include <string>
 
@@ -38,6 +40,7 @@ CreatedMultiplayerGameVisualInterface::CreatedMultiplayerGameVisualInterface(Tex
 	, serverAddress("")
 	, color("")
 	, hasToSendBoardConfiguration(false)
+	, pieceMoveSoundName("pieceMoveSound")
 {
 	this->entities.push_back
 	(
@@ -328,8 +331,12 @@ void CreatedMultiplayerGameVisualInterface::update()
 		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
 	}
 
-	if (BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+	{
 		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+
+		AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+	}
 
 	// BoardVisualizer::get().initialize(); // Nu trebuie pentru CreatedMultiplayerGame pentru ca deja stie culoarea.
 
@@ -337,7 +344,7 @@ void CreatedMultiplayerGameVisualInterface::update()
 	std::string clientBoardConfiguration = Client::get().getLastKnownBoardConfiguration();
 	if (clientBoardConfiguration != "")
 	{
-		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + GameMetadata::NUM_CASTLING_MOVES] == 'w')
+		if (clientBoardConfiguration[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] == '1')
 		{
 			this->turnTextEntity.setText("WHITE");
 			this->turnTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));

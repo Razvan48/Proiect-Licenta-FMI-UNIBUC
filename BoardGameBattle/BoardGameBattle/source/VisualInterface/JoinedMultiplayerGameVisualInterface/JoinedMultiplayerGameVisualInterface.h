@@ -28,6 +28,8 @@ protected:
 
 	bool clientColorSet;
 
+	std::string pieceMoveSoundName;
+
 public:
 	JoinedMultiplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
