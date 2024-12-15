@@ -347,14 +347,15 @@ void JoinedMultiplayerGameVisualInterface::update()
 
 	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE))
 	{
+		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
+		{
+			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
+			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
+		}
+
 		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE));
 
 		AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
-
-		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
-		{
-			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
-		}
 	}
 
 

@@ -147,6 +147,8 @@ private:
 
 	ConfigurationMetadata configurationMetadata;
 
+	std::vector<ConfigurationMetadata> configurationMetadataHistory;
+
 	unsigned long long extractRank(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractFile(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractTopLeftBottomRightDiagonal(unsigned long long bitBoard, int pos) const;
@@ -254,6 +256,16 @@ public:
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
 
 	void setPiecesConfiguration(const std::string& piecesConfiguration) { this->configurationMetadata.initialize(piecesConfiguration); }
+
+	inline void addNewConfigurationMetadataInHistory(const ConfigurationMetadata& configurationMetadata) { this->configurationMetadataHistory.push_back(configurationMetadata); }
+	inline void popLastConfigurationMetadataFromHistory()
+	{
+		if (!this->configurationMetadataHistory.empty())
+		{
+			this->configurationMetadata.initialize(this->configurationMetadataHistory.back());
+			this->configurationMetadataHistory.pop_back();
+		}
+	}
 
 	void printBitBoard(unsigned long long bitBoard) const;
 };

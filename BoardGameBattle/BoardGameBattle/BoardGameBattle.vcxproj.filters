@@ -257,9 +257,6 @@
     <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h">
       <Filter>Source Files\BoardVisualizer</Filter>
     </ClInclude>
-    <ClInclude Include="source\BoardManager\BoardManager.h">
-      <Filter>Source Files\BoardManager</Filter>
-    </ClInclude>
     <ClInclude Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.h">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClInclude>
@@ -283,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.h">
       <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BoardManager\BoardManager.h">
+      <Filter>Source Files\BoardManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -278,6 +278,7 @@ void BoardVisualizer::update()
 		std::vector<std::pair<char, int>> bestMove = GreedyMinMaxAgent::get().getBestMove();
 		if (!bestMove.empty()) // A fost calculat un best move.
 		{
+			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
 			BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
 
 			// Resetare
@@ -332,6 +333,7 @@ void BoardVisualizer::update()
 						move.push_back((char)('a' + j));
 						move.push_back((char)('1' + i));
 
+						BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
 						BoardManager::get().applyMoveExternal(move);
 						AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
 						this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
