@@ -176,7 +176,7 @@ void SingleplayerGameVisualInterface::initialize()
 	this->finalMessageTextEntity.setText("ERROR!");
 	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-	AssetManager::get().playSound(this->boardStartSoundName, false);
+	AssetManager::get().playSound(this->boardStartSoundName, false, false);
 }
 
 void SingleplayerGameVisualInterface::draw()

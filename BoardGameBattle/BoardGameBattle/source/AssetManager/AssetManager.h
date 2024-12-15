@@ -64,7 +64,7 @@ public:
 	void loadResources();
 	GLuint getTexture(const std::string& textureName);
 	std::vector<AssetManager::Character>& getFont(const std::string& fontName);
-	void playSound(const std::string& soundName, bool isLooping);
+	void playSound(const std::string& soundName, bool isLooping, bool canOverlapSameSound);
 
 	inline bool getSoundEnabled() const { return this->soundEnabled; }
 	inline void setSoundEnabled(bool soundEnabled) { this->soundEnabled = soundEnabled; }

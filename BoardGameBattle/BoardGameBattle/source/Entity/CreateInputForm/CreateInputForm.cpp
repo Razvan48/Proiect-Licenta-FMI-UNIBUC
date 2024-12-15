@@ -74,7 +74,7 @@ void CreateInputForm::update()
 		{
 			if (this->playerNameContentOk)
 			{
-				AssetManager::get().playSound(this->soundNameWhenPressed, false);
+				AssetManager::get().playSound(this->soundNameWhenPressed, false, false);
 				this->recentlyInteractedWith = true;
 				Game::get().setMode(this->gameModeWhenPressed);
 				Game::get().setColor(this->gameColorWhenPressed);
@@ -91,14 +91,14 @@ void CreateInputForm::update()
 			{
 				this->playerNameTextEntity.setColor(this->colorInputContentNotOk);
 
-				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false);
+				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, false);
 			}
 		}
 		else
 		{
 			if (this->status == Button::Status::RELEASED)
 			{
-				AssetManager::get().playSound(this->soundNameWhenHovered, false);
+				AssetManager::get().playSound(this->soundNameWhenHovered, false, false);
 				this->text.push_back('<');
 			}
 			this->status = Button::Status::HOVERED;

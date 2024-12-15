@@ -208,7 +208,7 @@ std::vector<AssetManager::Character>& AssetManager::getFont(const std::string& f
 	return this->fonts[fontName];
 }
 
-void AssetManager::playSound(const std::string& soundName, bool isLooping)
+void AssetManager::playSound(const std::string& soundName, bool isLooping, bool canOverlapSameSound)
 {
 	if (this->sounds.find(soundName) == this->sounds.end())
 	{
@@ -218,7 +218,14 @@ void AssetManager::playSound(const std::string& soundName, bool isLooping)
 
 	if (this->soundEnabled)
 	{
-		if (!this->soundEngine->isCurrentlyPlaying(this->sounds[soundName].c_str()))
+		if (!canOverlapSameSound)
+		{
+			if (!this->soundEngine->isCurrentlyPlaying(this->sounds[soundName].c_str()))
+			{
+				this->soundEngine->play2D(this->sounds[soundName].c_str(), isLooping);
+			}
+		}
+		else
 		{
 			this->soundEngine->play2D(this->sounds[soundName].c_str(), isLooping);
 		}

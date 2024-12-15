@@ -132,7 +132,7 @@ void JoinInputForm::update()
 		{
 			if (this->playerNameContentOk && this->serverAddressContentOk)
 			{
-				AssetManager::get().playSound(this->soundNameWhenPressed, false);
+				AssetManager::get().playSound(this->soundNameWhenPressed, false, false);
 				this->recentlyInteractedWith = true;
 				Game::get().setMode(this->gameModeWhenPressed);
 				Game::get().setColor(this->gameColorWhenPressed);
@@ -158,14 +158,14 @@ void JoinInputForm::update()
 				else
 					this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
-				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false);
+				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, false);
 			}
 		}
 		else
 		{
 			if (this->status == Button::Status::RELEASED)
 			{
-				AssetManager::get().playSound(this->soundNameWhenHovered, false);
+				AssetManager::get().playSound(this->soundNameWhenHovered, false, false);
 				this->text.push_back('<');
 			}
 			this->status = Button::Status::HOVERED;

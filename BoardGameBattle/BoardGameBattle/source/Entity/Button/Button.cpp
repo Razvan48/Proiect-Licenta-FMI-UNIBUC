@@ -91,7 +91,7 @@ void Button::update()
 		if (InputManager::get().isLeftMouseButtonReleased()
 			&& this->isInMouseLastPressedCollision())
 		{
-			AssetManager::get().playSound(this->soundNameWhenPressed, false);
+			AssetManager::get().playSound(this->soundNameWhenPressed, false, false);
 			this->recentlyInteractedWith = true;
 			Game::get().setMode(this->gameModeWhenPressed);
 			Game::get().setColor(this->gameColorWhenPressed);
@@ -103,7 +103,7 @@ void Button::update()
 		{
 			if (this->status == Button::Status::RELEASED)
 			{
-				AssetManager::get().playSound(this->soundNameWhenHovered, false);
+				AssetManager::get().playSound(this->soundNameWhenHovered, false, false);
 				this->text.push_back('<');
 			}
 			this->status = Button::Status::HOVERED;

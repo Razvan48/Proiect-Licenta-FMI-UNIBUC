@@ -282,6 +282,9 @@ void BoardVisualizer::update()
 			// Resetare
 			GreedyMinMaxAgent::get().setIsRunningTask(false);
 			GreedyMinMaxAgent::get().setBestMove(std::vector<std::pair<char, int>>());
+
+			// Sunet
+			AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
 		}
 	}
 
@@ -309,7 +312,7 @@ void BoardVisualizer::update()
 						move.push_back((char)('1' + i));
 
 						BoardManager::get().applyMoveExternal(move);
-						AssetManager::get().playSound(this->pieceMoveSoundName, false);
+						AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
 
 						this->resetSelectedTiles();
 					}
