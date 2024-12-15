@@ -11,15 +11,7 @@ int main()
 
 	// de inteles alpha-beta + de inteles futures/promises + multithreading
 
-	// metoda de getBestMove pt GameAgent (clasa abstracta) ar fi mai bine sa fie o functie void si numita probabil altfel, care doar porneste pe alt thread cautarea la best move
-	// apoi avem un boolean + mutex care ne spune cand e gata si apoi clasa tine intern raspunsul si il colectam cand avem nevoie
-
-	// generateMovesForPiecePosition (din board visualizer) va genera mutari pt jucator doar daca e randul lui si jucatorul a apasat pe o celula unde e o piesa de culoarea lui (nu gol sau culoare opusa)
-	// nu exista mutari care au tile de inceput si tile de sfarsit acelasi tile (si board visualizer tine cont de acest lucru, deci e ok)
-
-	// de adaugat un check sound in loc de move sound-ul obisnuit (schimbam in metoda applyMoveExternal)
-
-	// de populat position scores tables la agent
+	// de adaugat un check sound in loc de move sound-ul obisnuit (schimbam in metoda applyMoveExternal) + (un capture sound?)
 
 	// de documentat tot ce am facut (ca pare ca merge, de tinut minte pe viitor)
 
@@ -30,15 +22,10 @@ int main()
 
 	// cand are loc o mutare de vazut acest lucru pe tabla de joc
 
-	// de schimbat sunetul de button hovered
 
 
 
 
-
-
-
-	// TODO: implementare BOT pentru Singleplayer
 
 
 
