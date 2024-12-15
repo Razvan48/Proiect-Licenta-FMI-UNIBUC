@@ -256,6 +256,35 @@ void BoardVisualizer::update()
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 		this->boardCoordinates[GameMetadata::NUM_TILES_WIDTH + i].update();
 
+
+	// Agent
+	if (
+			Game::get().getMode() == Game::Mode::SINGLEPLAYER
+			&&
+			(
+				(Game::get().getColor() == Game::Color::WHITE && !BoardManager::get().getConfigurationMetadata().whiteTurn)
+				||
+				(Game::get().getColor() == Game::Color::BLACK && BoardManager::get().getConfigurationMetadata().whiteTurn)
+			)
+	)
+	{
+
+		if (!GreedyMinMaxAgent::get().getIsRunningTask())
+			GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata());
+
+
+
+		std::vector<std::pair<char, int>> bestMove = GreedyMinMaxAgent::get().getBestMove();
+		if (!bestMove.empty()) // A fost calculat un best move.
+		{
+			BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
+
+			// Resetare
+			GreedyMinMaxAgent::get().setIsRunningTask(false);
+			GreedyMinMaxAgent::get().setBestMove(std::vector<std::pair<char, int>>());
+		}
+	}
+
 	// Logica pentru selectare celule si efectuare mutari
 	if (InputManager::get().isLeftMouseButtonReleased())
 	{
@@ -283,9 +312,6 @@ void BoardVisualizer::update()
 						AssetManager::get().playSound(this->pieceMoveSoundName, false);
 
 						this->resetSelectedTiles();
-
-						// Agent
-						//BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata())));
 					}
 				}
 			}

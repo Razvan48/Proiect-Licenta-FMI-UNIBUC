@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <mutex>
+
 class GameAgent
 {
 private:
@@ -12,8 +14,45 @@ protected:
 	GameAgent();
 	virtual ~GameAgent() = 0;
 
+	bool isRunningTask;
+	std::mutex isRunningTaskMutex;
+
+	std::vector<std::pair<char, int>> bestMove;
+	std::mutex bestMoveMutex;
+
 public:
 	virtual float evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const = 0;
-	virtual std::vector<std::pair<char, int>> findBestMove(ConfigurationMetadata& configurationMetadata) const = 0;
+	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) = 0;
 
+	inline bool getIsRunningTask()
+	{
+		this->isRunningTaskMutex.lock();
+		bool isRunningTask = this->isRunningTask;
+		this->isRunningTaskMutex.unlock();
+
+		return isRunningTask;
+	}
+
+	inline void setIsRunningTask(bool isRunningTask)
+	{
+		this->isRunningTaskMutex.lock();
+		this->isRunningTask = isRunningTask;
+		this->isRunningTaskMutex.unlock();
+	}
+
+	inline std::vector<std::pair<char, int>> getBestMove()
+	{
+		this->bestMoveMutex.lock();
+		std::vector<std::pair<char, int>> bestMove = this->bestMove;
+		this->bestMoveMutex.unlock();
+
+		return bestMove;
+	}
+
+	inline void setBestMove(const std::vector<std::pair<char, int>>& bestMove)
+	{
+		this->bestMoveMutex.lock();
+		this->bestMove = bestMove;
+		this->bestMoveMutex.unlock();
+	}
 };

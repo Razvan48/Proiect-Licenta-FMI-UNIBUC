@@ -5,12 +5,11 @@ int main()
     Game::get().start();
 	
 
+	// de verificat corectitudinea la min-max + alpha-beta si la multithreading-ul de la getBestMove
+
 	// inca nu se genereaza toate mutarile corect...
 
 	// de inteles alpha-beta + de inteles futures/promises + multithreading
-
-	// de vazut de ce uneori crapa (cred ca are de a face cu uitarea la o configuratie cam ilegala (unde poate nu mai exista regele))
-	// mai e o problema la generat de mutari, cum am mentionat mai sus
 
 	// metoda de getBestMove pt GameAgent (clasa abstracta) ar fi mai bine sa fie o functie void si numita probabil altfel, care doar porneste pe alt thread cautarea la best move
 	// apoi avem un boolean + mutex care ne spune cand e gata si apoi clasa tine intern raspunsul si il colectam cand avem nevoie

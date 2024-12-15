@@ -54,13 +54,13 @@ protected:
 	static const float BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
-	std::pair<float, std::vector<std::pair<char, int>>> minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const; // INFO: minMax primeste o copie a configuratiei.
+	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const; // INFO: minMax primeste o copie a configuratiei.
 
 public:
 	static GreedyMinMaxAgent& get();
 
 	virtual float evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const override;
-	virtual std::vector<std::pair<char, int>> findBestMove(ConfigurationMetadata& configurationMetadata) const override;
+	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
 };
 
 

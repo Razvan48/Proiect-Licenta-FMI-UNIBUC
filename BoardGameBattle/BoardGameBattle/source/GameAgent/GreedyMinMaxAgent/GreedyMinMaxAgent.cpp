@@ -154,12 +154,14 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 	return evaluationScore;
 }
 
-std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
+float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
-	// TODO: alpha-beta pruning (de inteles mai bine, ca e implementat)
-
 	if (depth == 0)
-		return std::make_pair(this->evaluateConfiguration(configurationMetadata), std::vector<std::pair<char, int>>());
+	{
+		BoardManager::get().generateWhiteAttackZones(configurationMetadata);
+		BoardManager::get().generateBlackAttackZones(configurationMetadata);
+		return this->evaluateConfiguration(configurationMetadata);
+	}
 
 	if (configurationMetadata.whiteTurn) // Maximizing
 	{
@@ -171,11 +173,11 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 
 		for (int i = 0; i < allWhiteMoves.size(); ++i)
 		{
-			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), depth - 1, alpha, beta);
+			float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), depth - 1, alpha, beta);
 
-			if (minMaxOutput.first > maximumScore)
+			if (currentScore > maximumScore)
 			{
-				maximumScore = minMaxOutput.first;
+				maximumScore = currentScore;
 				bestMove = allWhiteMoves[i];
 
 				alpha = std::max(alpha, maximumScore);
@@ -184,7 +186,7 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 			}
 		}
 
-		return std::make_pair(maximumScore, bestMove);
+		return maximumScore;
 	}
 	else // Minimizing
 	{
@@ -196,11 +198,11 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 
 		for (int i = 0; i < allBlackMoves.size(); ++i)
 		{
-			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), depth - 1, alpha, beta);
+			float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), depth - 1, alpha, beta);
 
-			if (minMaxOutput.first < minimumScore)
+			if (currentScore < minimumScore)
 			{
-				minimumScore = minMaxOutput.first;
+				minimumScore = currentScore;
 				bestMove = allBlackMoves[i];
 
 				beta = std::min(beta, minimumScore);
@@ -209,88 +211,97 @@ std::pair<float, std::vector<std::pair<char, int>>> GreedyMinMaxAgent::minMax(Co
 			}
 		}
 
-		return std::make_pair(minimumScore, bestMove);
+		return minimumScore;
 	}
 }
 
-std::vector<std::pair<char, int>> GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadata) const
+void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadata)
 {
 	// TODO: multithreading (de inteles future si promises) + de facut inca un thread mare care le apeleaza pe toate astea
 	//return this->minMax(configurationMetadata, GreedyMinMaxAgent::MAX_DEPTH, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF).second;
+	
+	this->setIsRunningTask(true);
+	this->setBestMove(std::vector<std::pair<char, int>>());
 
-	std::vector<std::future<std::pair<float, std::vector<std::pair<char, int>>>>> futures;
-	std::vector<std::thread> threads;
-
-	if (configurationMetadata.whiteTurn)
-	{
-		float maximumScore = -GreedyMinMaxAgent::INF;
-		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
-
-		std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
-		BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
-
-		for (int i = 0; i < allWhiteMoves.size(); ++i)
+	std::thread findBestMoveThread([this, &configurationMetadata]() mutable
 		{
-			std::promise<std::pair<float, std::vector<std::pair<char, int>>>> promise;
-			futures.push_back(promise.get_future());
+			std::vector<std::future<float>> futures;
+			std::vector<std::thread> threads;
 
-			threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, promise = std::move(promise)]() mutable
+			if (configurationMetadata.whiteTurn)
 			{
-				std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
+				float maximumScore = -GreedyMinMaxAgent::INF;
+				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
-				promise.set_value(minMaxOutput);
-			}));
-		}
+				std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
+				BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
 
-		for (int i = 0; i < threads.size(); ++i)
-		{
-			threads[i].join();
-
-			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = futures[i].get();
-			if (minMaxOutput.first > maximumScore)
-			{
-				maximumScore = minMaxOutput.first;
-				bestMove = allWhiteMoves[i];
-			}
-		}
-
-		return bestMove;
-	}
-	else
-	{
-		float minimumScore = GreedyMinMaxAgent::INF;
-		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
-
-		std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
-		BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
-
-		for (int i = 0; i < allBlackMoves.size(); ++i)
-		{
-			std::promise<std::pair<float, std::vector<std::pair<char, int>>>> promise;
-			futures.push_back(promise.get_future());
-			threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, promise = std::move(promise)]() mutable
+				for (int i = 0; i < allWhiteMoves.size(); ++i)
 				{
-					std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
-					promise.set_value(minMaxOutput);
-				}));
-		}
+					std::promise<float> promise;
+					futures.push_back(promise.get_future());
 
-		for (int i = 0; i < threads.size(); ++i)
-		{
-			threads[i].join();
-			std::pair<float, std::vector<std::pair<char, int>>> minMaxOutput = futures[i].get();
-			if (minMaxOutput.first < minimumScore)
-			{
-				minimumScore = minMaxOutput.first;
-				bestMove = allBlackMoves[i];
+					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, promise = std::move(promise)]() mutable
+						{
+							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
+							promise.set_value(currentScore);
+						}));
+				}
+
+				for (int i = 0; i < threads.size(); ++i)
+				{
+					threads[i].join();
+
+					float currentScore = futures[i].get();
+					if (currentScore > maximumScore)
+					{
+						maximumScore = currentScore;
+						bestMove = allWhiteMoves[i];
+					}
+				}
+
+				this->setBestMove(bestMove);
 			}
-		}
+			else
+			{
+				float minimumScore = GreedyMinMaxAgent::INF;
+				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
-		return bestMove;
-	}
+				std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
+				BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
+
+				for (int i = 0; i < allBlackMoves.size(); ++i)
+				{
+					std::promise<float> promise;
+					futures.push_back(promise.get_future());
+
+					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, promise = std::move(promise)]() mutable
+						{
+							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
+							promise.set_value(currentScore);
+						}));
+				}
+
+				for (int i = 0; i < threads.size(); ++i)
+				{
+					threads[i].join();
+
+					float currentScore = futures[i].get();
+					if (currentScore < minimumScore)
+					{
+						minimumScore = currentScore;
+						bestMove = allBlackMoves[i];
+					}
+				}
+
+				this->setBestMove(bestMove);
+			}
+		});
+
+	findBestMoveThread.detach();
 }
 
-const int GreedyMinMaxAgent::MAX_DEPTH = 6;
+const int GreedyMinMaxAgent::MAX_DEPTH = 5;
 
 const float GreedyMinMaxAgent::INF = 65536.0f;
 
