@@ -156,6 +156,13 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 
 float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
+	if (BoardManager::get().isWhiteKingInCheckmate(configurationMetadata))
+		return -GreedyMinMaxAgent::INF;
+	else if (BoardManager::get().isBlackKingInCheckmate(configurationMetadata))
+		return GreedyMinMaxAgent::INF;
+
+
+
 	if (depth == 0)
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);

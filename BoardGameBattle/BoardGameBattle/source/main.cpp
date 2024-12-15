@@ -25,6 +25,8 @@ int main()
 
 
 
+	// pentur butonul de back trb marcat pe false agentul de minmax, ca sa fie board visualizer ca nu mai ruleaza (chiar daca el ruleaza detasat in background)
+
 
 
 

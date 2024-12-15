@@ -49,6 +49,9 @@ private:
 
 	std::string pieceMoveSoundName;
 
+	std::vector<std::string> movesHistory;
+	bool newMoveAtTopOfHistory;
+
 	void resetSelectedTiles();
 
 public:
@@ -57,4 +60,13 @@ public:
 	void initialize();
 	void draw();
 	void update();
+
+	void addNewMoveInHistory(const std::string& move);
+	void popLastMoveFromHistory();
+	inline std::string getLastMoveFromHistory() const
+	{
+		if (this->movesHistory.empty())
+			return "";
+		return this->movesHistory.back();
+	}
 };

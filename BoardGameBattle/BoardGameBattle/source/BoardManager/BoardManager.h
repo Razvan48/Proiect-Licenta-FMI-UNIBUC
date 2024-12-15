@@ -232,7 +232,7 @@ public:
 			);
 	}
 
-private:
+public: // INFO: Board Visualizer are nevoie pentru conversii.
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
 
 public: // INFO: Trebuie sa fie publica pentru a putea fi apelata din GameAgent.

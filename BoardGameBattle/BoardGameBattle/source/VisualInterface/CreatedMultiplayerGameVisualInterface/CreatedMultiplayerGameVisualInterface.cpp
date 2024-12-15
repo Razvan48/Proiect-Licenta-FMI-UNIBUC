@@ -328,14 +328,19 @@ void CreatedMultiplayerGameVisualInterface::update()
 	{
 		float timeWhenMessageSent = 0.0f; // Nu ne intereseaza timpul
 		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration());
-		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
+		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration() + BoardVisualizer::get().getLastMoveFromHistory(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
 	}
 
-	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration())
+	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE))
 	{
-		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration());
+		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE));
 
 		AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+
+		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
+		{
+			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
+		}
 	}
 
 	// BoardVisualizer::get().initialize(); // Nu trebuie pentru CreatedMultiplayerGame pentru ca deja stie culoarea.

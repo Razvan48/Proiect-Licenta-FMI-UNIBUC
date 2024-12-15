@@ -41,6 +41,7 @@ BoardVisualizer::BoardVisualizer()
 	, selectedTileRow(-1)
 	, selectedTileColumn(-1)
 	, pieceMoveSoundName("pieceMoveSound")
+	, newMoveAtTopOfHistory(false)
 {
 
 }
@@ -285,7 +286,27 @@ void BoardVisualizer::update()
 
 			// Sunet
 			AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+			
+			// Adaugare Mutare in Istoric
+			std::string historyMove = BoardManager::get().convertToExternalMove(bestMove);
+			this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
 		}
+	}
+
+	// Ultima Mutare
+	if (this->newMoveAtTopOfHistory)
+	{
+		this->newMoveAtTopOfHistory = false;
+
+		int row0 = (int)(this->movesHistory.back()[1] - '1');
+		int column0 = (int)(this->movesHistory.back()[0] - 'a');
+		int row1 = (int)(this->movesHistory.back()[3] - '1');
+		int column1 = (int)(this->movesHistory.back()[2] - 'a');
+
+		this->resetSelectedTiles();
+
+		this->boardTiles[row0][column0].setIsSelected(true);
+		this->boardTiles[row1][column1].setIsSelected(true);
 	}
 
 	// Logica pentru selectare celule si efectuare mutari
@@ -313,6 +334,7 @@ void BoardVisualizer::update()
 
 						BoardManager::get().applyMoveExternal(move);
 						AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+						this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
 
 						this->resetSelectedTiles();
 					}
@@ -355,6 +377,8 @@ void BoardVisualizer::update()
 		}
 		else
 		{
+			this->resetSelectedTiles();
+
 			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 			{
 				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
@@ -382,6 +406,21 @@ void BoardVisualizer::update()
 				}
 			}
 		}
+	}
+}
+
+void BoardVisualizer::addNewMoveInHistory(const std::string& move)
+{
+	this->movesHistory.push_back(move);
+	this->newMoveAtTopOfHistory = true;
+}
+
+void BoardVisualizer::popLastMoveFromHistory()
+{
+	if (!this->movesHistory.empty())
+	{
+		this->movesHistory.pop_back();
+		this->newMoveAtTopOfHistory = true;
 	}
 }
 
