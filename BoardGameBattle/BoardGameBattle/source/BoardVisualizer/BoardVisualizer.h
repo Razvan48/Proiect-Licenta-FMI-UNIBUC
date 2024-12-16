@@ -69,4 +69,5 @@ public:
 			return "";
 		return this->movesHistory.back();
 	}
+	inline int getLastMoveFromHistorySize() const { return (int)this->movesHistory.size(); }
 };

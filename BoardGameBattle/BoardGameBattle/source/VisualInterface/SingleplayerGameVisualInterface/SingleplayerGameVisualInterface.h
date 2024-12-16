@@ -3,6 +3,8 @@
 #include "../VisualInterface.h"
 #include "../../Entity/TextEntity/TextEntity.h"
 
+#include "../../Entity/Button/UndoMoveButton/UndoMoveButton.h"
+
 #include <string>
 
 #include <memory>
@@ -21,6 +23,9 @@ protected:
 	TextEntity turnTextEntity;
 	TextEntity playerNameTextEntity;
 	TextEntity opponentNameTextEntity;
+
+	UndoMoveButton undoMoveButton;
+
 	TextEntity finalMessageTextEntity;
 
 	bool displayFinalMessage;

@@ -297,25 +297,6 @@ void BoardVisualizer::update()
 		}
 	}
 
-	// Ultima Mutare
-	if (this->newMoveAtTopOfHistory)
-	{
-		this->newMoveAtTopOfHistory = false;
-
-		if (!this->movesHistory.empty()) // Poate this->newMoveAtTopOfHistory era pe true din cauza ca s-a dat pop de la Butonul de Undo.
-		{
-			int row0 = (int)(this->movesHistory.back()[1] - '1');
-			int column0 = (int)(this->movesHistory.back()[0] - 'a');
-			int row1 = (int)(this->movesHistory.back()[3] - '1');
-			int column1 = (int)(this->movesHistory.back()[2] - 'a');
-
-			this->resetSelectedTiles();
-
-			this->boardTiles[row0][column0].setIsSelected(true);
-			this->boardTiles[row1][column1].setIsSelected(true);
-		}
-	}
-
 	// Logica pentru selectare celule si efectuare mutari
 	if (InputManager::get().isLeftMouseButtonReleased())
 	{
@@ -413,6 +394,25 @@ void BoardVisualizer::update()
 					}
 				}
 			}
+		}
+	}
+
+	// Ultima Mutare
+	if (this->newMoveAtTopOfHistory)
+	{
+		this->newMoveAtTopOfHistory = false;
+
+		if (!this->movesHistory.empty()) // Poate this->newMoveAtTopOfHistory era pe true din cauza ca s-a dat pop de la Butonul de Undo.
+		{
+			int row0 = (int)(this->movesHistory.back()[1] - '1');
+			int column0 = (int)(this->movesHistory.back()[0] - 'a');
+			int row1 = (int)(this->movesHistory.back()[3] - '1');
+			int column1 = (int)(this->movesHistory.back()[2] - 'a');
+
+			this->resetSelectedTiles();
+
+			this->boardTiles[row0][column0].setIsSelected(true);
+			this->boardTiles[row1][column1].setIsSelected(true);
 		}
 	}
 }

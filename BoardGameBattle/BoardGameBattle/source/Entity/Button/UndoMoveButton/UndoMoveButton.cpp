@@ -47,22 +47,25 @@ void UndoMoveButton::update()
 			AssetManager::get().playSound(this->soundNameWhenPressed, false, false);
 			this->recentlyInteractedWith = true;
 
+			if (	!
+					(Game::get().getColor() == Game::Color::BLACK && BoardVisualizer::get().getLastMoveFromHistorySize() == 1)
+				)
+			{
+				// Marcam Agentul ca fiind inactiv
+				GreedyMinMaxAgent::get().setIsRunningTask(false);
 
+				BoardVisualizer::get().popLastMoveFromHistory();
+				BoardManager::get().popLastConfigurationMetadataFromHistory();
 
-			// Marcam Agentul ca fiind inactiv
-			GreedyMinMaxAgent::get().setIsRunningTask(false);
-
-			BoardVisualizer::get().popLastMoveFromHistory();
-			BoardManager::get().popLastConfigurationMetadataFromHistory();
-
-			if (
+				if (
 					(BoardManager::get().getConfigurationMetadata().whiteTurn && Game::get().getColor() == Game::Color::BLACK)
 					||
 					(!BoardManager::get().getConfigurationMetadata().whiteTurn && Game::get().getColor() == Game::Color::WHITE)
-			)
-			{
-				BoardVisualizer::get().popLastMoveFromHistory();
-				BoardManager::get().popLastConfigurationMetadataFromHistory();
+					)
+				{
+					BoardVisualizer::get().popLastMoveFromHistory();
+					BoardManager::get().popLastConfigurationMetadataFromHistory();
+				}
 			}
 		}
 		else
