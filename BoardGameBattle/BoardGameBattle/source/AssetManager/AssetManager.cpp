@@ -176,12 +176,8 @@ void AssetManager::loadResources()
 
 	this->loadSound("win0Sound", "assets/sounds/win0Sound.mp3");
 	this->loadSound("win1Sound", "assets/sounds/win1Sound.mp3");
-	this->loadSound("win2Sound", "assets/sounds/win2Sound.mp3");
 
 	this->loadSound("lose0Sound", "assets/sounds/lose0Sound.mp3");
-	this->loadSound("lose1Sound", "assets/sounds/lose1Sound.mp3");
-	this->loadSound("lose2Sound", "assets/sounds/lose2Sound.mp3");
-	this->loadSound("lose3Sound", "assets/sounds/lose3Sound.mp3");
 
 	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");
 }

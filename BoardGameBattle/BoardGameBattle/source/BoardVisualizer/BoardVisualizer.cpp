@@ -18,6 +18,9 @@
 #include "../GameAgent/GreedyMinMaxAgent/GreedyMinMaxAgent.h"
 
 
+#include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
+
+
 #include <iostream>
 
 BoardVisualizer::BoardVisualizer()
@@ -42,6 +45,7 @@ BoardVisualizer::BoardVisualizer()
 	, selectedTileColumn(-1)
 	, pieceMoveSoundName("pieceMoveSound")
 	, newMoveAtTopOfHistory(false)
+	, gameHasEnded(false)
 {
 
 }
@@ -161,6 +165,9 @@ void BoardVisualizer::initialize()
 
 	// Curatam Istoria Mutarilor de la Meciul Anterior
 	this->movesHistory.clear();
+	this->newMoveAtTopOfHistory = false;
+
+	this->gameHasEnded = false;
 }
 
 void BoardVisualizer::draw()
@@ -419,6 +426,48 @@ void BoardVisualizer::update()
 			this->boardTiles[row0][column0].setIsSelected(true);
 			this->boardTiles[row1][column1].setIsSelected(true);
 		}
+	}
+
+
+
+	// Jocul s-a terminat
+	if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+	{
+		std::cout << "Game has ended" << std::endl;
+
+		if (!this->gameHasEnded)
+		{
+			this->gameHasEnded = true;
+
+			if (Game::get().getColor() == Game::Color::WHITE)
+			{
+				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+				{
+					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+				}
+				else
+				{
+					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+				}
+			}
+			else
+			{
+				if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+				{
+					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+				}
+				else
+				{
+					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+				}
+			}
+		}
+	}
+	else
+	{
+		this->gameHasEnded = false;
+
+		SingleplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
 	}
 }
 

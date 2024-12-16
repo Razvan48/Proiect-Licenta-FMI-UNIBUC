@@ -50,5 +50,6 @@ public:
 	inline const TextEntity& getOpponentNameTextEntity() const { return this->opponentNameTextEntity; }
 	inline const TextEntity& getFinalMessageTextEntity() const { return this->finalMessageTextEntity; }
 
-	inline void setDisplayFinalMessage(bool displayFinalMessage) { this->displayFinalMessage = displayFinalMessage; }
+	void setFinalMessageTextEntity(bool hasWon);
+	void unsetFinalMessageTextEntity();
 };

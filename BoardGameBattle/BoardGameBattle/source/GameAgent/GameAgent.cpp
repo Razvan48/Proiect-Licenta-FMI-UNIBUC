@@ -1,6 +1,7 @@
 #include "GameAgent.h"
 
 GameAgent::GameAgent()
+	: isRunningTask(false)
 {
 
 }

@@ -4,6 +4,11 @@ int main()
 {
     Game::get().start();
 
+	// pentru meniul de pawn promotion: cand convertim din external move in internal, daca external are un al 6-lea caracter, atunci stim ca-i promotion (al 6-lea caracter va fi setat de meniul suplimentar)
+
+
+
+
 	// de adaugat interfata cu win/lose cand se termina un meci + ceva sound effect, se face cu 2 boolene in board visualizer si cu un apel catre board manager sa spuna daca regele e in sah mat sau nu (cu ocazia asta testam si metodele acelea daca merg)
 
 	// de adaugat meniu pentru pawn promotion (momentan putem promova doar in regina)

@@ -52,6 +52,8 @@ private:
 	std::vector<std::string> movesHistory;
 	bool newMoveAtTopOfHistory;
 
+	bool gameHasEnded;
+
 	void resetSelectedTiles();
 
 public:

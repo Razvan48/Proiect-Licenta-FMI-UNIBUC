@@ -9,6 +9,8 @@
 
 #include "../../Entity/Button/Button.h"
 
+#include "../../RandomGenerator/RandomGenerator.h"
+
 SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 	, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
 	, TextEntity turnTextEntity
@@ -195,8 +197,7 @@ void SingleplayerGameVisualInterface::initialize()
 	this->opponentNameTextEntity.setText("BOT");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	this->finalMessageTextEntity.setText("ERROR!");
-	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	this->unsetFinalMessageTextEntity();
 
 	AssetManager::get().playSound(this->boardStartSoundName, false, false);
 }
@@ -251,5 +252,33 @@ void SingleplayerGameVisualInterface::update()
 		this->turnTextEntity.setText("BLACK");
 		this->turnTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
+}
+
+void SingleplayerGameVisualInterface::setFinalMessageTextEntity(bool hasWon)
+{
+	if (hasWon)
+	{
+		this->finalMessageTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
+		this->finalMessageTextEntity.setText("You WON!");
+
+		AssetManager::get().playSound("win" + std::to_string(RandomGenerator::randomUniformInt(0, 1)) + "sound", false, false);
+	}
+	else
+	{
+		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		this->finalMessageTextEntity.setText("You LOST!");
+
+		AssetManager::get().playSound("lose" + std::to_string(RandomGenerator::randomUniformInt(0, 0)) + "sound", false, false);
+	}
+
+	this->displayFinalMessage = true;
+}
+
+void SingleplayerGameVisualInterface::unsetFinalMessageTextEntity()
+{
+	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	this->finalMessageTextEntity.setText("ERROR!");
+
+	this->displayFinalMessage = false;
 }
 

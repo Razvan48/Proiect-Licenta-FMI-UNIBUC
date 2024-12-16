@@ -260,9 +260,6 @@
     <ClInclude Include="source\Entity\JoinInputForm\JoinInputForm.h">
       <Filter>Source Files\Entity\JoinInputForm</Filter>
     </ClInclude>
-    <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h">
-      <Filter>Source Files\BoardVisualizer</Filter>
-    </ClInclude>
     <ClInclude Include="source\VisualInterface\SingleplayerGameVisualInterface\SingleplayerGameVisualInterface.h">
       <Filter>Source Files\VisualInterface\SingleplayerGameVisualInterface</Filter>
     </ClInclude>
@@ -292,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.h">
       <Filter>Source Files\Entity\Button\UndoMoveButton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h">
+      <Filter>Source Files\BoardVisualizer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
