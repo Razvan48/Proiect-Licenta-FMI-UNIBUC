@@ -341,7 +341,7 @@ void JoinedMultiplayerGameVisualInterface::update()
 	if (this->hasToSendBoardConfiguration)
 	{
 		float timeWhenMessageSent = 0.0f; // Nu ne intereseaza timpul
-		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration());
+		Client::get().setLastKnownBoardConfiguration(BoardManager::get().getPiecesConfiguration() + BoardVisualizer::get().getLastMoveFromHistory());
 		Client::get().sendMessage("boardConfiguration:" + BoardManager::get().getPiecesConfiguration() + BoardVisualizer::get().getLastMoveFromHistory(), this->hasToSendBoardConfiguration, timeWhenMessageSent);
 	}
 
@@ -349,7 +349,7 @@ void JoinedMultiplayerGameVisualInterface::update()
 	{
 		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
 		{
-			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
+			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata()); // INFO: Asta nu ar fi necesara, din cauza ca butonul de Undo nu exista pentru Multiplayer. Partial utila pentru Debug totusi.
 			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
 		}
 
