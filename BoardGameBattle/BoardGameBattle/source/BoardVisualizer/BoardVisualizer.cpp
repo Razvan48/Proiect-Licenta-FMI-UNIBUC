@@ -261,6 +261,7 @@ void BoardVisualizer::update()
 		this->boardCoordinates[GameMetadata::NUM_TILES_WIDTH + i].update();
 
 
+
 	// Agent
 	if (
 			Game::get().getMode() == Game::Mode::SINGLEPLAYER
@@ -296,6 +297,8 @@ void BoardVisualizer::update()
 			this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
 		}
 	}
+
+
 
 	// Logica pentru selectare celule si efectuare mutari
 	if (InputManager::get().isLeftMouseButtonReleased())
@@ -396,6 +399,8 @@ void BoardVisualizer::update()
 			}
 		}
 	}
+
+
 
 	// Ultima Mutare
 	if (this->newMoveAtTopOfHistory)
