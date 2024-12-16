@@ -103,6 +103,9 @@
     <Filter Include="Source Files\GameAgent\GreedyMinMaxAgent">
       <UniqueIdentifier>{879156ce-7be6-4cd7-9679-f2ca66a105a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity\Button\UndoMoveButton">
+      <UniqueIdentifier>{d60ef1d3-a81b-444a-b67e-59cf8bca4d3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -195,6 +198,9 @@
     <ClCompile Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.cpp">
       <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
     </ClCompile>
+    <ClCompile Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.cpp">
+      <Filter>Source Files\Entity\Button\UndoMoveButton</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -283,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="source\BoardManager\BoardManager.h">
       <Filter>Source Files\BoardManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.h">
+      <Filter>Source Files\Entity\Button\UndoMoveButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

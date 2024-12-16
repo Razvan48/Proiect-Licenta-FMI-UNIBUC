@@ -25,6 +25,7 @@
     <ClCompile Include="source\Client\Client.cpp" />
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
+    <ClCompile Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.cpp" />
     <ClCompile Include="source\Entity\CreateInputForm\CreateInputForm.cpp" />
     <ClCompile Include="source\Entity\DataBox\DataBox.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="source\Client\Client.h" />
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />
+    <ClInclude Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.h" />
     <ClInclude Include="source\Entity\CreateInputForm\CreateInputForm.h" />
     <ClInclude Include="source\Entity\DataBox\DataBox.h" />
     <ClInclude Include="source\Entity\Entity.h" />

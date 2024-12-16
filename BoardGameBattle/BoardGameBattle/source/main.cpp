@@ -7,7 +7,11 @@ int main()
 
 	// buton de undo in singleplayer
 
-	// pentur butonul de back trb marcat pe false agentul de minmax, ca sa fie board visualizer ca nu mai ruleaza (chiar daca el ruleaza detasat in background)
+	// de reinitializat stivele cand reintram intr-un meci!!! (in board visualizer, in initialize) (cred ca e rezolvat, de testat)
+
+	// pentur butonul de back trb marcat pe false agentul de minmax, ca sa fie board visualizer ca nu mai ruleaza (chiar daca el ruleaza detasat in background) (aici am putea putin mai bine cu niste boolene pentru thread-uri, sa stie cand sa se opreasca)
+
+	// de adaugat interfata cu win/lose cand se termina un meci + ceva sound effect, se face cu 2 boolene in board visualizer si cu un apel catre board manager sa spuna daca regele e in sah mat sau nu
 
 	// de adaugat un check sound in loc de move sound-ul obisnuit (schimbam in metoda applyMoveExternal) + (un capture sound?)
 

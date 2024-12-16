@@ -158,6 +158,9 @@ void BoardVisualizer::initialize()
 	{
 		std::cout << "Error: Invalid Game Color when initializing board (not even NONE)" << std::endl;
 	}
+
+	// Curatam Istoria Mutarilor de la Meciul Anterior
+	this->movesHistory.clear();
 }
 
 void BoardVisualizer::draw()
@@ -299,15 +302,18 @@ void BoardVisualizer::update()
 	{
 		this->newMoveAtTopOfHistory = false;
 
-		int row0 = (int)(this->movesHistory.back()[1] - '1');
-		int column0 = (int)(this->movesHistory.back()[0] - 'a');
-		int row1 = (int)(this->movesHistory.back()[3] - '1');
-		int column1 = (int)(this->movesHistory.back()[2] - 'a');
+		if (!this->movesHistory.empty()) // Poate this->newMoveAtTopOfHistory era pe true din cauza ca s-a dat pop de la Butonul de Undo.
+		{
+			int row0 = (int)(this->movesHistory.back()[1] - '1');
+			int column0 = (int)(this->movesHistory.back()[0] - 'a');
+			int row1 = (int)(this->movesHistory.back()[3] - '1');
+			int column1 = (int)(this->movesHistory.back()[2] - 'a');
 
-		this->resetSelectedTiles();
+			this->resetSelectedTiles();
 
-		this->boardTiles[row0][column0].setIsSelected(true);
-		this->boardTiles[row1][column1].setIsSelected(true);
+			this->boardTiles[row0][column0].setIsSelected(true);
+			this->boardTiles[row1][column1].setIsSelected(true);
+		}
 	}
 
 	// Logica pentru selectare celule si efectuare mutari

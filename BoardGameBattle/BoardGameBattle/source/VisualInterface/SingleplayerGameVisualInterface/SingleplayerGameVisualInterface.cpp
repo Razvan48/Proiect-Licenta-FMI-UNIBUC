@@ -8,6 +8,7 @@
 #include "../../AssetManager/AssetManager.h"
 
 #include "../../Entity/Button/Button.h"
+#include "../../Entity/Button/UndoMoveButton/UndoMoveButton.h"
 
 SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 	, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
@@ -38,6 +39,30 @@ SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntit
 			"Back",
 			"buttonTexture",
 			Game::Status::IN_SINGLEPLAYER_COLOR_MENU,
+			"buttonPressedSound",
+			"buttonHoveredTexture",
+			glm::vec3(0.75f, 0.75f, 0.75f),
+			"buttonHoveredSound",
+			Game::Mode::SINGLEPLAYER,
+			Game::Color::NONE,
+			Game::MultiplayerStatus::NONE
+		)
+	);
+
+	this->entities.push_back
+	(
+		std::make_shared<UndoMoveButton>
+		(
+			19.0f * WindowManager::get().getWindowWidth() / 20.0f,
+			WindowManager::get().getWindowHeight() / 2.0f,
+			0.075f * WindowManager::get().getWindowWidth(),
+			0.075f * WindowManager::get().getWindowHeight(),
+			0.0f,
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			"arialFont",
+			"Undo",
+			"buttonTexture",
+			Game::Status::NONE,
 			"buttonPressedSound",
 			"buttonHoveredTexture",
 			glm::vec3(0.75f, 0.75f, 0.75f),

@@ -908,6 +908,9 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 void BoardManager::initialize()
 {
 	this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
+
+	// Curatam Istoricul de la Meciul Anterior
+	this->configurationMetadataHistory.clear();
 }
 
 BoardManager& BoardManager::get()

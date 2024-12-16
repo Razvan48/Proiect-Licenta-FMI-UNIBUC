@@ -23,6 +23,8 @@ public:
 		IN_SINGLEPLAYER_GAME,
 		IN_CREATED_MULTIPLAYER_GAME,
 		IN_JOINED_MULTIPLAYER_GAME,
+
+		NONE, // Doar la Undo Move Button e folosit.
 		// etc..
 	};
 	enum class Mode
