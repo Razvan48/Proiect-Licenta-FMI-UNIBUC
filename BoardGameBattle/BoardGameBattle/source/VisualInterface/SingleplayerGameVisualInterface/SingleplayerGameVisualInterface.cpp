@@ -217,10 +217,10 @@ void SingleplayerGameVisualInterface::draw()
 	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
 		this->undoMoveButton.draw();
 
+	BoardVisualizer::get().draw();
+
 	if (this->displayFinalMessage)
 		this->finalMessageTextEntity.draw();
-
-	BoardVisualizer::get().draw();
 }
 
 void SingleplayerGameVisualInterface::update()
@@ -261,14 +261,14 @@ void SingleplayerGameVisualInterface::setFinalMessageTextEntity(bool hasWon)
 		this->finalMessageTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 		this->finalMessageTextEntity.setText("You WON!");
 
-		AssetManager::get().playSound("win" + std::to_string(RandomGenerator::randomUniformInt(0, 1)) + "sound", false, false);
+		AssetManager::get().playSound("win" + std::to_string(RandomGenerator::randomUniformInt(0, 1)) + "Sound", false, false);
 	}
 	else
 	{
 		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 		this->finalMessageTextEntity.setText("You LOST!");
 
-		AssetManager::get().playSound("lose" + std::to_string(RandomGenerator::randomUniformInt(0, 0)) + "sound", false, false);
+		AssetManager::get().playSound("lose" + std::to_string(RandomGenerator::randomUniformInt(0, 0)) + "Sound", false, false);
 	}
 
 	this->displayFinalMessage = true;

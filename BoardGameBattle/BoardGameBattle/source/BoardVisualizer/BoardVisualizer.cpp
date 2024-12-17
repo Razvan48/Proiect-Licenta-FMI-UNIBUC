@@ -431,7 +431,7 @@ void BoardVisualizer::update()
 
 
 	// Jocul s-a terminat
-	if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+	if (BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 	{
 		std::cout << "Game has ended" << std::endl;
 
@@ -441,7 +441,7 @@ void BoardVisualizer::update()
 
 			if (Game::get().getColor() == Game::Color::WHITE)
 			{
-				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+				if (BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()))
 				{
 					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
 				}
