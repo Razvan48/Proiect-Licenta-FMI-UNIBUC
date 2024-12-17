@@ -21,15 +21,10 @@ GreedyMinMaxAgent& GreedyMinMaxAgent::get()
 	return instance;
 }
 
-float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const
+float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const
 {
 	// INFO: Presupunem ca are deja attack zone-urile calculate corect pentru ambele culori.
-
-	// Checkmates
-	if (BoardManager::get().isWhiteKingInCheckmate(configurationMetadata))
-		return -GreedyMinMaxAgent::INF;
-	if (BoardManager::get().isBlackKingInCheckmate(configurationMetadata))
-		return GreedyMinMaxAgent::INF;
+	// INFO: evaluateConfiguration nu se ocupa cu starile de Checkmate, acelea sunt gestionate in minMax.
 
 	float evaluationScore = 0.0f;
 
@@ -156,13 +151,6 @@ float GreedyMinMaxAgent::evaluateConfiguration(const ConfigurationMetadata& conf
 
 float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
-	if (BoardManager::get().isWhiteKingInCheckmate(configurationMetadata))
-		return -GreedyMinMaxAgent::INF;
-	else if (BoardManager::get().isBlackKingInCheckmate(configurationMetadata))
-		return GreedyMinMaxAgent::INF;
-
-
-
 	if (depth == 0)
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);

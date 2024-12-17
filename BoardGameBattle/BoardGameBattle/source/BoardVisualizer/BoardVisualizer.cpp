@@ -18,6 +18,8 @@
 #include "../GameAgent/GreedyMinMaxAgent/GreedyMinMaxAgent.h"
 
 
+#include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
+#include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
 #include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
 
 
@@ -431,35 +433,56 @@ void BoardVisualizer::update()
 
 
 	// Jocul s-a terminat
-	if (BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+	if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 	{
-		std::cout << "Game has ended" << std::endl;
-
 		if (!this->gameHasEnded)
 		{
 			this->gameHasEnded = true;
 
-			if (Game::get().getColor() == Game::Color::WHITE)
+			if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
 			{
-				if (BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()))
+				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
-					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+					if (Game::get().getColor() == Game::Color::WHITE)
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+					else
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
 				}
-				else
+				else // if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
-					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+					if (Game::get().getColor() == Game::Color::BLACK)
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+					else
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
 				}
 			}
-			else
+			else if (Client::get().getColor() != "") // + if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
 			{
-				if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
+				bool hasWon = false;
+
+				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
-					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+					if (Client::get().getColor() == "white")
+						hasWon = false;
+					else
+						hasWon = true;
 				}
-				else
+				else // if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
-					SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+					if (Client::get().getColor() == "black")
+						hasWon = false;
+					else
+						hasWon = true;
 				}
+
+				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(hasWon);
+				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(hasWon);
+			}
+			else // Culoare egala cu "" sau Game::Mode e NONE
+			{
+				this->gameHasEnded = false;
 			}
 		}
 	}
@@ -467,7 +490,15 @@ void BoardVisualizer::update()
 	{
 		this->gameHasEnded = false;
 
-		SingleplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
+		if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+			SingleplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
+		else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+		{
+			if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+				CreatedMultiplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
+			else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+				JoinedMultiplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
+		}
 	}
 }
 

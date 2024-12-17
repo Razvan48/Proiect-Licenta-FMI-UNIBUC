@@ -59,7 +59,7 @@ protected:
 public:
 	static GreedyMinMaxAgent& get();
 
-	virtual float evaluateConfiguration(const ConfigurationMetadata& configurationMetadata) const override;
+	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
 };
 

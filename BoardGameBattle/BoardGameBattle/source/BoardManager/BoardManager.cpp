@@ -2907,6 +2907,24 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 	generateBlackKingMoves(configurationMetadata, moves);
 }
 
+// Checkmates
+
+bool BoardManager::isWhiteKingInCheckmate(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateWhiteMoves(configurationMetadata, moves);
+
+	return moves.empty();
+}
+
+bool BoardManager::isBlackKingInCheckmate(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateBlackMoves(configurationMetadata, moves);
+
+	return moves.empty();
+}
+
 //
 
 void BoardManager::printBitBoard(unsigned long long bitBoard) const

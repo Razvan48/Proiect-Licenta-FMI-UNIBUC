@@ -196,43 +196,12 @@ public:
 
 	//
 public:
-	// INFO: Functiile de mai jos fac presupunerea ca attack si defense zone-urile sunt deja calculate.
+	// INFO: Functiile de mai jos fac presupunerea ca attack (pentru ambele culori) si defense zone-urile sunt deja calculate.
 	inline bool isWhiteKingInCheck(const ConfigurationMetadata& configurationMetadata) const { return (configurationMetadata.whiteKing & configurationMetadata.blackAttackZones); }
 	inline bool isBlackKingInCheck(const ConfigurationMetadata& configurationMetadata) const { return (configurationMetadata.blackKing & configurationMetadata.whiteAttackZones); }
 
-	inline bool isWhiteKingInCheckmate(const ConfigurationMetadata& configurationMetadata) const
-	{
-		return configurationMetadata.whiteKingDefenseZone == 0ull
-			&&
-			(
-				(
-					(
-						configurationMetadata.whiteKing
-						|
-						(this->precalculatedKingAttackZones[this->logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]] & (~configurationMetadata.allWhitePieces))
-					)
-					&
-					(~configurationMetadata.blackAttackZones)
-				) == 0ull
-			);
-	}
-
-	inline bool isBlackKingInCheckmate(const ConfigurationMetadata& configurationMetadata) const
-	{
-		return configurationMetadata.blackKingDefenseZone == 0ull
-			&&
-			(
-				(
-					(
-						configurationMetadata.blackKing
-						|
-						(this->precalculatedKingAttackZones[this->logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]] & (~configurationMetadata.allBlackPieces))
-					)
-					&
-					(~configurationMetadata.whiteAttackZones)
-				) == 0ull
-			);
-	}
+	bool isWhiteKingInCheckmate(ConfigurationMetadata& configurationMetadata);
+	bool isBlackKingInCheckmate(ConfigurationMetadata& configurationMetadata);
 
 public: // INFO: Board Visualizer are nevoie pentru conversii.
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
