@@ -1614,7 +1614,7 @@ void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurat
 	// Nu tinem cont de pins aici pentru culoarea curenta. Acum generam pin-urile pentru culoarea opusa, pentru care generam mutarile.
 	// Nu initializam pin-urile cu 0ull, pentru ca le share-uim intre sliding pieces (rooks, bishops, queens).
 
-	configurationMetadata.blackAttackZones = 0ull;
+	configurationMetadata.blackRookAttackZone = 0ull;
 	unsigned long long blackRooks = configurationMetadata.blackRooks;
 
 	while (blackRooks)
