@@ -19,7 +19,8 @@ private:
 protected:
 	static const int MAX_DEPTH;
 
-	static const float INF;
+	static const float UNREACHABLE_INF;
+	static const float REACHABLE_INF;
 
 	static const float PAWN_SCORE;
 	static const float ROOK_SCORE;

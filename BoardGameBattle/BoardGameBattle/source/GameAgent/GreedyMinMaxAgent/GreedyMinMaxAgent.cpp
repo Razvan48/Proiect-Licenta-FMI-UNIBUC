@@ -168,7 +168,7 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 
 	if (configurationMetadata.whiteTurn) // Maximizing
 	{
-		float maximumScore = -GreedyMinMaxAgent::INF;
+		float maximumScore = -GreedyMinMaxAgent::UNREACHABLE_INF;
 		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 		std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
@@ -189,11 +189,14 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 			}
 		}
 
+		if (maximumScore == -GreedyMinMaxAgent::UNREACHABLE_INF)
+			maximumScore = -GreedyMinMaxAgent::REACHABLE_INF;
+
 		return maximumScore;
 	}
 	else // Minimizing
 	{
-		float minimumScore = GreedyMinMaxAgent::INF;
+		float minimumScore = GreedyMinMaxAgent::UNREACHABLE_INF;
 		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 		std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
@@ -213,6 +216,9 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 					break;
 			}
 		}
+
+		if (minimumScore == GreedyMinMaxAgent::UNREACHABLE_INF)
+			minimumScore = GreedyMinMaxAgent::REACHABLE_INF;
 
 		return minimumScore;
 	}
@@ -235,7 +241,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 
 			if (configurationMetadata.whiteTurn)
 			{
-				float maximumScore = -GreedyMinMaxAgent::INF;
+				float maximumScore = -GreedyMinMaxAgent::UNREACHABLE_INF;
 				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 				std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
@@ -248,7 +254,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 
 					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, promise = std::move(promise)]() mutable
 						{
-							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
+							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF);
 							promise.set_value(currentScore);
 						}));
 				}
@@ -269,7 +275,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 			}
 			else
 			{
-				float minimumScore = GreedyMinMaxAgent::INF;
+				float minimumScore = GreedyMinMaxAgent::UNREACHABLE_INF;
 				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 				std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
@@ -282,7 +288,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 
 					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, promise = std::move(promise)]() mutable
 						{
-							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF);
+							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i]), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF);
 							promise.set_value(currentScore);
 						}));
 				}
@@ -308,7 +314,8 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 
 const int GreedyMinMaxAgent::MAX_DEPTH = 5;
 
-const float GreedyMinMaxAgent::INF = 65536.0f;
+const float GreedyMinMaxAgent::UNREACHABLE_INF = 65536.0f;
+const float GreedyMinMaxAgent::REACHABLE_INF = GreedyMinMaxAgent::UNREACHABLE_INF - 1.0f;
 
 const float GreedyMinMaxAgent::PAWN_SCORE = 1.0f;
 const float GreedyMinMaxAgent::ROOK_SCORE = 5.0f;
