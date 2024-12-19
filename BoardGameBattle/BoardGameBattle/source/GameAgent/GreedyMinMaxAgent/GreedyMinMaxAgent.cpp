@@ -4,6 +4,8 @@
 
 #include <future>
 
+#include <iostream>
+
 GreedyMinMaxAgent::GreedyMinMaxAgent()
 	: GameAgent()
 {
@@ -152,7 +154,10 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
 	if (this->isTaskCancelled.load())
+	{
+		std::cout << "MinMax Thread was cancelled." << std::endl;
 		return 0.0f;
+	}
 
 	if (depth == 0)
 	{
