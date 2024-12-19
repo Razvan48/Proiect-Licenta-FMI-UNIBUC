@@ -151,6 +151,9 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 
 float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta) const // INFO: minMax primeste o copie a configuratiei.
 {
+	if (this->isTaskCancelled.load())
+		return 0.0f;
+
 	if (depth == 0)
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);
@@ -217,6 +220,8 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 	
 	this->setIsRunningTask(true);
 	this->setBestMove(std::vector<std::pair<char, int>>());
+
+	this->isTaskCancelled.store(false);
 
 	std::thread findBestMoveThread([this, &configurationMetadata]() mutable
 		{

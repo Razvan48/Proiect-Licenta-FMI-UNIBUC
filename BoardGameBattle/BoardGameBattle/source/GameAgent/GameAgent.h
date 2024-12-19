@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <mutex>
+#include <atomic>
 
 class GameAgent
 {
@@ -19,6 +20,9 @@ protected:
 
 	std::vector<std::pair<char, int>> bestMove;
 	std::mutex bestMoveMutex;
+
+public:
+	std::atomic<bool> isTaskCancelled;
 
 public:
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const = 0;

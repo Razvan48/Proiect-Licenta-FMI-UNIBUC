@@ -51,8 +51,10 @@ void UndoMoveButton::update()
 					(Game::get().getColor() == Game::Color::BLACK && BoardVisualizer::get().getLastMoveFromHistorySize() == 1)
 				)
 			{
-				// Marcam Agentul ca fiind inactiv
+				// Marcam Agentul ca fiind inactiv + Resetare
 				GameAgentSelector::get().setIsRunningTask(false);
+				GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+				GameAgentSelector::get().isTaskCancelled.store(true);
 
 				BoardVisualizer::get().popLastMoveFromHistory();
 				BoardManager::get().popLastConfigurationMetadataFromHistory();
