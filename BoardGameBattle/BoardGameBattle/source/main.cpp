@@ -6,7 +6,7 @@ int main()
 
 	// hyperparameter tuning pentru attack zones (pare ca ii pasa prea mult de ele si pierde piese inutil) (deci sa le scadem putin valoarea)
 	// max depth dinamic (daca branching factor-ul e mic, putem sa mergem mai adanc) (sigur va ajuta in endgame, unde branching factor-ul e mic)
-
+	// de monitorizat repetitiile de pozitii (daca se repeta o pozitie de 3 ori, e remiza)
 
 
 	// pentru meniul de pawn promotion: cand convertim din external move in internal, daca external are un al 6-lea caracter, atunci stim ca-i promotion (al 6-lea caracter va fi setat de meniul suplimentar)
