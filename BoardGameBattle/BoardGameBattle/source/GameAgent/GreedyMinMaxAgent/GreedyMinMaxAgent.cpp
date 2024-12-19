@@ -226,7 +226,7 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 
 void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO: multithreading (de inteles future si promises) + de facut inca un thread mare care le apeleaza pe toate astea
+	// TODO: multithreading (de inteles future si promises)
 	//return this->minMax(configurationMetadata, GreedyMinMaxAgent::MAX_DEPTH, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF).second;
 	
 	this->setIsRunningTask(true);

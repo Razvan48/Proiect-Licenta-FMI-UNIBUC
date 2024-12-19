@@ -4,6 +4,11 @@ int main()
 {
     Game::get().start();
 
+	// hyperparameter tuning pentru attack zones (pare ca ii pasa prea mult de ele si pierde piese inutil) (deci sa le scadem putin valoarea)
+	// max depth dinamic (daca branching factor-ul e mic, putem sa mergem mai adanc) (sigur va ajuta in endgame, unde branching factor-ul e mic)
+
+
+
 	// pentru meniul de pawn promotion: cand convertim din external move in internal, daca external are un al 6-lea caracter, atunci stim ca-i promotion (al 6-lea caracter va fi setat de meniul suplimentar)
 
 
@@ -16,23 +21,9 @@ int main()
 
 
 
-	// buton de undo in singleplayer
 
 	// de reinitializat stivele cand reintram intr-un meci!!! (in board visualizer, in initialize) (cred ca e rezolvat, de testat)
 
-	// pentur butonul de back trb marcat pe false agentul de minmax, ca sa fie board visualizer ca nu mai ruleaza (chiar daca el ruleaza detasat in background) (aici am putea putin mai bine cu niste boolene pentru thread-uri, sa stie cand sa se opreasca)
-
-
-	// inca nu se genereaza toate mutarile corect...
-
-
-
-
-
-	// de verificat corectitudinea la min-max + alpha-beta si la multithreading-ul de la getBestMove
-
-
-	// de inteles alpha-beta + de inteles futures/promises + multithreading
 
 	// de documentat tot ce am facut (ca pare ca merge, de tinut minte pe viitor)
 
