@@ -6,7 +6,7 @@
 #include "../../../BoardVisualizer/BoardVisualizer.h"
 #include "../../../BoardManager/BoardManager.h"
 
-#include "../../../GameAgent/GreedyMinMaxAgent/GreedyMinMaxAgent.h"
+#include "../../../GameAgent/GameAgentSelector/GameAgentSelector.h"
 
 UndoMoveButton::UndoMoveButton(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName
 	, const Game::Status& gameStatusWhenPressed, const std::string& soundNameWhenPressed
@@ -52,7 +52,7 @@ void UndoMoveButton::update()
 				)
 			{
 				// Marcam Agentul ca fiind inactiv
-				GreedyMinMaxAgent::get().setIsRunningTask(false);
+				GameAgentSelector::get().setIsRunningTask(false);
 
 				BoardVisualizer::get().popLastMoveFromHistory();
 				BoardManager::get().popLastConfigurationMetadataFromHistory();

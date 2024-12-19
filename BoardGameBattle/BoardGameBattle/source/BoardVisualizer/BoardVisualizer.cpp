@@ -15,7 +15,7 @@
 #include "../Client/Client.h"
 
 // INFO: Agent
-#include "../GameAgent/GreedyMinMaxAgent/GreedyMinMaxAgent.h"
+#include "../GameAgent/GameAgentSelector/GameAgentSelector.h"
 
 
 #include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
@@ -283,20 +283,20 @@ void BoardVisualizer::update()
 	)
 	{
 
-		if (!GreedyMinMaxAgent::get().getIsRunningTask())
-			GreedyMinMaxAgent::get().findBestMove(BoardManager::get().getConfigurationMetadata());
+		if (!GameAgentSelector::get().getIsRunningTask())
+			GameAgentSelector::get().findBestMove(BoardManager::get().getConfigurationMetadata());
 
 
 
-		std::vector<std::pair<char, int>> bestMove = GreedyMinMaxAgent::get().getBestMove();
+		std::vector<std::pair<char, int>> bestMove = GameAgentSelector::get().getBestMove();
 		if (!bestMove.empty()) // A fost calculat un best move.
 		{
 			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
 			BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
 
 			// Resetare
-			GreedyMinMaxAgent::get().setIsRunningTask(false);
-			GreedyMinMaxAgent::get().setBestMove(std::vector<std::pair<char, int>>());
+			GameAgentSelector::get().setIsRunningTask(false);
+			GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
 
 			// Sunet
 			AssetManager::get().playSound(this->pieceMoveSoundName, false, true);

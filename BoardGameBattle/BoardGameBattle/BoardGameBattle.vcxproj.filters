@@ -106,6 +106,9 @@
     <Filter Include="Source Files\Entity\Button\UndoMoveButton">
       <UniqueIdentifier>{d60ef1d3-a81b-444a-b67e-59cf8bca4d3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameAgent\GameAgentSelector">
+      <UniqueIdentifier>{7e25227c-83e5-40dd-8453-93f6372a6e0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -201,6 +204,9 @@
     <ClCompile Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.cpp">
       <Filter>Source Files\Entity\Button\UndoMoveButton</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameAgent\GameAgentSelector\GameAgentSelector.cpp">
+      <Filter>Source Files\GameAgent\GameAgentSelector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -292,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h">
       <Filter>Source Files\BoardVisualizer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameAgent\GameAgentSelector\GameAgentSelector.h">
+      <Filter>Source Files\GameAgent\GameAgentSelector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
