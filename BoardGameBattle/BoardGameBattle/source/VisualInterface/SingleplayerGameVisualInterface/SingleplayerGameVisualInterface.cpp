@@ -47,6 +47,8 @@ SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntit
 	, finalMessageTextEntity(finalMessageTextEntity)
 	, displayFinalMessage(false)
 	, boardStartSoundName("boardStartSound")
+
+	, finalMessage(FinalMessage::NOT_FINISHED)
 {
 	this->entities.push_back
 	(
@@ -197,7 +199,7 @@ void SingleplayerGameVisualInterface::initialize()
 	this->opponentNameTextEntity.setText("BOT");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	this->unsetFinalMessageTextEntity();
+	this->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
 
 	AssetManager::get().playSound(this->boardStartSoundName, false, false);
 }
@@ -254,31 +256,51 @@ void SingleplayerGameVisualInterface::update()
 	}
 }
 
-void SingleplayerGameVisualInterface::setFinalMessageTextEntity(bool hasWon)
+void SingleplayerGameVisualInterface::setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage finalMessage)
 {
-	if (hasWon)
+	if (finalMessage == SingleplayerGameVisualInterface::FinalMessage::WON)
 	{
 		this->finalMessageTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 		this->finalMessageTextEntity.setText("You WON!");
 
 		AssetManager::get().playSound("win" + std::to_string(RandomGenerator::randomUniformInt(0, 1)) + "Sound", false, false);
+
+		this->displayFinalMessage = true;
 	}
-	else
+	else if (finalMessage == SingleplayerGameVisualInterface::FinalMessage::LOST)
 	{
 		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 		this->finalMessageTextEntity.setText("You LOST!");
 
 		AssetManager::get().playSound("lose" + std::to_string(RandomGenerator::randomUniformInt(0, 0)) + "Sound", false, false);
+
+		this->displayFinalMessage = true;
+	}
+	else if (finalMessage == SingleplayerGameVisualInterface::FinalMessage::DRAW)
+	{
+		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 1.0f, 0.0f)); // galben
+		this->finalMessageTextEntity.setText("DRAW!");
+
+		AssetManager::get().playSound("draw" + std::to_string(RandomGenerator::randomUniformInt(0, 3)) + "Sound", false, false);
+
+		this->displayFinalMessage = true;
+	}
+	else if (finalMessage == SingleplayerGameVisualInterface::FinalMessage::IN_PAWN_PROMOTION_MENU)
+	{
+		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+		this->finalMessageTextEntity.setText("Please Select Promotion Piece");
+
+		this->displayFinalMessage = true;
+	}
+	else // if (finalMessage == SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED)
+	{
+		this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		this->finalMessageTextEntity.setText("ERROR!");
+
+		this->displayFinalMessage = false;
 	}
 
-	this->displayFinalMessage = true;
+	this->finalMessage = finalMessage;
 }
 
-void SingleplayerGameVisualInterface::unsetFinalMessageTextEntity()
-{
-	this->finalMessageTextEntity.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-	this->finalMessageTextEntity.setText("ERROR!");
-
-	this->displayFinalMessage = false;
-}
 

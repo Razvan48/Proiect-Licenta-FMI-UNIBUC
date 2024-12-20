@@ -236,6 +236,9 @@ public:
 		}
 	}
 
+	int getGeneratedWhiteMovesCount(ConfigurationMetadata& configurationMetadata);
+	int getGeneratedBlackMovesCount(ConfigurationMetadata& configurationMetadata);
+
 	void printBitBoard(unsigned long long bitBoard) const;
 };
 

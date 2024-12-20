@@ -33,6 +33,19 @@ protected:
 	std::string boardStartSoundName;
 
 public:
+	enum class FinalMessage
+	{
+		WON,
+		LOST,
+		DRAW,
+		IN_PAWN_PROMOTION_MENU,
+		NOT_FINISHED,
+	};
+
+private:
+	FinalMessage finalMessage;
+
+public:
 	SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 		, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
 		, TextEntity turnTextEntity
@@ -50,6 +63,7 @@ public:
 	inline const TextEntity& getOpponentNameTextEntity() const { return this->opponentNameTextEntity; }
 	inline const TextEntity& getFinalMessageTextEntity() const { return this->finalMessageTextEntity; }
 
-	void setFinalMessageTextEntity(bool hasWon);
-	void unsetFinalMessageTextEntity();
+	void setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage finalMessage);
+
+	inline FinalMessage getFinalMessage() const { return this->finalMessage; }
 };

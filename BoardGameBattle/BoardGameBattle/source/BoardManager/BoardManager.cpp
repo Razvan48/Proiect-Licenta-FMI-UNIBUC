@@ -2927,6 +2927,22 @@ bool BoardManager::isBlackKingInCheckmate(ConfigurationMetadata& configurationMe
 
 //
 
+int BoardManager::getGeneratedWhiteMovesCount(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateWhiteMoves(configurationMetadata, moves);
+
+	return (int)moves.size();
+}
+
+int BoardManager::getGeneratedBlackMovesCount(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateBlackMoves(configurationMetadata, moves);
+
+	return (int)moves.size();
+}
+
 void BoardManager::printBitBoard(unsigned long long bitBoard) const
 {
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)

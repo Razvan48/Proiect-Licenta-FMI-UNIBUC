@@ -444,60 +444,91 @@ void BoardVisualizer::update()
 				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
 					if (Game::get().getColor() == Game::Color::WHITE)
-						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::LOST);
 					else
-						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::WON);
 				}
 				else // if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
 					if (Game::get().getColor() == Game::Color::BLACK)
-						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(false);
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::LOST);
 					else
-						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(true);
+						SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::WON);
 				}
 			}
 			else if (Client::get().getColor() != "") // + if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
 			{
-				bool hasWon = false;
+				SingleplayerGameVisualInterface::FinalMessage finalMessage = SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED;
 
 				if (BoardManager::get().isWhiteKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
 					if (Client::get().getColor() == "white")
-						hasWon = false;
+						finalMessage = SingleplayerGameVisualInterface::FinalMessage::LOST;
 					else
-						hasWon = true;
+						finalMessage = SingleplayerGameVisualInterface::FinalMessage::WON;
 				}
 				else // if (BoardManager::get().isBlackKingInCheckmate(BoardManager::get().getConfigurationMetadata()))
 				{
 					if (Client::get().getColor() == "black")
-						hasWon = false;
+						finalMessage = SingleplayerGameVisualInterface::FinalMessage::LOST;
 					else
-						hasWon = true;
+						finalMessage = SingleplayerGameVisualInterface::FinalMessage::WON;
 				}
 
 				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
-					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(hasWon);
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(finalMessage);
 				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
-					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(hasWon);
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(finalMessage);
 			}
 			else // Culoare egala cu "" sau Game::Mode e NONE
 			{
+				std::cout << "Error: Invalid Game Mode or Color when game has ended" << std::endl;
+
 				this->gameHasEnded = false;
+			}
+		}
+	}
+	else if
+		(
+			(
+				BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedWhiteMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
+			)
+				||
+			(
+				!BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isBlackKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedBlackMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
+			)
+		)
+	{
+		if (!this->gameHasEnded)
+		{
+			this->gameHasEnded = true;
+
+			if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+				SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
+			else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+			{
+				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
+				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
 			}
 		}
 	}
 	else
 	{
-		this->gameHasEnded = false;
-
-		if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
-			SingleplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
-		else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+		if (this->gameHasEnded)
 		{
-			if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
-				CreatedMultiplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
-			else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
-				JoinedMultiplayerGameVisualInterface::get().get()->unsetFinalMessageTextEntity();
+			this->gameHasEnded = false;
+
+			if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+				SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
+			else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+			{
+				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
+				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
+			}
 		}
 	}
 }
