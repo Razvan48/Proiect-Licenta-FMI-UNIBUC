@@ -190,7 +190,12 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 		}
 
 		if (maximumScore == -GreedyMinMaxAgent::UNREACHABLE_INF)
-			maximumScore = -GreedyMinMaxAgent::REACHABLE_INF;
+		{
+			if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
+				maximumScore = -GreedyMinMaxAgent::REACHABLE_INF;
+			else
+				maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
+		}
 
 		return maximumScore;
 	}
@@ -218,7 +223,12 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 		}
 
 		if (minimumScore == GreedyMinMaxAgent::UNREACHABLE_INF)
-			minimumScore = GreedyMinMaxAgent::REACHABLE_INF;
+		{
+			if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
+				minimumScore = GreedyMinMaxAgent::REACHABLE_INF;
+			else
+				minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
+		}
 
 		return minimumScore;
 	}
