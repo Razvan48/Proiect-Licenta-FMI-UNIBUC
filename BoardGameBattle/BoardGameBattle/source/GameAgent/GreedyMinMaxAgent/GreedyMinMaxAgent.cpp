@@ -281,7 +281,8 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					}
 				}
 
-				this->setBestMove(bestMove);
+				if (!this->isTaskCancelled.load())
+					this->setBestMove(bestMove);
 			}
 			else
 			{
@@ -315,7 +316,8 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					}
 				}
 
-				this->setBestMove(bestMove);
+				if (!this->isTaskCancelled.load())
+					this->setBestMove(bestMove);
 			}
 		});
 

@@ -282,77 +282,133 @@ void BoardVisualizer::update()
 			)
 	)
 	{
-
-		if (!GameAgentSelector::get().getIsRunningTask())
-			GameAgentSelector::get().findBestMove(BoardManager::get().getConfigurationMetadata());
-
-
-
-		std::vector<std::pair<char, int>> bestMove = GameAgentSelector::get().getBestMove();
-		if (!bestMove.empty()) // A fost calculat un best move.
+		if (SingleplayerGameVisualInterface::get().get()->getFinalMessage() == SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED)
 		{
-			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
-			BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
+			if (!GameAgentSelector::get().getIsRunningTask())
+				GameAgentSelector::get().findBestMove(BoardManager::get().getConfigurationMetadata());
 
-			// Resetare
+
+
+			std::vector<std::pair<char, int>> bestMove = GameAgentSelector::get().getBestMove();
+			if (!bestMove.empty()) // A fost calculat un best move.
+			{
+				// Adaugare in Istoric pentru BoardManager
+				BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
+				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
+
+				// Resetare
+				GameAgentSelector::get().setIsRunningTask(false);
+				GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+
+				// Sunet
+				AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+
+				// Adaugare Mutare in Istoric pentru BoardVisualizer
+				std::string historyMove = BoardManager::get().convertToExternalMove(bestMove);
+				this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
+			}
+		}
+		else
+		{
 			GameAgentSelector::get().setIsRunningTask(false);
 			GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
-
-			// Sunet
-			AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
-			
-			// Adaugare Mutare in Istoric
-			std::string historyMove = BoardManager::get().convertToExternalMove(bestMove);
-			this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
+			GameAgentSelector::get().isTaskCancelled.store(true);
 		}
 	}
 
 
 
 	// Logica pentru selectare celule si efectuare mutari
-	if (InputManager::get().isLeftMouseButtonReleased())
+	if
+		(
+			(
+				Game::get().getMode() == Game::Mode::SINGLEPLAYER && SingleplayerGameVisualInterface::get().get()->getFinalMessage() == SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED
+			)
+				||
+			(
+				Game::get().getMode() == Game::Mode::MULTIPLAYER && Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME && CreatedMultiplayerGameVisualInterface::get().get()->getFinalMessage() == CreatedMultiplayerGameVisualInterface::FinalMessage::NOT_FINISHED
+			)
+				||
+			(
+				Game::get().getMode() == Game::Mode::MULTIPLAYER && Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME && JoinedMultiplayerGameVisualInterface::get().get()->getFinalMessage() == JoinedMultiplayerGameVisualInterface::FinalMessage::NOT_FINISHED
+			)
+		)
 	{
-		if (this->selectedTileRow != -1 && this->selectedTileColumn != -1)
+		if (InputManager::get().isLeftMouseButtonReleased())
 		{
-			bool selectedTile = false;
-
-			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+			if (this->selectedTileRow != -1 && this->selectedTileColumn != -1)
 			{
-				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+				bool selectedTile = false;
+
+				for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 				{
-					if (this->boardTiles[i][j].isInCompleteMouseCollision() && this->boardTiles[i][j].getIsSelected()
-						&& (i != this->selectedTileRow || j != this->selectedTileColumn))
+					for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 					{
-						selectedTile = true;
+						if (this->boardTiles[i][j].isInCompleteMouseCollision() && this->boardTiles[i][j].getIsSelected()
+							&& (i != this->selectedTileRow || j != this->selectedTileColumn))
+						{
+							selectedTile = true;
 
-						std::string move = "";
-						move.push_back(BoardManager::get().getPiecesConfiguration()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
-						move.push_back((char)('a' + this->selectedTileColumn));
-						move.push_back((char)('1' + this->selectedTileRow));
-						move.push_back((char)('a' + j));
-						move.push_back((char)('1' + i));
+							std::string move = "";
+							move.push_back(BoardManager::get().getPiecesConfiguration()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
+							move.push_back((char)('a' + this->selectedTileColumn));
+							move.push_back((char)('1' + this->selectedTileRow));
+							move.push_back((char)('a' + j));
+							move.push_back((char)('1' + i));
 
-						BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
-						BoardManager::get().applyMoveExternal(move);
-						AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
-						this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
+							BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
+							BoardManager::get().applyMoveExternal(move);
+							AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+							this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
 
-						this->resetSelectedTiles();
+							this->resetSelectedTiles();
+						}
+					}
+				}
+
+				if (!selectedTile) // Nu s-a selectat una din celulele ce puteau face o mutare
+				{
+					int previousSelectedTileRow = this->selectedTileRow;
+					int previousSelectedTileColumn = this->selectedTileColumn;
+					this->resetSelectedTiles();
+
+					for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
+					{
+						for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
+						{
+							if (this->boardTiles[i][j].isInCompleteMouseCollision() && (i != previousSelectedTileRow || j != previousSelectedTileColumn))
+							{
+								this->boardTiles[i][j].setIsSelected(true);
+								this->selectedTileRow = i;
+								this->selectedTileColumn = j;
+
+								std::string piecePosition = "";
+								piecePosition.push_back((char)('a' + j));
+								piecePosition.push_back((char)('1' + i));
+
+								std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(piecePosition);
+
+								for (int k = 0; k < moves.size(); ++k)
+								{
+									int rowEnd = (int)(moves[k][4] - '1');
+									int columnEnd = (int)(moves[k][3] - 'a');
+
+									this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
+								}
+							}
+						}
 					}
 				}
 			}
-
-			if (!selectedTile) // Nu s-a selectat una din celulele ce puteau face o mutare
+			else
 			{
-				int previousSelectedTileRow = this->selectedTileRow;
-				int previousSelectedTileColumn = this->selectedTileColumn;
 				this->resetSelectedTiles();
 
 				for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 				{
 					for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 					{
-						if (this->boardTiles[i][j].isInCompleteMouseCollision() && (i != previousSelectedTileRow || j != previousSelectedTileColumn))
+						if (this->boardTiles[i][j].isInCompleteMouseCollision())
 						{
 							this->boardTiles[i][j].setIsSelected(true);
 							this->selectedTileRow = i;
@@ -371,37 +427,6 @@ void BoardVisualizer::update()
 
 								this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
 							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			this->resetSelectedTiles();
-
-			for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
-			{
-				for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
-				{
-					if (this->boardTiles[i][j].isInCompleteMouseCollision())
-					{
-						this->boardTiles[i][j].setIsSelected(true);
-						this->selectedTileRow = i;
-						this->selectedTileColumn = j;
-
-						std::string piecePosition = "";
-						piecePosition.push_back((char)('a' + j));
-						piecePosition.push_back((char)('1' + i));
-
-						std::vector<std::string> moves = BoardManager::get().generateMovesForPiecePosition(piecePosition);
-
-						for (int k = 0; k < moves.size(); ++k)
-						{
-							int rowEnd = (int)(moves[k][4] - '1');
-							int columnEnd = (int)(moves[k][3] - 'a');
-
-							this->boardTiles[rowEnd][columnEnd].setIsSelected(true);
 						}
 					}
 				}
@@ -508,9 +533,9 @@ void BoardVisualizer::update()
 			else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
 			{
 				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
-					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(CreatedMultiplayerGameVisualInterface::FinalMessage::DRAW);
 				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
-					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(JoinedMultiplayerGameVisualInterface::FinalMessage::DRAW);
 			}
 		}
 	}
@@ -525,9 +550,9 @@ void BoardVisualizer::update()
 			else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
 			{
 				if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
-					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
+					CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(CreatedMultiplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
 				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
-					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
+					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(JoinedMultiplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
 			}
 		}
 	}
