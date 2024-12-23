@@ -4,7 +4,7 @@
 
 #include "../../Entity/TexturableEntity/TexturableEntity.h"
 
-#include "../../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
+#include "../CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
 
 #include "../../InputManager/InputManager.h"
 
