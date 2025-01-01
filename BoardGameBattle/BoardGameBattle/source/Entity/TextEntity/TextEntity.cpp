@@ -5,7 +5,7 @@
 
 TextEntity::TextEntity(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text)
 	: Entity(centerPosX, centerPosY, width, height, rotateAngle)
-	, color(color), text(text), fontName(fontName)
+	, color(color), fontName(fontName), text(text)
 {
 
 }
