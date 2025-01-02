@@ -3,6 +3,9 @@
 #include "../InputManager/InputManager.h"
 #include "../Game/Game.h"
 
+#include "../Entity/CreateInputForm/CreateInputForm.h"
+#include "../Entity/JoinInputForm/JoinInputForm.h"
+
 VisualInterface::VisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey)
 	: backgroundEntity(backgroundEntity), respondsToEscapeKey(respondsToEscapeKey)
 {
@@ -16,7 +19,17 @@ VisualInterface::~VisualInterface()
 
 void VisualInterface::initialize()
 {
-
+	for (int i = 0; i < this->entities.size(); ++i)
+	{
+		if (std::dynamic_pointer_cast<CreateInputForm>(this->entities[i]))
+		{
+			std::dynamic_pointer_cast<CreateInputForm>(this->entities[i])->initialize();
+		}
+		else if (std::dynamic_pointer_cast<JoinInputForm>(this->entities[i]))
+		{
+			std::dynamic_pointer_cast<JoinInputForm>(this->entities[i])->initialize();
+		}
+	}
 }
 
 void VisualInterface::draw()

@@ -180,3 +180,9 @@ void JoinInputForm::update()
 		this->status = Button::Status::RELEASED;
 	}
 }
+
+void JoinInputForm::initialize()
+{
+	this->playerNameTextEntity.setColor(this->colorInputContentOk);
+	this->serverAddressTextEntity.setColor(this->colorInputContentOk);
+}

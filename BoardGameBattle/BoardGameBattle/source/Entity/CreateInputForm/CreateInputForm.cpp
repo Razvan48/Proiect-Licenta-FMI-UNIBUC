@@ -113,3 +113,8 @@ void CreateInputForm::update()
 		this->status = Button::Status::RELEASED;
 	}
 }
+
+void CreateInputForm::initialize()
+{
+	this->playerNameTextEntity.setColor(this->colorInputContentOk);
+}
