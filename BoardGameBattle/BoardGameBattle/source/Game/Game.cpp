@@ -549,7 +549,6 @@ Game::Game()
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				"arialFont",
-				"username",
 				"dataBoxTexture",
 				"username"
 			),
@@ -658,7 +657,6 @@ Game::Game()
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				"arialFont",
-				"username",
 				"dataBoxTexture",
 				"username"
 			),
@@ -672,7 +670,6 @@ Game::Game()
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				"arialFont",
-				"serveraddress",
 				"dataBoxTexture",
 				"serveraddress"
 			),

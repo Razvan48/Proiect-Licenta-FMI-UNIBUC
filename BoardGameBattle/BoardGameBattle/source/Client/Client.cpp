@@ -5,7 +5,7 @@
 #include <iostream>
 
 Client::Client()
-	: MAX_NUM_SERVERS(1), NUM_CHANNELS(1), TIME_WAITING_FOR_EVENTS_MS(10)
+	: MAX_NUM_SERVERS(1), NUM_CHANNELS(1), TIME_WAITING_FOR_EVENTS_MS(0)
 	, serverPeer(nullptr), client(NULL), serverAddress(), eNetEvent()
 	, succesfullyConnected(false)
 	, lastTimeTriedConnection(0.0f)

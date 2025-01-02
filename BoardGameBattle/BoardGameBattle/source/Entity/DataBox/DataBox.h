@@ -11,7 +11,7 @@ protected:
 	std::string initialText;
 
 public:
-	DataBox(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& text, const std::string& textureName, const std::string& initialText);
+	DataBox(float centerPosX, float centerPosY, float width, float height, float rotateAngle, const glm::vec3& color, const std::string& fontName, const std::string& textureName, const std::string& initialText);
 	virtual ~DataBox();
 
 	virtual void draw() override;
