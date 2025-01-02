@@ -61,6 +61,8 @@ private:
 	Game::Color color;
 	Game::MultiplayerStatus multiplayerStatus;
 
+	const int EXIT_TIME_MS;
+
 	void loadResources();
 	void run();
 	void draw();

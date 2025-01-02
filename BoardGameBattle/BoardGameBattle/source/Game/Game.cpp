@@ -24,9 +24,12 @@
 #include <iostream>
 #include <memory>
 
+#include <thread>
+
 Game::Game()
 	: status(Game::Status::IN_MAIN_MENU)
 	, mode(Game::Mode::NONE), color(Game::Color::NONE), multiplayerStatus(Game::MultiplayerStatus::NONE)
+	, EXIT_TIME_MS(1000)
 {
 	// IN_MAIN_MENU
 	this->visualInterfaces.insert(
@@ -770,8 +773,8 @@ void Game::run()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		this->update();
 		this->draw();
+		this->update();
 
 		glfwSwapBuffers(WindowManager::get().getWindow());
 		glfwPollEvents();
@@ -799,6 +802,7 @@ void Game::update()
 	if (this->status == Game::Status::EXITING)
 	{
 		glfwSetWindowShouldClose(WindowManager::get().getWindow(), GLFW_TRUE);
+		std::this_thread::sleep_for(std::chrono::milliseconds(this->EXIT_TIME_MS));
 		return;
 	}
 
