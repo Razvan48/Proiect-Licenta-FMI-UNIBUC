@@ -51,7 +51,7 @@ void Server::ClientData::sendMessage(const std::string& messageToSend, bool& fai
 	else
 	{
 		failedToSendMessage = true;
-		std::cout << "Error: Client failed to send message" << std::endl;
+		std::cout << "Error: Server failed to send message to client" << std::endl;
 	}
 }
 
@@ -63,7 +63,7 @@ void Server::ClientData::sendMessageUnsafe(const std::string& messageToSend)
 	if (enet_peer_send(this->peer, 0, packet) == 0)
 		this->lastTimeSentPing = GlobalClock::get().getCurrentTime();
 	else
-		std::cout << "Error: Client failed to send message" << std::endl;
+		std::cout << "Error: Server failed to send message to client" << std::endl;
 }
 
 void Server::handleReceivedPacket()
@@ -77,7 +77,7 @@ void Server::handleReceivedPacket()
 	}
 
 	std::string receivedMessage((char*)this->eNetEvent.packet->data);
-	std::cout << "Received Message: " << receivedMessage << " from " << clientKey << ", size = " << receivedMessage.size() << std::endl;
+	std::cout << "Server received Message: " << receivedMessage << " from " << clientKey << ", size = " << receivedMessage.size() << std::endl;
 
 	if (this->connectedClients.size() == this->MAX_NUM_CLIENTS
 		&& this->connectedClients.find(clientKey) == this->connectedClients.end())
