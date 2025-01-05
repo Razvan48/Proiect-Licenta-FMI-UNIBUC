@@ -91,7 +91,7 @@ void CreateInputForm::update()
 			{
 				this->playerNameTextEntity.setColor(this->colorInputContentNotOk);
 
-				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, false);
+				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, true);
 			}
 		}
 		else

@@ -158,7 +158,7 @@ void JoinInputForm::update()
 				else
 					this->serverAddressTextEntity.setColor(this->colorInputContentOk);
 
-				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, false);
+				AssetManager::get().playSound(this->soundNameWhenContentNotOk, false, true);
 			}
 		}
 		else
