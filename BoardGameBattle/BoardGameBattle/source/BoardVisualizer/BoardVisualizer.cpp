@@ -14,13 +14,14 @@
 
 #include "../Client/Client.h"
 
-// INFO: Agent
-#include "../GameAgent/GameAgentSelector/GameAgentSelector.h"
+#include "../GameAgent/GameAgentSelector/GameAgentSelector.h" // INFO: Agent
 
 
 #include "../VisualInterface/CreatedMultiplayerGameVisualInterface/CreatedMultiplayerGameVisualInterface.h"
 #include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
 #include "../VisualInterface/SingleplayerGameVisualInterface/SingleplayerGameVisualInterface.h"
+
+#include "PawnPromotionMenu/PawnPromotionMenu.h" // INFO: Pawn Promotion Menu
 
 
 #include <iostream>
@@ -48,6 +49,7 @@ BoardVisualizer::BoardVisualizer()
 	, pieceMoveSoundName("pieceMoveSound")
 	, newMoveAtTopOfHistory(false)
 	, gameHasEnded(false)
+	, pawnPromotionMenuActive(false)
 {
 
 }
@@ -170,6 +172,8 @@ void BoardVisualizer::initialize()
 	this->newMoveAtTopOfHistory = false;
 
 	this->gameHasEnded = false;
+
+	this->pawnPromotionMenuActive = false;
 }
 
 void BoardVisualizer::draw()
@@ -270,6 +274,13 @@ void BoardVisualizer::update()
 		this->boardCoordinates[GameMetadata::NUM_TILES_WIDTH + i].update();
 
 
+	if (this->pawnPromotionMenuActive) // INFO: Daca suntem in Pawn Promotion Menu se presupune ca nu se mai intampla nimic din logica de mai jos.
+	{
+		PawnPromotionMenu::get().draw();
+		PawnPromotionMenu::get().update();
+		return;
+	}
+
 
 	// Agent
 	if (
@@ -350,18 +361,32 @@ void BoardVisualizer::update()
 							selectedTile = true;
 
 							std::string move = "";
-							move.push_back(BoardManager::get().getPiecesConfiguration()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]);
+							move.push_back(BoardManager::get().getPiecesConfiguration()[(GameMetadata::NUM_TILES_HEIGHT - 1 - this->selectedTileRow) * GameMetadata::NUM_TILES_WIDTH + this->selectedTileColumn]); // Caracterul piesei
 							move.push_back((char)('a' + this->selectedTileColumn));
 							move.push_back((char)('1' + this->selectedTileRow));
 							move.push_back((char)('a' + j));
 							move.push_back((char)('1' + i));
 
-							BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
-							BoardManager::get().applyMoveExternal(move);
-							AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
-							this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
+							if ((move[0] == 'p' || move[0] == 'P') && (move[4] == '1' || move[4] == '8')) // INFO: Daca este o mutare de promovare. (Este pion si a ajuns la capatul tablei.)
+							{
+								this->pawnPromotionMenuActive = true;
 
-							this->resetSelectedTiles();
+								if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+									SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::IN_PAWN_PROMOTION_MENU);
+								else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
+								{
+									if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+										CreatedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(CreatedMultiplayerGameVisualInterface::FinalMessage::IN_PAWN_PROMOTION_MENU);
+									else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+										JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(JoinedMultiplayerGameVisualInterface::FinalMessage::IN_PAWN_PROMOTION_MENU);
+								}
+								
+								PawnPromotionMenu::get().initialize(move);
+							}
+							else
+							{
+								this->sendMoveToBoardManager(move);
+							}
 						}
 					}
 				}
@@ -581,6 +606,16 @@ void BoardVisualizer::resetSelectedTiles()
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT; ++i)
 		for (int j = 0; j < GameMetadata::NUM_TILES_WIDTH; ++j)
 			this->boardTiles[i][j].setIsSelected(false);
+}
+
+void BoardVisualizer::sendMoveToBoardManager(const std::string& move)
+{
+	BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
+	BoardManager::get().applyMoveExternal(move);
+	AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+	this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
+
+	this->resetSelectedTiles();
 }
 
 

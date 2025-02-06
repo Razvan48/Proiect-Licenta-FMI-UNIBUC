@@ -109,6 +109,9 @@
     <Filter Include="Source Files\Entity\TextOnBackgroundEntity">
       <UniqueIdentifier>{4885f520-2ec5-4f76-8213-98c2193bd1c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\BoardVisualizer\PawnPromotionMenu">
+      <UniqueIdentifier>{b6ebda36-b1d2-4a99-8fae-c729f4b787d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -207,6 +210,9 @@
     <ClCompile Include="source\GameAgent\GameAgentSelector\GameAgentSelector.cpp">
       <Filter>Source Files\GameAgent\GameAgentSelector</Filter>
     </ClCompile>
+    <ClCompile Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.cpp">
+      <Filter>Source Files\BoardVisualizer\PawnPromotionMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -301,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="source\GameAgent\GameAgentSelector\GameAgentSelector.h">
       <Filter>Source Files\GameAgent\GameAgentSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.h">
+      <Filter>Source Files\BoardVisualizer\PawnPromotionMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

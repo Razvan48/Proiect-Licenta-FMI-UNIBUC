@@ -237,7 +237,7 @@ void SingleplayerGameVisualInterface::update()
 	this->playerNameTextEntity.update();
 	this->opponentNameTextEntity.update();
 
-	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER && !BoardVisualizer::get().getPawnPromotionMenuActive())
 		this->undoMoveButton.update();
 
 	this->finalMessageTextEntity.update();

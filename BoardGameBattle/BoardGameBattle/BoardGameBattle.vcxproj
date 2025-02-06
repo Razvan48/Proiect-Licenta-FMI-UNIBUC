@@ -22,6 +22,7 @@
     <ClCompile Include="source\AssetManager\AssetManager.cpp" />
     <ClCompile Include="source\BoardManager\BoardManager.cpp" />
     <ClCompile Include="source\BoardVisualizer\BoardVisualizer.cpp" />
+    <ClCompile Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.cpp" />
     <ClCompile Include="source\Client\Client.cpp" />
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="source\AssetManager\AssetManager.h" />
     <ClInclude Include="source\BoardManager\BoardManager.h" />
     <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h" />
+    <ClInclude Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.h" />
     <ClInclude Include="source\Client\Client.h" />
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />

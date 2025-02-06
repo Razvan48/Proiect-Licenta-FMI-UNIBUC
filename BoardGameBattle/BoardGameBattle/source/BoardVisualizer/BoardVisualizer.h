@@ -54,6 +54,8 @@ private:
 
 	bool gameHasEnded;
 
+	bool pawnPromotionMenuActive;
+
 	void resetSelectedTiles();
 
 public:
@@ -72,4 +74,9 @@ public:
 		return this->movesHistory.back();
 	}
 	inline int getLastMoveFromHistorySize() const { return (int)this->movesHistory.size(); }
+
+	inline bool getPawnPromotionMenuActive() const { return this->pawnPromotionMenuActive; }
+	inline void setPawnPromotionMenuActive(bool pawnPromotionMenuActive) { this->pawnPromotionMenuActive = pawnPromotionMenuActive; }
+
+	void sendMoveToBoardManager(const std::string& move);
 };
