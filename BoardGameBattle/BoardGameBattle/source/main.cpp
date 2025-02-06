@@ -11,10 +11,6 @@ int main()
 	// de monitorizat repetitiile de pozitii (daca se repeta o pozitie de 3 ori, e remiza)
 
 
-	// pentru meniul de pawn promotion: cand convertim din external move in internal, daca external are un al 6-lea caracter, atunci stim ca-i promotion (al 6-lea caracter va fi setat de meniul suplimentar)
-
-
-	// de adaugat meniu pentru pawn promotion (momentan putem promova doar in regina)
 
 	// de adaugat un check sound in loc de move sound-ul obisnuit (schimbam in metoda applyMoveExternal) + (un capture sound?)
 
