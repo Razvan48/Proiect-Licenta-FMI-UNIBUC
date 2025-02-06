@@ -7,12 +7,85 @@
 
 #include "../../Client/Client.h"
 
+#include "../../WindowManager/WindowManager.h"
+
 #include <iostream>
 
 PawnPromotionMenu::PawnPromotionMenu()
 	: partialConstructedMove("")
+	, backgroundEntity(
+		WindowManager::get().getWindowWidth() / 2.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth(),
+		WindowManager::get().getWindowHeight() / 3.0f,
+		0.0f,
+		"dataBoxTexture" // pare ok de fundal
+	)
+	, cancelPawnPromotionButton(
+		WindowManager::get().getWindowWidth() / 21.0f + WindowManager::get().getWindowWidth() / 14.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth() / 7.0f,
+		WindowManager::get().getWindowHeight() / 7.0f,
+		0.0f,
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		"arialFont",
+		"Cancel",
+		"buttonTexture",
+		"buttonPressedSound",
+		"buttonHoveredTexture",
+		glm::vec3(0.75f, 0.75f, 0.75f),
+		"buttonHoveredSound"
+	)
+	, rookPromotionButton(
+		2.0f * WindowManager::get().getWindowWidth() / 21.0f + WindowManager::get().getWindowWidth() / 7.0f + WindowManager::get().getWindowWidth() / 14.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth() / 7.0f,
+		WindowManager::get().getWindowHeight() / 7.0f,
+		0.0f,
+		"whiteRookTexture",
+		"buttonTexture",
+		"buttonPressedSound",
+		"buttonHoveredTexture",
+		"buttonHoveredSound"
+	)
+	, knightPromotionButton(
+		3.0f * WindowManager::get().getWindowWidth() / 21.0f + 2.0f * WindowManager::get().getWindowWidth() / 7.0f + WindowManager::get().getWindowWidth() / 14.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth() / 7.0f,
+		WindowManager::get().getWindowHeight() / 7.0f,
+		0.0f,
+		"whiteKnightTexture",
+		"buttonTexture",
+		"buttonPressedSound",
+		"buttonHoveredTexture",
+		"buttonHoveredSound"
+	)
+	, bishopPromotionButton(
+		4.0f * WindowManager::get().getWindowWidth() / 21.0f + 3.0f * WindowManager::get().getWindowWidth() / 7.0f + WindowManager::get().getWindowWidth() / 14.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth() / 7.0f,
+		WindowManager::get().getWindowHeight() / 7.0f,
+		0.0f,
+		"whiteBishopTexture",
+		"buttonTexture",
+		"buttonPressedSound",
+		"buttonHoveredTexture",
+		"buttonHoveredSound"
+	)
+	, queenPromotionButton(
+		5.0f * WindowManager::get().getWindowWidth() / 21.0f + 4.0f * WindowManager::get().getWindowWidth() / 7.0f + WindowManager::get().getWindowWidth() / 14.0f,
+		3.0f * WindowManager::get().getWindowHeight() / 4.0f,
+		WindowManager::get().getWindowWidth() / 7.0f,
+		WindowManager::get().getWindowHeight() / 7.0f,
+		0.0f,
+		"whiteQueenTexture",
+		"buttonTexture",
+		"buttonPressedSound",
+		"buttonHoveredTexture",
+		"buttonHoveredSound"
+	)
 {
-	// TODO: pozitia si dimensiunea butoanelor
+
 }
 
 PawnPromotionMenu::~PawnPromotionMenu()
