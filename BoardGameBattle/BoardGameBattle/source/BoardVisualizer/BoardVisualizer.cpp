@@ -613,7 +613,10 @@ void BoardVisualizer::sendMoveToBoardManager(const std::string& move)
 	BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
 	BoardManager::get().applyMoveExternal(move);
 	AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
-	this->addNewMoveInHistory(move.substr((int)move.size() - 4)); // Fara caracterul piesei
+	std::string moveInHistory = "";
+	for (int i = 1; i <= 4; ++i)
+		moveInHistory.push_back(move[i]);
+	this->addNewMoveInHistory(moveInHistory); // Fara caracterul piesei + Fara ultimul caracter in caz de promovare pion
 
 	this->resetSelectedTiles();
 }
