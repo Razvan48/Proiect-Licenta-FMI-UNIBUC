@@ -32,4 +32,10 @@ public:
 	virtual void update() override;
 
 	inline bool getRecentlyInteractedWith() const { return this->recentlyInteractedWith; }
+
+	inline std::string getTextureName() const { return this->textureName; }
+	inline std::string getBackgroundTextureName() const { return this->backgroundTextureName; }
+
+	inline void setTextureName(const std::string& textureName) { this->textureName = textureName; }
+	inline void setBackgroundTextureName(const std::string& backgroundTextureName) { this->backgroundTextureName = backgroundTextureName; }
 };

@@ -30,6 +30,21 @@ void PawnPromotionMenu::initialize(const std::string& move)
 {
 	this->partialConstructedMove = "";
 	this->partialConstructedMove = move;
+
+	if (this->isPlayerColorWhite())
+	{
+		this->rookPromotionButton.setTextureName("whiteRookTexture");
+		this->knightPromotionButton.setTextureName("whiteKnightTexture");
+		this->bishopPromotionButton.setTextureName("whiteBishopTexture");
+		this->queenPromotionButton.setTextureName("whiteQueenTexture");
+	}
+	else
+	{
+		this->rookPromotionButton.setTextureName("blackRookTexture");
+		this->knightPromotionButton.setTextureName("blackKnightTexture");
+		this->bishopPromotionButton.setTextureName("blackBishopTexture");
+		this->queenPromotionButton.setTextureName("blackQueenTexture");
+	}
 }
 
 void PawnPromotionMenu::draw()
