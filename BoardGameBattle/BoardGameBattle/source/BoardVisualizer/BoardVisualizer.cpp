@@ -614,7 +614,7 @@ void BoardVisualizer::sendMoveToBoardManager(const std::string& move)
 	BoardManager::get().applyMoveExternal(move);
 	AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
 	std::string moveInHistory = "";
-	for (int i = 1; i <= 4; ++i)
+	for (int i = 1; i < 5; ++i)
 		moveInHistory.push_back(move[i]);
 	this->addNewMoveInHistory(moveInHistory); // Fara caracterul piesei + Fara ultimul caracter in caz de promovare pion
 
