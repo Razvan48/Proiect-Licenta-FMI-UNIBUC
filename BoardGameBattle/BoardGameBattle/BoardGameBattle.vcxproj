@@ -26,6 +26,8 @@
     <ClCompile Include="source\Client\Client.cpp" />
     <ClCompile Include="source\Entity\BoardTile\BoardTile.cpp" />
     <ClCompile Include="source\Entity\Button\Button.cpp" />
+    <ClCompile Include="source\Entity\Button\CancelPawnPromotionButton\CancelPawnPromotionButton.cpp" />
+    <ClCompile Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.cpp" />
     <ClCompile Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.cpp" />
     <ClCompile Include="source\Entity\CreateInputForm\CreateInputForm.cpp" />
     <ClCompile Include="source\Entity\DataBox\DataBox.cpp" />
@@ -35,6 +37,7 @@
     <ClCompile Include="source\Entity\TextEntity\TextEntity.cpp" />
     <ClCompile Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.cpp" />
     <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp" />
+    <ClCompile Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.cpp" />
     <ClCompile Include="source\GameAgent\GameAgent.cpp" />
     <ClCompile Include="source\GameAgent\GameAgentSelector\GameAgentSelector.cpp" />
     <ClCompile Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.cpp" />
@@ -61,6 +64,8 @@
     <ClInclude Include="source\Client\Client.h" />
     <ClInclude Include="source\Entity\BoardTile\BoardTile.h" />
     <ClInclude Include="source\Entity\Button\Button.h" />
+    <ClInclude Include="source\Entity\Button\CancelPawnPromotionButton\CancelPawnPromotionButton.h" />
+    <ClInclude Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.h" />
     <ClInclude Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.h" />
     <ClInclude Include="source\Entity\CreateInputForm\CreateInputForm.h" />
     <ClInclude Include="source\Entity\DataBox\DataBox.h" />
@@ -70,6 +75,7 @@
     <ClInclude Include="source\Entity\TextEntity\TextEntity.h" />
     <ClInclude Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.h" />
     <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h" />
+    <ClInclude Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.h" />
     <ClInclude Include="source\GameAgent\GameAgent.h" />
     <ClInclude Include="source\GameAgent\GameAgentSelector\GameAgentSelector.h" />
     <ClInclude Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.h" />

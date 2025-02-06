@@ -2,6 +2,10 @@
 
 #include <string>
 
+#include "../../Entity/TexturableEntity/TexturableEntity.h"
+#include "../../Entity/Button/CancelPawnPromotionButton/CancelPawnPromotionButton.h"
+#include "../../Entity/Button/PawnPromotionButton/PawnPromotionButton.h"
+
 class PawnPromotionMenu
 {
 private:
@@ -14,6 +18,13 @@ private:
 
 	std::string partialConstructedMove;
 
+	TexturableEntity backgroundEntity;
+	CancelPawnPromotionButton cancelPawnPromotionButton;
+	PawnPromotionButton rookPromotionButton;
+	PawnPromotionButton knightPromotionButton;
+	PawnPromotionButton bishopPromotionButton;
+	PawnPromotionButton queenPromotionButton;
+
 public:
 
 	static PawnPromotionMenu& get();
@@ -21,4 +32,6 @@ public:
 	void initialize(const std::string& move);
 	void draw();
 	void update();
+
+	bool isPlayerColorWhite() const;
 };

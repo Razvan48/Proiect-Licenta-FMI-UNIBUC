@@ -289,6 +289,8 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 	this->serverPortTextEntity.setText(std::to_string(Server::get().getPort()));
 	this->serverPortTextEntity.setColor(glm::vec3(0.0f, 1.0f, 0.0f));
 
+	// this->color este setat in MultiplayerColorMenuVisualInterface
+
 	BoardManager::get().initialize();
 	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color, BoardManager::get().getPiecesConfiguration());
 }

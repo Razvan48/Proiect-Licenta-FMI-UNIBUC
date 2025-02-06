@@ -112,6 +112,15 @@
     <Filter Include="Source Files\BoardVisualizer\PawnPromotionMenu">
       <UniqueIdentifier>{b6ebda36-b1d2-4a99-8fae-c729f4b787d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity\TextureOnBackgroundEntity">
+      <UniqueIdentifier>{13b6480d-9777-4855-b60a-ead57d3fa936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Button\CancelPawnPromotionButton">
+      <UniqueIdentifier>{c1d6c552-de6f-4061-a7d9-30a2ec6f1125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Button\PawnPromotionButton">
+      <UniqueIdentifier>{218ba7f6-1cc1-445b-8da8-118e85ad5c32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -213,6 +222,15 @@
     <ClCompile Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.cpp">
       <Filter>Source Files\BoardVisualizer\PawnPromotionMenu</Filter>
     </ClCompile>
+    <ClCompile Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.cpp">
+      <Filter>Source Files\Entity\TextureOnBackgroundEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\Button\CancelPawnPromotionButton\CancelPawnPromotionButton.cpp">
+      <Filter>Source Files\Entity\Button\CancelPawnPromotionButton</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.cpp">
+      <Filter>Source Files\Entity\Button\PawnPromotionButton</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -310,6 +328,15 @@
     </ClInclude>
     <ClInclude Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.h">
       <Filter>Source Files\BoardVisualizer\PawnPromotionMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.h">
+      <Filter>Source Files\Entity\TextureOnBackgroundEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\Button\CancelPawnPromotionButton\CancelPawnPromotionButton.h">
+      <Filter>Source Files\Entity\Button\CancelPawnPromotionButton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.h">
+      <Filter>Source Files\Entity\Button\PawnPromotionButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
