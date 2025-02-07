@@ -145,33 +145,39 @@ void PawnPromotionMenu::update()
 		|| this->bishopPromotionButton.getRecentlyInteractedWith()
 		|| this->queenPromotionButton.getRecentlyInteractedWith())
 	{
-		if (this->isPlayerColorWhite())
+		if (this->rookPromotionButton.getRecentlyInteractedWith()
+			|| this->knightPromotionButton.getRecentlyInteractedWith()
+			|| this->bishopPromotionButton.getRecentlyInteractedWith()
+			|| this->queenPromotionButton.getRecentlyInteractedWith())
 		{
-			if (this->rookPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "R";
-			else if (this->knightPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "N";
-			else if (this->bishopPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "B";
-			else if (this->queenPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "Q";
-			// else cancel
+			if (this->isPlayerColorWhite())
+			{
+				if (this->rookPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "R";
+				else if (this->knightPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "N";
+				else if (this->bishopPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "B";
+				else if (this->queenPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "Q";
+				// else cancel
 
-			BoardVisualizer::get().sendMoveToBoardManager(this->partialConstructedMove);
-		}
-		else
-		{
-			if (this->rookPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "r";
-			else if (this->knightPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "n";
-			else if (this->bishopPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "b";
-			else if (this->queenPromotionButton.getRecentlyInteractedWith())
-				this->partialConstructedMove += "q";
-			// else cancel
+				BoardVisualizer::get().sendMoveToBoardManager(this->partialConstructedMove);
+			}
+			else
+			{
+				if (this->rookPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "r";
+				else if (this->knightPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "n";
+				else if (this->bishopPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "b";
+				else if (this->queenPromotionButton.getRecentlyInteractedWith())
+					this->partialConstructedMove += "q";
+				// else cancel
 
-			BoardVisualizer::get().sendMoveToBoardManager(this->partialConstructedMove);
+				BoardVisualizer::get().sendMoveToBoardManager(this->partialConstructedMove);
+			}
 		}
 
 
