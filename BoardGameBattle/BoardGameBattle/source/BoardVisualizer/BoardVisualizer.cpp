@@ -538,16 +538,7 @@ void BoardVisualizer::update()
 			}
 		}
 	}
-	else if
-		(
-			(
-				BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedWhiteMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
-			)
-				||
-			(
-				!BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isBlackKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedBlackMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
-			)
-		)
+	else if (BoardManager::get().isWhiteKingInDraw(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInDraw(BoardManager::get().getConfigurationMetadata()))
 	{
 		if (!this->gameHasEnded)
 		{

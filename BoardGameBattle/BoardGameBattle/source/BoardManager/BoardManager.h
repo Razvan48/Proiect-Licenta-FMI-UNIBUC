@@ -203,6 +203,9 @@ public:
 	bool isWhiteKingInCheckmate(ConfigurationMetadata& configurationMetadata);
 	bool isBlackKingInCheckmate(ConfigurationMetadata& configurationMetadata);
 
+	bool isWhiteKingInDraw(ConfigurationMetadata& configurationMetadata);
+	bool isBlackKingInDraw(ConfigurationMetadata& configurationMetadata);
+
 public: // INFO: Board Visualizer are nevoie pentru conversii.
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
 
