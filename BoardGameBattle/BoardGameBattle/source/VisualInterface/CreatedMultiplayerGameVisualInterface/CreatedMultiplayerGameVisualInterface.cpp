@@ -291,7 +291,7 @@ void CreatedMultiplayerGameVisualInterface::initialize()
 
 	// this->color este setat in MultiplayerColorMenuVisualInterface
 
-	BoardManager::get().initialize();
+	BoardManager::get().initialize(); // Este initializat si in SingleplayerGameVisualInterface.initialize()
 	Client::get().start(this->serverAddress, Server::get().getPort(), this->playerName, this->color, BoardManager::get().getPiecesConfiguration());
 }
 

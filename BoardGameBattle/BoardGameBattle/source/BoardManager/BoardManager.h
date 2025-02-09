@@ -75,6 +75,10 @@ struct ConfigurationMetadata
 
 	//
 
+	unsigned long long zobristHashingValue;
+
+	//
+
 	ConfigurationMetadata(const std::string& configurationString);
 	ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
 
@@ -174,6 +178,12 @@ private:
 	unsigned long long zobristHashingBlackRookTopRightMoved;
 
 	void generateZobristHashing();
+
+public:
+	void calculateZobristHashingValue(ConfigurationMetadata& configurationMetadata) const;
+
+private:
+
 	//
 
 	ConfigurationMetadata configurationMetadata;
