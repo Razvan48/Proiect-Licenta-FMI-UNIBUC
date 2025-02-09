@@ -145,6 +145,37 @@ private:
 	int blackRookTopLeftPos;
 	int blackRookTopRightPos;
 
+	// Zobrist Hashing
+	
+	unsigned long long zobristHashingWhitePawn[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteRook[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteKnight[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteBishop[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteQueen[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteKing[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingBlackPawn[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackRook[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackKnight[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackBishop[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackQueen[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackKing[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingWhiteTurn;
+
+	unsigned long long zobristHashingCapturableEnPassant[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingWhiteKingMoved;
+	unsigned long long zobristHashingWhiteRookBottomLeftMoved;
+	unsigned long long zobristHashingWhiteRookBottomRightMoved;
+
+	unsigned long long zobristHashingBlackKingMoved;
+	unsigned long long zobristHashingBlackRookTopLeftMoved;
+	unsigned long long zobristHashingBlackRookTopRightMoved;
+
+	void generateZobristHashing();
+	//
+
 	ConfigurationMetadata configurationMetadata;
 
 	std::vector<ConfigurationMetadata> configurationMetadataHistory;
@@ -220,7 +251,7 @@ public:
 
 	std::string getPiecesConfiguration() const;
 
-	std::vector<std::pair<char, int>> convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const;
+	std::vector<std::pair<char, int>> convertToInternalMove(const std::string& externalMove) const;
 	void applyMoveExternal(const std::string& externalMove);
 
 	inline bool getWhiteTurn() const { return this->configurationMetadata.whiteTurn; }

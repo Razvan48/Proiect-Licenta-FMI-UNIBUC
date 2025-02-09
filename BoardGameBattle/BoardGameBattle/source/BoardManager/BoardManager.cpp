@@ -9,6 +9,8 @@
 
 #include "../Client/Client.h"
 
+#include "../RandomGenerator/RandomGenerator.h"
+
 #include <iostream>
 
 BoardManager::BoardManager()
@@ -852,11 +854,47 @@ BoardManager::BoardManager()
 	this->blackKingPos = 4;
 	this->blackRookTopLeftPos = 0;
 	this->blackRookTopRightPos = 7;
+
+
+	// Zobrist Hashing
+	this->generateZobristHashing();
 }
 
 BoardManager::~BoardManager()
 {
 
+}
+
+void BoardManager::generateZobristHashing()
+{
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->zobristHashingWhitePawn[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteRook[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteKnight[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteBishop[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteQueen[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteKing[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+		this->zobristHashingBlackPawn[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackRook[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackKnight[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackBishop[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackQueen[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackKing[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+		this->zobristHashingCapturableEnPassant[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	}
+
+	this->zobristHashingWhiteTurn = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+	this->zobristHashingWhiteKingMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingWhiteRookBottomLeftMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingWhiteRookBottomRightMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+	this->zobristHashingBlackKingMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingBlackRookTopLeftMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingBlackRookTopRightMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
 }
 
 unsigned long long BoardManager::extractRank(unsigned long long bitBoard, int pos) const
@@ -1127,7 +1165,7 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 	return newConfigurationMetadata;
 }
 
-std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const
+std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std::string& externalMove) const
 {
 	// INFO: Ne permitem sa facem metoda aceasta mai ineficienta, deoarece bottleneck-ul in acest caz este interactiunea umana.
 
@@ -1220,7 +1258,7 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const Conf
 
 void BoardManager::applyMoveExternal(const std::string& externalMove)
 {
-	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(this->configurationMetadata, externalMove)));
+	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(externalMove)));
 
 	//
 
