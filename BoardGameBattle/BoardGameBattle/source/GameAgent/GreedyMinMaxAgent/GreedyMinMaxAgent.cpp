@@ -281,7 +281,12 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
 					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, promise = std::move(promise), zobristHashingValuesFrequencyCopy]() mutable
 						{
-							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], BoardManager::get().getZobristHashingValuesFrequency()), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy);
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							float currentScore = this->minMax(newConfigurationMetadata, GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy);
+							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+
+							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
+
 							promise.set_value(currentScore);
 						}));
 				}
@@ -317,7 +322,12 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
 					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, promise = std::move(promise), zobristHashingValuesFrequencyCopy]() mutable
 						{
-							float currentScore = this->minMax(BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], BoardManager::get().getZobristHashingValuesFrequency()), GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy);
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							float currentScore = this->minMax(newConfigurationMetadata, GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy);
+							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+
+							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
+
 							promise.set_value(currentScore);
 						}));
 				}
