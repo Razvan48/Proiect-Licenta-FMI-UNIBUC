@@ -12,9 +12,10 @@
 #include "../RandomGenerator/RandomGenerator.h"
 
 #include <iostream>
+#include <map>
 
 BoardManager::BoardManager()
-	: configurationMetadata("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000")
+	// : configurationMetadata("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000") // Loopeaza la infinit daca ramane aici. Din cauza ca acest constructor are nevoie ca BoardManager sa existe deja.
 {
 	// Log Power 2
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
@@ -1076,7 +1077,9 @@ void BoardManager::initialize()
 
 	// Curatam Istoricul de la Meciul Anterior
 	this->configurationMetadataHistory.clear();
-	// TODO: de curatat aici si map-ul de zobrist hashing values pentru remiza
+
+	this->zobristHashingValuesFrequency.clear();
+	this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] = 1;
 }
 
 BoardManager& BoardManager::get()
@@ -1170,7 +1173,7 @@ std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char
 	return externalMove;
 }
 
-ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove)
+ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove, std::map<unsigned long long, int>& zobristHashingValuesFrequency) const
 {
 	// INFO: Face presupunerea ca mutarea e legala (si apartine culorii care trebuie sa mute) (din motive de optimizare)
 
@@ -1421,6 +1424,12 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 	// 
 
 	newConfigurationMetadata.whiteTurn = !newConfigurationMetadata.whiteTurn;
+	newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteTurn;
+
+	if (zobristHashingValuesFrequency.find(newConfigurationMetadata.zobristHashingValue) == zobristHashingValuesFrequency.end())
+		zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue] = 1;
+	else
+		++zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 	return newConfigurationMetadata;
 }
@@ -1518,7 +1527,7 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 
 void BoardManager::applyMoveExternal(const std::string& externalMove)
 {
-	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(externalMove)));
+	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(externalMove), this->zobristHashingValuesFrequency));
 
 	//
 
@@ -1535,7 +1544,7 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 
 	if (Game::get().getMode() == Game::Mode::NONE)
 	{
-		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
+		std::cout << "Error : Game Mode not set when generating moves for piece position" << std::endl;
 		return std::vector<std::string>();
 	}
 	else if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
@@ -1543,6 +1552,8 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		if (Game::get().getColor() == Game::Color::WHITE && !this->configurationMetadata.whiteTurn)
 			return std::vector<std::string>();
 		else if (Game::get().getColor() == Game::Color::BLACK && this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+		else if (this->isDrawByRepetition(this->configurationMetadata)) // INFO: Daca e remiza prin repetitie, nu se mai pot face mutari. Doar pentru Singleplayer a fost implementat.
 			return std::vector<std::string>();
 	}
 	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
@@ -3273,6 +3284,33 @@ void BoardManager::printBitBoard(unsigned long long bitBoard) const
 	}
 
 	std::cout << std::endl;
+}
+
+void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration)
+{
+	this->configurationMetadata.initialize(piecesConfiguration);
+
+	std::cout << "Warning : BoardManager : setPiecesConfiguration : Function has been called, attention to Zobrist Hashing frequencies" << std::endl;
+}
+
+void BoardManager::popLastConfigurationMetadataFromHistory()
+{
+	if (!this->configurationMetadataHistory.empty())
+	{
+		if (this->zobristHashingValuesFrequency.find(this->configurationMetadata.zobristHashingValue) != this->zobristHashingValuesFrequency.end())
+		{
+			--this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue];
+			if (this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] == 0)
+				this->zobristHashingValuesFrequency.erase(this->configurationMetadata.zobristHashingValue);
+		}
+		else
+		{
+			std::cout << "Warning : BoardManager : popLastConfigurationMetadataFromHistory : Zobrist Hashing Value Frequency is 0" << std::endl;
+		}
+
+		this->configurationMetadata.initialize(this->configurationMetadataHistory.back());
+		this->configurationMetadataHistory.pop_back();
+	}
 }
 
 ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)

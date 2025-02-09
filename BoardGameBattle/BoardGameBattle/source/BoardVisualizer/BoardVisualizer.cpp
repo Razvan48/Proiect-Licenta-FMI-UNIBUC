@@ -305,7 +305,7 @@ void BoardVisualizer::update()
 			{
 				// Adaugare in Istoric pentru BoardManager
 				BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
-				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
+				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove, BoardManager::get().getZobristHashingValuesFrequency()));
 
 				// Resetare
 				GameAgentSelector::get().setIsRunningTask(false);
@@ -553,6 +553,15 @@ void BoardVisualizer::update()
 				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
 					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(JoinedMultiplayerGameVisualInterface::FinalMessage::DRAW);
 			}
+		}
+	}
+	else if (BoardManager::get().isDrawByRepetition(BoardManager::get().getConfigurationMetadata()) && Game::get().getMode() == Game::Mode::SINGLEPLAYER) // INFO: Doar pentru Singleplayer se verifica daca e Draw by Repetition. Implementarea de mai jos este doar pentru Singleplayer.
+	{
+		if (!this->gameHasEnded)
+		{
+			this->gameHasEnded = true;
+
+			SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
 		}
 	}
 	else

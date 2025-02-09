@@ -9,5 +9,7 @@ namespace GameMetadata
 
 	const int STRING_SIZE_WITHOUT_MOVE = GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH + 9;
 	const int STRING_SIZE_WITH_MOVE = GameMetadata::STRING_SIZE_WITHOUT_MOVE + 4;
+
+	const int FREQUENCY_UNTIL_DRAW_REPETITION = 3;
 };
 
