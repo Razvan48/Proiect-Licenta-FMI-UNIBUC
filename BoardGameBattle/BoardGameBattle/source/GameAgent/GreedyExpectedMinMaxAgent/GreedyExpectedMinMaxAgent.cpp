@@ -626,5 +626,5 @@ const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
 
-const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 15000000;
+const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 20000000;
 

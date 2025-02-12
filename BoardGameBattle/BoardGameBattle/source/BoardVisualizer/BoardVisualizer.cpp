@@ -174,6 +174,12 @@ void BoardVisualizer::initialize()
 	this->gameHasEnded = false;
 
 	this->pawnPromotionMenuActive = false;
+
+
+	// Daca Agentul este activ trebuie retetat
+	GameAgentSelector::get().setIsRunningTask(false);
+	GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+	GameAgentSelector::get().isTaskCancelled.store(true);
 }
 
 void BoardVisualizer::draw()
