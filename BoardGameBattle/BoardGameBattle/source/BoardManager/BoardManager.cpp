@@ -1327,6 +1327,18 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 		{
 			unsigned long long lsb = (capturedBlackRooks & ((~capturedBlackRooks) + 1));
 			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+
+			if (!newConfigurationMetadata.blackRookTopLeftMoved && lsb == (1ull << this->blackRookTopLeftPos))
+			{
+				newConfigurationMetadata.blackRookTopLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopLeftMoved;
+			}
+			if (!newConfigurationMetadata.blackRookTopRightMoved && lsb == (1ull << this->blackRookTopRightPos))
+			{
+				newConfigurationMetadata.blackRookTopRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopRightMoved;
+			}
+
 			capturedBlackRooks ^= lsb;
 		}
 		while (capturedBlackKnights)
@@ -1388,6 +1400,18 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 		{
 			unsigned long long lsb = (capturedWhiteRooks & ((~capturedWhiteRooks) + 1));
 			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+
+			if (!newConfigurationMetadata.whiteRookBottomLeftMoved && lsb == (1ull << this->whiteRookBottomLeftPos))
+			{
+				newConfigurationMetadata.whiteRookBottomLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomLeftMoved;
+			}
+			if (!newConfigurationMetadata.whiteRookBottomRightMoved && lsb == (1ull << this->whiteRookBottomRightPos))
+			{
+				newConfigurationMetadata.whiteRookBottomRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomRightMoved;
+			}
+
 			capturedWhiteRooks ^= lsb;
 		}
 		while (capturedWhiteKnights)
