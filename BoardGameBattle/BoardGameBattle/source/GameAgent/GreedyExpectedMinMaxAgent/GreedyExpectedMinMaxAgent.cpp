@@ -387,14 +387,14 @@ const float GreedyExpectedMinMaxAgent::QUEEN_SCORE = 9.0f;
 const float GreedyExpectedMinMaxAgent::KING_SCORE = 100.0f;
 
 const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.15f;
-const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.2f;
+const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.15f;
 
-const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.1f;
 
 const float GreedyExpectedMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
 
@@ -626,5 +626,5 @@ const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
 
-const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 10000000;
+const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 15000000;
 
