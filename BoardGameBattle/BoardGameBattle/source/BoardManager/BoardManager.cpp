@@ -2409,7 +2409,7 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
 	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
 
-	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)));
+	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)) | (configurationMetadata.whiteKingDefenseZone >> 1)));
 	if (whitePawnEnPassantRight &&
 			(
 				!
@@ -2447,7 +2447,7 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition));
 	}
 
-	unsigned long long whitePawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH + 1)));
+	unsigned long long whitePawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH + 1)) | (configurationMetadata.whiteKingDefenseZone << 1)));
 	if (whitePawnEnPassantLeft &&
 			(
 				!
@@ -2883,7 +2883,7 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
 	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
 
-	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)));
+	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)) | (configurationMetadata.blackKingDefenseZone << 1)));
 	if (blackPawnEnPassantRight &&
 			(
 				!
@@ -2921,7 +2921,7 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition));
 	}
 
-	unsigned long long blackPawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH + 1)));
+	unsigned long long blackPawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH + 1)) | (configurationMetadata.blackKingDefenseZone >> 1)));
 	if (blackPawnEnPassantLeft &&
 			(
 				!
