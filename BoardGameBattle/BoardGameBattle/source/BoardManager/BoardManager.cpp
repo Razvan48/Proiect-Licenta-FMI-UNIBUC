@@ -1924,19 +1924,19 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	unsigned long long blackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH]));
 
 	// Atac Stanga
-	unsigned long long leftAttackZone = ((blackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1));
+	unsigned long long leftAttackZone = ((blackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH - 1));
 	configurationMetadata.blackPawnAttackZone |= leftAttackZone;
 	if (leftAttackZone & configurationMetadata.whiteKing)
 	{
-		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
 	}
 
 	// Atac Dreapta
-	unsigned long long rightAttackZone = ((blackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1));
+	unsigned long long rightAttackZone = ((blackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH + 1));
 	configurationMetadata.blackPawnAttackZone |= rightAttackZone;
 	if (rightAttackZone & configurationMetadata.whiteKing)
 	{
-		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
 	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
