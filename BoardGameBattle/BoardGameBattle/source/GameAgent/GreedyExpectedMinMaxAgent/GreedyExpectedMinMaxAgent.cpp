@@ -1,4 +1,4 @@
-#include "GreedyMinMaxAgent.h"
+#include "GreedyExpectedMinMaxAgent.h"
 
 #include "../../GameMetadata/GameMetadata.h"
 
@@ -10,24 +10,24 @@
 
 #include <map>
 
-GreedyMinMaxAgent::GreedyMinMaxAgent()
+GreedyExpectedMinMaxAgent::GreedyExpectedMinMaxAgent()
 	: GameAgent()
 {
 
 }
 
-GreedyMinMaxAgent::~GreedyMinMaxAgent()
+GreedyExpectedMinMaxAgent::~GreedyExpectedMinMaxAgent()
 {
 
 }
 
-GreedyMinMaxAgent& GreedyMinMaxAgent::get()
+GreedyExpectedMinMaxAgent& GreedyExpectedMinMaxAgent::get()
 {
-	static GreedyMinMaxAgent instance;
+	static GreedyExpectedMinMaxAgent instance;
 	return instance;
 }
 
-float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const
+float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const
 {
 	// INFO: Presupunem ca are deja attack zone-urile calculate corect pentru ambele culori.
 	// INFO: evaluateConfiguration nu se ocupa cu starile de Checkmate, acelea sunt gestionate in minMax.
@@ -40,7 +40,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whitePawns)
 	{
 		unsigned long long lsb = (whitePawns & ((~whitePawns) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::PAWN_SCORE + GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::PAWN_SCORE + GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whitePawns ^= lsb;
 	}
 
@@ -48,7 +48,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whiteRooks)
 	{
 		unsigned long long lsb = (whiteRooks & ((~whiteRooks) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::ROOK_SCORE + GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::ROOK_SCORE + GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteRooks ^= lsb;
 	}
 
@@ -56,7 +56,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whiteKnights)
 	{
 		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::KNIGHT_SCORE + GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::KNIGHT_SCORE + GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteKnights ^= lsb;
 	}
 
@@ -64,7 +64,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whiteBishops)
 	{
 		unsigned long long lsb = (whiteBishops & ((~whiteBishops) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::BISHOP_SCORE + GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::BISHOP_SCORE + GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteBishops ^= lsb;
 	}
 
@@ -72,11 +72,11 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whiteQueens)
 	{
 		unsigned long long lsb = (whiteQueens & ((~whiteQueens) + 1));
-		evaluationScore = evaluationScore + GreedyMinMaxAgent::QUEEN_SCORE + GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::QUEEN_SCORE + GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteQueens ^= lsb;
 	}
 
-	evaluationScore = evaluationScore + GreedyMinMaxAgent::KING_SCORE + GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
+	evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::KING_SCORE + GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
 
 	// Black Pieces
 
@@ -84,7 +84,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackPawns)
 	{
 		unsigned long long lsb = (blackPawns & ((~blackPawns) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::PAWN_SCORE - GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::PAWN_SCORE - GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackPawns ^= lsb;
 	}
 
@@ -92,7 +92,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackRooks)
 	{
 		unsigned long long lsb = (blackRooks & ((~blackRooks) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::ROOK_SCORE - GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::ROOK_SCORE - GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_ROOK_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackRooks ^= lsb;
 	}
 
@@ -100,7 +100,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackKnights)
 	{
 		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::KNIGHT_SCORE - GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::KNIGHT_SCORE - GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackKnights ^= lsb;
 	}
 
@@ -108,7 +108,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackBishops)
 	{
 		unsigned long long lsb = (blackBishops & ((~blackBishops) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::BISHOP_SCORE - GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::BISHOP_SCORE - GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackBishops ^= lsb;
 	}
 
@@ -116,11 +116,11 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackQueens)
 	{
 		unsigned long long lsb = (blackQueens & ((~blackQueens) + 1));
-		evaluationScore = evaluationScore - GreedyMinMaxAgent::QUEEN_SCORE - GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::QUEEN_SCORE - GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackQueens ^= lsb;
 	}
 
-	evaluationScore = evaluationScore - GreedyMinMaxAgent::KING_SCORE - GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
+	evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::KING_SCORE - GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
 
 	// Attack Zones
 
@@ -128,7 +128,7 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (whiteAttackZones)
 	{
 		unsigned long long lsb = (whiteAttackZones & ((~whiteAttackZones) + 1));
-		evaluationScore += GreedyMinMaxAgent::ATTACK_ZONE_SCORE;
+		evaluationScore += GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
 		whiteAttackZones ^= lsb;
 	}
 
@@ -136,26 +136,26 @@ float GreedyMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& configurat
 	while (blackAttackZones)
 	{
 		unsigned long long lsb = (blackAttackZones & ((~blackAttackZones) + 1));
-		evaluationScore -= GreedyMinMaxAgent::ATTACK_ZONE_SCORE;
+		evaluationScore -= GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
 		blackAttackZones ^= lsb;
 	}
 
 	// Checks
 	if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
-		evaluationScore -= GreedyMinMaxAgent::CHECK_SCORE;
+		evaluationScore -= GreedyExpectedMinMaxAgent::CHECK_SCORE;
 	if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
-		evaluationScore += GreedyMinMaxAgent::CHECK_SCORE;
+		evaluationScore += GreedyExpectedMinMaxAgent::CHECK_SCORE;
 
 	// White Turn
 	if (configurationMetadata.whiteTurn)
-		evaluationScore += GreedyMinMaxAgent::WHITE_TURN_SCORE;
+		evaluationScore += GreedyExpectedMinMaxAgent::WHITE_TURN_SCORE;
 	else
-		evaluationScore -= GreedyMinMaxAgent::WHITE_TURN_SCORE;
+		evaluationScore -= GreedyExpectedMinMaxAgent::WHITE_TURN_SCORE;
 
 	return evaluationScore;
 }
 
-float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited) const // INFO: minMax primeste o copie a configuratiei.
+float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const // INFO: minMax primeste o copie a configuratiei.
 {
 	++numNodesVisited;
 
@@ -168,7 +168,7 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 	if (zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION)
 		return 0.0f; // Remiza, aceasta configuratie s-a repetat de FREQUENCY_UNTIL_DRAW_REPETITION ori.
 
-	if (depth == 0)
+	if (depth <= 0 && expectedNumNodesVisited <= 0) // INFO: Trebuie <= 0 pentru expectedNumNodesVisited
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);
 		BoardManager::get().generateBlackAttackZones(configurationMetadata);
@@ -177,16 +177,19 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 
 	if (configurationMetadata.whiteTurn) // Maximizing
 	{
-		float maximumScore = -GreedyMinMaxAgent::UNREACHABLE_INF;
+		float maximumScore = -GreedyExpectedMinMaxAgent::UNREACHABLE_INF;
 		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 		std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
 		BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
 
+		int expectedRemainingNumNodesVisited = expectedNumNodesVisited;
 		for (int i = 0; i < allWhiteMoves.size(); ++i)
 		{
 			ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
-			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited);
+			int numNodesVisitedBefore = numNodesVisited;
+			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allWhiteMoves.size() - i));
+			expectedRemainingNumNodesVisited -= (numNodesVisited - numNodesVisitedBefore);
 			--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 			// INFO: Entry-ul in map ramane si daca e pe 0 frecventa. Poate fi util pentru performanta.
@@ -202,10 +205,10 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 			}
 		}
 
-		if (maximumScore == -GreedyMinMaxAgent::UNREACHABLE_INF)
+		if (maximumScore == -GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
 		{
 			if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
-				maximumScore = -GreedyMinMaxAgent::REACHABLE_INF;
+				maximumScore = -GreedyExpectedMinMaxAgent::REACHABLE_INF;
 			else
 				maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
 		}
@@ -214,16 +217,19 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 	}
 	else // Minimizing
 	{
-		float minimumScore = GreedyMinMaxAgent::UNREACHABLE_INF;
+		float minimumScore = GreedyExpectedMinMaxAgent::UNREACHABLE_INF;
 		std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 		std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
 		BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
 
+		int expectedRemainingNumNodesVisited = expectedNumNodesVisited;
 		for (int i = 0; i < allBlackMoves.size(); ++i)
 		{
 			ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
-			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited);
+			int numNodesVisitedBefore = numNodesVisited;
+			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allBlackMoves.size() - i));
+			expectedRemainingNumNodesVisited -= (numNodesVisited - numNodesVisitedBefore);
 			--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 			// INFO: Entry-ul in map ramane si daca e pe 0 frecventa. Poate fi util pentru performanta.
@@ -239,10 +245,10 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 			}
 		}
 
-		if (minimumScore == GreedyMinMaxAgent::UNREACHABLE_INF)
+		if (minimumScore == GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
 		{
 			if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
-				minimumScore = GreedyMinMaxAgent::REACHABLE_INF;
+				minimumScore = GreedyExpectedMinMaxAgent::REACHABLE_INF;
 			else
 				minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 		}
@@ -251,11 +257,8 @@ float GreedyMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int
 	}
 }
 
-void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadata)
+void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadata)
 {
-	// TODO: multithreading (de inteles future si promises)
-	//return this->minMax(configurationMetadata, GreedyMinMaxAgent::MAX_DEPTH, -GreedyMinMaxAgent::INF, GreedyMinMaxAgent::INF).second;
-	
 	this->setIsRunningTask(true);
 	this->setBestMove(std::vector<std::pair<char, int>>());
 
@@ -272,7 +275,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 
 			if (configurationMetadata.whiteTurn)
 			{
-				float maximumScore = -GreedyMinMaxAgent::UNREACHABLE_INF;
+				float maximumScore = -GreedyExpectedMinMaxAgent::UNREACHABLE_INF;
 				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 				std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
@@ -286,11 +289,11 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
 
 					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise)]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allWhiteMoves.size()]() mutable
 						{
 							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited);
+							float currentScore = this->minMax(newConfigurationMetadata, GreedyExpectedMinMaxAgent::MAX_DEPTH - 1, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
 							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
@@ -319,7 +322,7 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 			}
 			else
 			{
-				float minimumScore = GreedyMinMaxAgent::UNREACHABLE_INF;
+				float minimumScore = GreedyExpectedMinMaxAgent::UNREACHABLE_INF;
 				std::vector<std::pair<char, int>> bestMove = std::vector<std::pair<char, int>>();
 
 				std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
@@ -333,11 +336,11 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
 
 					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise)]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allBlackMoves.size()]() mutable
 						{
 							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, GreedyMinMaxAgent::MAX_DEPTH - 1, -GreedyMinMaxAgent::UNREACHABLE_INF, GreedyMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited);
+							float currentScore = this->minMax(newConfigurationMetadata, GreedyExpectedMinMaxAgent::MAX_DEPTH - 1, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
 							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
@@ -365,37 +368,37 @@ void GreedyMinMaxAgent::findBestMove(ConfigurationMetadata& configurationMetadat
 					this->setBestMove(bestMove);
 			}
 
-			std::cout << "GreedyMinMaxAgent: Total Number of Nodes Visited: " << numNodesVisitedTotal << std::endl;
+			std::cout << "GreedyExpectedMinMaxAgent: Total Number of Nodes Visited: " << numNodesVisitedTotal << std::endl;
 		});
 
 	findBestMoveThread.detach();
 }
 
-const int GreedyMinMaxAgent::MAX_DEPTH = 5;
+const int GreedyExpectedMinMaxAgent::MAX_DEPTH = 5;
 
-const float GreedyMinMaxAgent::UNREACHABLE_INF = 65536.0f;
-const float GreedyMinMaxAgent::REACHABLE_INF = GreedyMinMaxAgent::UNREACHABLE_INF - 1.0f;
+const float GreedyExpectedMinMaxAgent::UNREACHABLE_INF = 65536.0f;
+const float GreedyExpectedMinMaxAgent::REACHABLE_INF = GreedyExpectedMinMaxAgent::UNREACHABLE_INF - 1.0f;
 
-const float GreedyMinMaxAgent::PAWN_SCORE = 1.0f;
-const float GreedyMinMaxAgent::ROOK_SCORE = 5.0f;
-const float GreedyMinMaxAgent::KNIGHT_SCORE = 3.0f;
-const float GreedyMinMaxAgent::BISHOP_SCORE = 3.15f;
-const float GreedyMinMaxAgent::QUEEN_SCORE = 9.0f;
-const float GreedyMinMaxAgent::KING_SCORE = 100.0f;
+const float GreedyExpectedMinMaxAgent::PAWN_SCORE = 1.0f;
+const float GreedyExpectedMinMaxAgent::ROOK_SCORE = 5.0f;
+const float GreedyExpectedMinMaxAgent::KNIGHT_SCORE = 3.0f;
+const float GreedyExpectedMinMaxAgent::BISHOP_SCORE = 3.15f;
+const float GreedyExpectedMinMaxAgent::QUEEN_SCORE = 9.0f;
+const float GreedyExpectedMinMaxAgent::KING_SCORE = 100.0f;
 
-const float GreedyMinMaxAgent::ATTACK_ZONE_SCORE = 0.15f;
-const float GreedyMinMaxAgent::CHECK_SCORE = 0.2f;
+const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.15f;
+const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.15f;
 
-const float GreedyMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.18f;
-const float GreedyMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.18f;
+const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.1f;
 
-const float GreedyMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
+const float GreedyExpectedMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
 
-const float GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	4.5f, 5.0f, 5.5f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f,
 
@@ -414,7 +417,7 @@ const float GreedyMinMaxAgent::WHITE_PAWN_POSITION_SCORES[GameMetadata::NUM_TILE
 	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
 };
 
-const float GreedyMinMaxAgent::WHITE_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	5.0f, 5.5f, 6.0f, 6.0f, 6.0f, 5.5f, 5.0f, 4.5f,
 
@@ -433,7 +436,7 @@ const float GreedyMinMaxAgent::WHITE_ROOK_POSITION_SCORES[GameMetadata::NUM_TILE
 	0.5f, 1.0f, 1.5f, 1.5f, 1.5f, 1.0f, 0.5f, 0.0f
 };
 
-const float GreedyMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	4.0f, 4.5f, 5.0f, 5.0f, 5.0f, 4.5f, 4.0f, 3.5f,
 
@@ -452,7 +455,7 @@ const float GreedyMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TI
 	0.5f, 1.0f, 1.5f, 1.5f, 1.5f, 1.0f, 0.5f, 0.0f
 };
 
-const float GreedyMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f,
 
@@ -471,7 +474,7 @@ const float GreedyMinMaxAgent::WHITE_BISHOP_POSITION_SCORES[GameMetadata::NUM_TI
 	0.5f, 1.0f, 1.5f, 2.0f, 2.0f, 1.5f, 1.0f, 0.5f
 };
 
-const float GreedyMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f,
 
@@ -490,7 +493,7 @@ const float GreedyMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[GameMetadata::NUM_TIL
 	0.5f, 1.0f, 1.5f, 2.5f, 2.5f, 1.5f, 1.0f, 0.5f
 };
 
-const float GreedyMinMaxAgent::WHITE_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::WHITE_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f,
 
@@ -509,7 +512,7 @@ const float GreedyMinMaxAgent::WHITE_KING_POSITION_SCORES[GameMetadata::NUM_TILE
 	0.5f, 1.0f, 1.5f, 2.0f, 2.0f, 1.5f, 1.0f, 0.5f
 };
 
-const float GreedyMinMaxAgent::BLACK_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_PAWN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
@@ -528,7 +531,7 @@ const float GreedyMinMaxAgent::BLACK_PAWN_POSITION_SCORES[GameMetadata::NUM_TILE
 	4.5f, 5.0f, 5.5f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
 
-const float GreedyMinMaxAgent::BLACK_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_ROOK_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.5f, 1.0f, 1.5f, 1.5f, 1.5f, 1.0f, 0.5f, 0.0f,
 
@@ -547,7 +550,7 @@ const float GreedyMinMaxAgent::BLACK_ROOK_POSITION_SCORES[GameMetadata::NUM_TILE
 	5.0f, 5.5f, 6.0f, 6.0f, 6.0f, 5.5f, 5.0f, 4.5f
 };
 
-const float GreedyMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.5f, 1.0f, 1.5f, 1.5f, 1.5f, 1.0f, 0.5f, 0.0f,
 
@@ -566,7 +569,7 @@ const float GreedyMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[GameMetadata::NUM_TI
 	4.0f, 4.5f, 5.0f, 5.0f, 5.0f, 4.5f, 4.0f, 3.5f
 };
 
-const float GreedyMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.5f, 1.0f, 1.5f, 2.0f, 2.0f, 1.5f, 1.0f, 0.5f,
 
@@ -585,7 +588,7 @@ const float GreedyMinMaxAgent::BLACK_BISHOP_POSITION_SCORES[GameMetadata::NUM_TI
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
 
-const float GreedyMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.5f, 1.0f, 1.5f, 2.5f, 2.5f, 1.5f, 1.0f, 0.5f,
 
@@ -604,7 +607,7 @@ const float GreedyMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TIL
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
 
-const float GreedyMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
+const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH] =
 {
 	0.5f, 1.0f, 1.5f, 2.0f, 2.0f, 1.5f, 1.0f, 0.5f,
 
@@ -622,4 +625,6 @@ const float GreedyMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILE
 
 	4.0f, 4.5f, 5.0f, 5.5f, 5.5f, 5.0f, 4.5f, 4.0f
 };
+
+const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 17500000;
 

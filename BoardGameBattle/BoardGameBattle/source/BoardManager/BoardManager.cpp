@@ -9,10 +9,13 @@
 
 #include "../Client/Client.h"
 
+#include "../RandomGenerator/RandomGenerator.h"
+
 #include <iostream>
+#include <map>
 
 BoardManager::BoardManager()
-	: configurationMetadata("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000")
+	// : configurationMetadata("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000") // Loopeaza la infinit daca ramane aici. Din cauza ca acest constructor are nevoie ca BoardManager sa existe deja.
 {
 	// Log Power 2
 	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
@@ -852,11 +855,174 @@ BoardManager::BoardManager()
 	this->blackKingPos = 4;
 	this->blackRookTopLeftPos = 0;
 	this->blackRookTopRightPos = 7;
+
+
+	// Zobrist Hashing
+	this->generateZobristHashing();
 }
 
 BoardManager::~BoardManager()
 {
 
+}
+
+void BoardManager::generateZobristHashing()
+{
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		this->zobristHashingWhitePawn[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteRook[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteKnight[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteBishop[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteQueen[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingWhiteKing[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+		this->zobristHashingBlackPawn[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackRook[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackKnight[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackBishop[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackQueen[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+		this->zobristHashingBlackKing[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+		this->zobristHashingCapturableEnPassant[i] = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	}
+	this->zobristHashingCapturableEnPassant[0] = 0ull; // INFO: Pozitia pe care o folosim pentru a reprezenta faptul ca nu exista o captura en passant
+
+	this->zobristHashingWhiteTurn = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+	this->zobristHashingWhiteKingMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingWhiteRookBottomLeftMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingWhiteRookBottomRightMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+
+	this->zobristHashingBlackKingMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingBlackRookTopLeftMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+	this->zobristHashingBlackRookTopRightMoved = RandomGenerator::randomUniformUnsignedLongLong(0ull, ~(0ull));
+}
+
+void BoardManager::calculateZobristHashingValue(ConfigurationMetadata& configurationMetadata) const
+{
+	configurationMetadata.zobristHashingValue = 0ull;
+
+	// White
+	unsigned long long whitePawns = configurationMetadata.whitePawns;
+	while (whitePawns)
+	{
+		unsigned long long lsb = (whitePawns & ((~whitePawns) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhitePawn[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whitePawns ^= lsb;
+	}
+
+	unsigned long long whiteRooks = configurationMetadata.whiteRooks;
+	while (whiteRooks)
+	{
+		unsigned long long lsb = (whiteRooks & ((~whiteRooks) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteRooks ^= lsb;
+	}
+
+	unsigned long long whiteKnights = configurationMetadata.whiteKnights;
+	while (whiteKnights)
+	{
+		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKnight[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteKnights ^= lsb;
+	}
+
+	unsigned long long whiteBishops = configurationMetadata.whiteBishops;
+	while (whiteBishops)
+	{
+		unsigned long long lsb = (whiteBishops & ((~whiteBishops) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteBishop[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteBishops ^= lsb;
+	}
+
+	unsigned long long whiteQueens = configurationMetadata.whiteQueens;
+	while (whiteQueens)
+	{
+		unsigned long long lsb = (whiteQueens & ((~whiteQueens) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteQueen[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteQueens ^= lsb;
+	}
+
+	unsigned long long whiteKing = configurationMetadata.whiteKing;
+	while (whiteKing)
+	{
+		unsigned long long lsb = (whiteKing & ((~whiteKing) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		whiteKing ^= lsb;
+	}
+
+	// Black
+	unsigned long long blackPawns = configurationMetadata.blackPawns;
+	while (blackPawns)
+	{
+		unsigned long long lsb = (blackPawns & ((~blackPawns) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackPawn[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackPawns ^= lsb;
+	}
+
+	unsigned long long blackRooks = configurationMetadata.blackRooks;
+	while (blackRooks)
+	{
+		unsigned long long lsb = (blackRooks & ((~blackRooks) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackRooks ^= lsb;
+	}
+
+	unsigned long long blackKnights = configurationMetadata.blackKnights;
+	while (blackKnights)
+	{
+		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKnight[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackKnights ^= lsb;
+	}
+
+	unsigned long long blackBishops = configurationMetadata.blackBishops;
+	while (blackBishops)
+	{
+		unsigned long long lsb = (blackBishops & ((~blackBishops) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackBishop[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackBishops ^= lsb;
+	}
+
+	unsigned long long blackQueens = configurationMetadata.blackQueens;
+	while (blackQueens)
+	{
+		unsigned long long lsb = (blackQueens & ((~blackQueens) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackQueen[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackQueens ^= lsb;
+	}
+
+	unsigned long long blackKing = configurationMetadata.blackKing;
+	while (blackKing)
+	{
+		unsigned long long lsb = (blackKing & ((~blackKing) + 1));
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+		blackKing ^= lsb;
+	}
+
+	// Turn
+	if (configurationMetadata.whiteTurn)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteTurn;
+
+	// En Passant
+	if (configurationMetadata.capturableEnPassantPosition != 0) // INFO: 0 este pozitie invalida si il folosim pentru a reprezenta faptul ca nu exista o captura en passant
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingCapturableEnPassant[configurationMetadata.capturableEnPassantPosition];
+
+	// Castling
+	if (configurationMetadata.whiteKingMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKingMoved;
+	if (configurationMetadata.whiteRookBottomLeftMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomLeftMoved;
+	if (configurationMetadata.whiteRookBottomRightMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomRightMoved;
+
+	if (configurationMetadata.blackKingMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKingMoved;
+	if (configurationMetadata.blackRookTopLeftMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopLeftMoved;
+	if (configurationMetadata.blackRookTopRightMoved)
+		configurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopRightMoved;
 }
 
 unsigned long long BoardManager::extractRank(unsigned long long bitBoard, int pos) const
@@ -911,6 +1077,9 @@ void BoardManager::initialize()
 
 	// Curatam Istoricul de la Meciul Anterior
 	this->configurationMetadataHistory.clear();
+
+	this->zobristHashingValuesFrequency.clear();
+	this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] = 1;
 }
 
 BoardManager& BoardManager::get()
@@ -1004,12 +1173,14 @@ std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char
 	return externalMove;
 }
 
-ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove)
+ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove, std::map<unsigned long long, int>& zobristHashingValuesFrequency) const
 {
 	// INFO: Face presupunerea ca mutarea e legala (si apartine culorii care trebuie sa mute) (din motive de optimizare)
 
 	ConfigurationMetadata newConfigurationMetadata(configurationMetadata);
 
+	if (newConfigurationMetadata.capturableEnPassantPosition != 0)
+		newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingCapturableEnPassant[newConfigurationMetadata.capturableEnPassantPosition];
 	newConfigurationMetadata.capturableEnPassantPosition = 0; // INFO: 0 inseamna ca nu exista o astfel de pozitie (teoretic 0 exista pe tabla, practic nu se poate face un enpassant in 0, deci e ok)
 
 	for (int i = 0; i < internalMove.size(); ++i)
@@ -1017,70 +1188,108 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 		if (internalMove[i].first == 'P')
 		{
 			if (internalMove[i].second / GameMetadata::NUM_TILES_WIDTH == 4 && i >= 1 && internalMove[i - 1].first == 'P' && internalMove[i - 1].second / GameMetadata::NUM_TILES_WIDTH == 6)
+			{
 				newConfigurationMetadata.capturableEnPassantPosition = internalMove[i].second;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingCapturableEnPassant[newConfigurationMetadata.capturableEnPassantPosition];
+			}
 
 			newConfigurationMetadata.whitePawns ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhitePawn[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'R')
 		{
 			if (!newConfigurationMetadata.whiteRookBottomLeftMoved && internalMove[i].second == this->whiteRookBottomLeftPos)
+			{
 				newConfigurationMetadata.whiteRookBottomLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomLeftMoved;
+			}
 			else if (!newConfigurationMetadata.whiteRookBottomRightMoved && internalMove[i].second == this->whiteRookBottomRightPos)
+			{
 				newConfigurationMetadata.whiteRookBottomRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomRightMoved;
+			}
 
 			newConfigurationMetadata.whiteRooks ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRook[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'N')
 		{
 			newConfigurationMetadata.whiteKnights ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKnight[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'B')
 		{
 			newConfigurationMetadata.whiteBishops ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteBishop[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'Q')
 		{
 			newConfigurationMetadata.whiteQueens ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteQueen[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'K')
 		{
-			newConfigurationMetadata.whiteKingMoved = true; // INFO: e simplificat, dar merge
+			if (!newConfigurationMetadata.whiteKingMoved)
+			{
+				newConfigurationMetadata.whiteKingMoved = true; // INFO: e simplificat, dar merge
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKingMoved;
+			}
 
 			newConfigurationMetadata.whiteKing ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKing[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'p')
 		{
 			if (internalMove[i].second / GameMetadata::NUM_TILES_WIDTH == 3 && i >= 1 && internalMove[i - 1].first == 'p' && internalMove[i - 1].second / GameMetadata::NUM_TILES_WIDTH == 1)
+			{
 				newConfigurationMetadata.capturableEnPassantPosition = internalMove[i].second;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingCapturableEnPassant[newConfigurationMetadata.capturableEnPassantPosition];
+			}
 
 			newConfigurationMetadata.blackPawns ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackPawn[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'r')
 		{
 			if (!newConfigurationMetadata.blackRookTopLeftMoved && internalMove[i].second == this->blackRookTopLeftPos)
+			{
 				newConfigurationMetadata.blackRookTopLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopLeftMoved;
+			}
 			else if (!newConfigurationMetadata.blackRookTopRightMoved && internalMove[i].second == this->blackRookTopRightPos)
+			{
 				newConfigurationMetadata.blackRookTopRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopRightMoved;
+			}
 
 			newConfigurationMetadata.blackRooks ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRook[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'n')
 		{
 			newConfigurationMetadata.blackKnights ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKnight[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'b')
 		{
 			newConfigurationMetadata.blackBishops ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackBishop[internalMove[i].second];
 		}
 		else if (internalMove[i].first == 'q')
 		{
 			newConfigurationMetadata.blackQueens ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackQueen[internalMove[i].second];
 		}
 		else // Black King (k)
 		{
-			newConfigurationMetadata.blackKingMoved = true; // INFO: e simplificat, dar merge
+			if (!newConfigurationMetadata.blackKingMoved)
+			{
+				newConfigurationMetadata.blackKingMoved = true; // INFO: e simplificat, dar merge
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKingMoved;
+			}
 
 			newConfigurationMetadata.blackKing ^= (1ull << internalMove[i].second);
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKing[internalMove[i].second];
 		}
 	}
 
@@ -1090,14 +1299,72 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 
 		// INFO: Se elimina piesele capturate
 
-		newConfigurationMetadata.blackPawns ^= (newConfigurationMetadata.blackPawns & newConfigurationMetadata.allWhitePieces);
-		newConfigurationMetadata.blackRooks ^= (newConfigurationMetadata.blackRooks & newConfigurationMetadata.allWhitePieces);
-		newConfigurationMetadata.blackKnights ^= (newConfigurationMetadata.blackKnights & newConfigurationMetadata.allWhitePieces);
-		newConfigurationMetadata.blackBishops ^= (newConfigurationMetadata.blackBishops & newConfigurationMetadata.allWhitePieces);
-		newConfigurationMetadata.blackQueens ^= (newConfigurationMetadata.blackQueens & newConfigurationMetadata.allWhitePieces);
-		newConfigurationMetadata.blackKing ^= (newConfigurationMetadata.blackKing & newConfigurationMetadata.allWhitePieces);
+		unsigned long long capturedBlackPawns = newConfigurationMetadata.blackPawns & newConfigurationMetadata.allWhitePieces;
+		unsigned long long capturedBlackRooks = newConfigurationMetadata.blackRooks & newConfigurationMetadata.allWhitePieces;
+		unsigned long long capturedBlackKnights = newConfigurationMetadata.blackKnights & newConfigurationMetadata.allWhitePieces;
+		unsigned long long capturedBlackBishops = newConfigurationMetadata.blackBishops & newConfigurationMetadata.allWhitePieces;
+		unsigned long long capturedBlackQueens = newConfigurationMetadata.blackQueens & newConfigurationMetadata.allWhitePieces;
+		unsigned long long capturedBlackKing = newConfigurationMetadata.blackKing & newConfigurationMetadata.allWhitePieces;
+
+		newConfigurationMetadata.blackPawns ^= capturedBlackPawns;
+		newConfigurationMetadata.blackRooks ^= capturedBlackRooks;
+		newConfigurationMetadata.blackKnights ^= capturedBlackKnights;
+		newConfigurationMetadata.blackBishops ^= capturedBlackBishops;
+		newConfigurationMetadata.blackQueens ^= capturedBlackQueens;
+		newConfigurationMetadata.blackKing ^= capturedBlackKing;
 
 		newConfigurationMetadata.allBlackPieces = newConfigurationMetadata.blackPawns | newConfigurationMetadata.blackRooks | newConfigurationMetadata.blackKnights | newConfigurationMetadata.blackBishops | newConfigurationMetadata.blackQueens | newConfigurationMetadata.blackKing;
+
+		// Zobrist Hashing
+
+		while (capturedBlackPawns)
+		{
+			unsigned long long lsb = (capturedBlackPawns & ((~capturedBlackPawns) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackPawn[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedBlackPawns ^= lsb;
+		}
+		while (capturedBlackRooks)
+		{
+			unsigned long long lsb = (capturedBlackRooks & ((~capturedBlackRooks) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+
+			if (!newConfigurationMetadata.blackRookTopLeftMoved && lsb == (1ull << this->blackRookTopLeftPos))
+			{
+				newConfigurationMetadata.blackRookTopLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopLeftMoved;
+			}
+			if (!newConfigurationMetadata.blackRookTopRightMoved && lsb == (1ull << this->blackRookTopRightPos))
+			{
+				newConfigurationMetadata.blackRookTopRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackRookTopRightMoved;
+			}
+
+			capturedBlackRooks ^= lsb;
+		}
+		while (capturedBlackKnights)
+		{
+			unsigned long long lsb = (capturedBlackKnights & ((~capturedBlackKnights) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKnight[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedBlackKnights ^= lsb;
+		}
+		while (capturedBlackBishops)
+		{
+			unsigned long long lsb = (capturedBlackBishops & ((~capturedBlackBishops) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackBishop[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedBlackBishops ^= lsb;
+		}
+		while (capturedBlackQueens)
+		{
+			unsigned long long lsb = (capturedBlackQueens & ((~capturedBlackQueens) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackQueen[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedBlackQueens ^= lsb;
+		}
+		while (capturedBlackKing)
+		{
+			unsigned long long lsb = (capturedBlackKing & ((~capturedBlackKing) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedBlackKing ^= lsb;
+		}
 	}
 	else
 	{
@@ -1105,14 +1372,72 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 
 		// INFO: Se elimina piesele capturate
 
-		newConfigurationMetadata.whitePawns ^= (newConfigurationMetadata.whitePawns & newConfigurationMetadata.allBlackPieces);
-		newConfigurationMetadata.whiteRooks ^= (newConfigurationMetadata.whiteRooks & newConfigurationMetadata.allBlackPieces);
-		newConfigurationMetadata.whiteKnights ^= (newConfigurationMetadata.whiteKnights & newConfigurationMetadata.allBlackPieces);
-		newConfigurationMetadata.whiteBishops ^= (newConfigurationMetadata.whiteBishops & newConfigurationMetadata.allBlackPieces);
-		newConfigurationMetadata.whiteQueens ^= (newConfigurationMetadata.whiteQueens & newConfigurationMetadata.allBlackPieces);
-		newConfigurationMetadata.whiteKing ^= (newConfigurationMetadata.whiteKing & newConfigurationMetadata.allBlackPieces);
+		unsigned long long capturedWhitePawns = newConfigurationMetadata.whitePawns & newConfigurationMetadata.allBlackPieces;
+		unsigned long long capturedWhiteRooks = newConfigurationMetadata.whiteRooks & newConfigurationMetadata.allBlackPieces;
+		unsigned long long capturedWhiteKnights = newConfigurationMetadata.whiteKnights & newConfigurationMetadata.allBlackPieces;
+		unsigned long long capturedWhiteBishops = newConfigurationMetadata.whiteBishops & newConfigurationMetadata.allBlackPieces;
+		unsigned long long capturedWhiteQueens = newConfigurationMetadata.whiteQueens & newConfigurationMetadata.allBlackPieces;
+		unsigned long long capturedWhiteKing = newConfigurationMetadata.whiteKing & newConfigurationMetadata.allBlackPieces;
+
+		newConfigurationMetadata.whitePawns ^= capturedWhitePawns;
+		newConfigurationMetadata.whiteRooks ^= capturedWhiteRooks;
+		newConfigurationMetadata.whiteKnights ^= capturedWhiteKnights;
+		newConfigurationMetadata.whiteBishops ^= capturedWhiteBishops;
+		newConfigurationMetadata.whiteQueens ^= capturedWhiteQueens;
+		newConfigurationMetadata.whiteKing ^= capturedWhiteKing;
 
 		newConfigurationMetadata.allWhitePieces = newConfigurationMetadata.whitePawns | newConfigurationMetadata.whiteRooks | newConfigurationMetadata.whiteKnights | newConfigurationMetadata.whiteBishops | newConfigurationMetadata.whiteQueens | newConfigurationMetadata.whiteKing;
+
+		// Zobrist Hashing
+
+		while (capturedWhitePawns)
+		{
+			unsigned long long lsb = (capturedWhitePawns & ((~capturedWhitePawns) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhitePawn[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedWhitePawns ^= lsb;
+		}
+		while (capturedWhiteRooks)
+		{
+			unsigned long long lsb = (capturedWhiteRooks & ((~capturedWhiteRooks) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRook[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+
+			if (!newConfigurationMetadata.whiteRookBottomLeftMoved && lsb == (1ull << this->whiteRookBottomLeftPos))
+			{
+				newConfigurationMetadata.whiteRookBottomLeftMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomLeftMoved;
+			}
+			if (!newConfigurationMetadata.whiteRookBottomRightMoved && lsb == (1ull << this->whiteRookBottomRightPos))
+			{
+				newConfigurationMetadata.whiteRookBottomRightMoved = true;
+				newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteRookBottomRightMoved;
+			}
+
+			capturedWhiteRooks ^= lsb;
+		}
+		while (capturedWhiteKnights)
+		{
+			unsigned long long lsb = (capturedWhiteKnights & ((~capturedWhiteKnights) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKnight[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedWhiteKnights ^= lsb;
+		}
+		while (capturedWhiteBishops)
+		{
+			unsigned long long lsb = (capturedWhiteBishops & ((~capturedWhiteBishops) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteBishop[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedWhiteBishops ^= lsb;
+		}
+		while (capturedWhiteQueens)
+		{
+			unsigned long long lsb = (capturedWhiteQueens & ((~capturedWhiteQueens) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteQueen[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedWhiteQueens ^= lsb;
+		}
+		while (capturedWhiteKing)
+		{
+			unsigned long long lsb = (capturedWhiteKing & ((~capturedWhiteKing) + 1));
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			capturedWhiteKing ^= lsb;
+		}
 	}
 
 
@@ -1123,11 +1448,17 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 	// 
 
 	newConfigurationMetadata.whiteTurn = !newConfigurationMetadata.whiteTurn;
+	newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteTurn;
+
+	if (zobristHashingValuesFrequency.find(newConfigurationMetadata.zobristHashingValue) == zobristHashingValuesFrequency.end())
+		zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue] = 1;
+	else
+		++zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 	return newConfigurationMetadata;
 }
 
-std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const
+std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std::string& externalMove) const
 {
 	// INFO: Ne permitem sa facem metoda aceasta mai ineficienta, deoarece bottleneck-ul in acest caz este interactiunea umana.
 
@@ -1220,7 +1551,7 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const Conf
 
 void BoardManager::applyMoveExternal(const std::string& externalMove)
 {
-	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(this->configurationMetadata, externalMove)));
+	this->configurationMetadata.initialize(this->applyMoveInternal(this->configurationMetadata, this->convertToInternalMove(externalMove), this->zobristHashingValuesFrequency));
 
 	//
 
@@ -1237,7 +1568,7 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 
 	if (Game::get().getMode() == Game::Mode::NONE)
 	{
-		std::cout << "Error: Game Mode not set when generating moves for piece position" << std::endl;
+		std::cout << "Error : Game Mode not set when generating moves for piece position" << std::endl;
 		return std::vector<std::string>();
 	}
 	else if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
@@ -1245,6 +1576,8 @@ std::vector<std::string> BoardManager::generateMovesForPiecePosition(const std::
 		if (Game::get().getColor() == Game::Color::WHITE && !this->configurationMetadata.whiteTurn)
 			return std::vector<std::string>();
 		else if (Game::get().getColor() == Game::Color::BLACK && this->configurationMetadata.whiteTurn)
+			return std::vector<std::string>();
+		else if (this->isDrawByRepetition(this->configurationMetadata)) // INFO: Daca e remiza prin repetitie, nu se mai pot face mutari. Doar pentru Singleplayer a fost implementat.
 			return std::vector<std::string>();
 	}
 	else if (Game::get().getMode() == Game::Mode::MULTIPLAYER)
@@ -1591,19 +1924,19 @@ void BoardManager::generateBlackPawnAttackZone(ConfigurationMetadata& configurat
 	unsigned long long blackPawns = (configurationMetadata.blackPawns & (~this->rankBitMasks[7 * GameMetadata::NUM_TILES_WIDTH]));
 
 	// Atac Stanga
-	unsigned long long leftAttackZone = ((blackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH + 1));
+	unsigned long long leftAttackZone = ((blackPawns & (~this->fileBitMasks[0])) << (GameMetadata::NUM_TILES_WIDTH - 1));
 	configurationMetadata.blackPawnAttackZone |= leftAttackZone;
 	if (leftAttackZone & configurationMetadata.whiteKing)
 	{
-		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
 	}
 
 	// Atac Dreapta
-	unsigned long long rightAttackZone = ((blackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH - 1));
+	unsigned long long rightAttackZone = ((blackPawns & (~this->fileBitMasks[GameMetadata::NUM_TILES_WIDTH - 1])) << (GameMetadata::NUM_TILES_WIDTH + 1));
 	configurationMetadata.blackPawnAttackZone |= rightAttackZone;
 	if (rightAttackZone & configurationMetadata.whiteKing)
 	{
-		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH - 1));
+		configurationMetadata.whiteKingDefenseZone &= (configurationMetadata.whiteKing >> (GameMetadata::NUM_TILES_WIDTH + 1));
 	}
 
 	// Atac En Passant (nu trebuie) (zona de atac adaugata de en passant nu este niciodata utila)
@@ -1884,12 +2217,12 @@ void BoardManager::generateBlackKingAttackZone(ConfigurationMetadata& configurat
 
 void BoardManager::generateWhiteAttackZones(ConfigurationMetadata& configurationMetadata)
 {
-	generateWhitePawnAttackZone(configurationMetadata);
-	generateWhiteRookAttackZone(configurationMetadata);
-	generateWhiteKnightAttackZone(configurationMetadata);
-	generateWhiteBishopAttackZone(configurationMetadata);
-	generateWhiteQueenAttackZone(configurationMetadata);
-	generateWhiteKingAttackZone(configurationMetadata);
+	this->generateWhitePawnAttackZone(configurationMetadata);
+	this->generateWhiteRookAttackZone(configurationMetadata);
+	this->generateWhiteKnightAttackZone(configurationMetadata);
+	this->generateWhiteBishopAttackZone(configurationMetadata);
+	this->generateWhiteQueenAttackZone(configurationMetadata);
+	this->generateWhiteKingAttackZone(configurationMetadata);
 
 	configurationMetadata.whiteAttackZones =
 		configurationMetadata.whitePawnAttackZone |
@@ -1902,12 +2235,12 @@ void BoardManager::generateWhiteAttackZones(ConfigurationMetadata& configuration
 
 void BoardManager::generateBlackAttackZones(ConfigurationMetadata& configurationMetadata)
 {
-	generateBlackPawnAttackZone(configurationMetadata);
-	generateBlackRookAttackZone(configurationMetadata);
-	generateBlackKnightAttackZone(configurationMetadata);
-	generateBlackBishopAttackZone(configurationMetadata);
-	generateBlackQueenAttackZone(configurationMetadata);
-	generateBlackKingAttackZone(configurationMetadata);
+	this->generateBlackPawnAttackZone(configurationMetadata);
+	this->generateBlackRookAttackZone(configurationMetadata);
+	this->generateBlackKnightAttackZone(configurationMetadata);
+	this->generateBlackBishopAttackZone(configurationMetadata);
+	this->generateBlackQueenAttackZone(configurationMetadata);
+	this->generateBlackKingAttackZone(configurationMetadata);
 
 	configurationMetadata.blackAttackZones =
 		configurationMetadata.blackPawnAttackZone |
@@ -2076,7 +2409,7 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
 	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
 
-	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)));
+	unsigned long long whitePawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH - 1)) | (configurationMetadata.whiteKingDefenseZone >> 1)));
 	if (whitePawnEnPassantRight &&
 			(
 				!
@@ -2114,7 +2447,7 @@ void BoardManager::generateWhitePawnMoves(ConfigurationMetadata& configurationMe
 		moves.back().emplace_back(std::make_pair('p', configurationMetadata.capturableEnPassantPosition));
 	}
 
-	unsigned long long whitePawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH + 1)));
+	unsigned long long whitePawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.whiteKingDefenseZone << (GameMetadata::NUM_TILES_WIDTH + 1)) | (configurationMetadata.whiteKingDefenseZone << 1)));
 	if (whitePawnEnPassantLeft &&
 			(
 				!
@@ -2550,7 +2883,7 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 	unsigned long long enPassantDiagonalPieces0 = this->extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition + 1);
 	unsigned long long enPassantDiagonalPieces1 = this->extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, configurationMetadata.capturableEnPassantPosition - 1);
 
-	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)));
+	unsigned long long blackPawnEnPassantRight = ((((1ull << configurationMetadata.capturableEnPassantPosition) << 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH - 1)) | (configurationMetadata.blackKingDefenseZone << 1)));
 	if (blackPawnEnPassantRight &&
 			(
 				!
@@ -2588,7 +2921,7 @@ void BoardManager::generateBlackPawnMoves(ConfigurationMetadata& configurationMe
 		moves.back().emplace_back(std::make_pair('P', configurationMetadata.capturableEnPassantPosition));
 	}
 
-	unsigned long long blackPawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & (configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH + 1)));
+	unsigned long long blackPawnEnPassantLeft = ((((1ull << configurationMetadata.capturableEnPassantPosition) >> 1) & blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & this->rankBitMasks[configurationMetadata.capturableEnPassantPosition]) & ((configurationMetadata.blackKingDefenseZone >> (GameMetadata::NUM_TILES_WIDTH + 1)) | (configurationMetadata.blackKingDefenseZone >> 1)));
 	if (blackPawnEnPassantLeft &&
 			(
 				!
@@ -2876,15 +3209,15 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 
 	configurationMetadata.whiteKingDefenseZone = (~(0ull));
 
-	generateBlackAttackZones(configurationMetadata);
+	this->generateBlackAttackZones(configurationMetadata);
 
 	// INFO: Sunt in alta ordine decat cea obisnuita pentru a face practic un move ordering pentru MinMax.
-	generateWhiteQueenMoves(configurationMetadata, moves);
-	generateWhiteRookMoves(configurationMetadata, moves);
-	generateWhiteBishopMoves(configurationMetadata, moves);
-	generateWhiteKnightMoves(configurationMetadata, moves);
-	generateWhitePawnMoves(configurationMetadata, moves);
-	generateWhiteKingMoves(configurationMetadata, moves);
+	this->generateWhiteQueenMoves(configurationMetadata, moves);
+	this->generateWhiteRookMoves(configurationMetadata, moves);
+	this->generateWhiteBishopMoves(configurationMetadata, moves);
+	this->generateWhiteKnightMoves(configurationMetadata, moves);
+	this->generateWhitePawnMoves(configurationMetadata, moves);
+	this->generateWhiteKingMoves(configurationMetadata, moves);
 }
 
 void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -2896,15 +3229,15 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 
 	configurationMetadata.blackKingDefenseZone = (~(0ull));
 
-	generateWhiteAttackZones(configurationMetadata);
+	this->generateWhiteAttackZones(configurationMetadata);
 
 	// INFO: Sunt in alta ordine decat cea obisnuita pentru a face practic un move ordering pentru MinMax.
-	generateBlackQueenMoves(configurationMetadata, moves);
-	generateBlackRookMoves(configurationMetadata, moves);
-	generateBlackBishopMoves(configurationMetadata, moves);
-	generateBlackKnightMoves(configurationMetadata, moves);
-	generateBlackPawnMoves(configurationMetadata, moves);
-	generateBlackKingMoves(configurationMetadata, moves);
+	this->generateBlackQueenMoves(configurationMetadata, moves);
+	this->generateBlackRookMoves(configurationMetadata, moves);
+	this->generateBlackBishopMoves(configurationMetadata, moves);
+	this->generateBlackKnightMoves(configurationMetadata, moves);
+	this->generateBlackPawnMoves(configurationMetadata, moves);
+	this->generateBlackKingMoves(configurationMetadata, moves);
 }
 
 // Checkmates
@@ -2914,7 +3247,7 @@ bool BoardManager::isWhiteKingInCheckmate(ConfigurationMetadata& configurationMe
 	std::vector<std::vector<std::pair<char, int>>> moves;
 	this->generateWhiteMoves(configurationMetadata, moves);
 
-	return moves.empty();
+	return moves.empty() && this->isWhiteKingInCheck(configurationMetadata);
 }
 
 bool BoardManager::isBlackKingInCheckmate(ConfigurationMetadata& configurationMetadata)
@@ -2922,7 +3255,25 @@ bool BoardManager::isBlackKingInCheckmate(ConfigurationMetadata& configurationMe
 	std::vector<std::vector<std::pair<char, int>>> moves;
 	this->generateBlackMoves(configurationMetadata, moves);
 
-	return moves.empty();
+	return moves.empty() && this->isBlackKingInCheck(configurationMetadata);
+}
+
+// Draws
+
+bool BoardManager::isWhiteKingInDraw(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateWhiteMoves(configurationMetadata, moves);
+
+	return moves.empty() && !this->isWhiteKingInCheck(configurationMetadata);
+}
+
+bool BoardManager::isBlackKingInDraw(ConfigurationMetadata& configurationMetadata)
+{
+	std::vector<std::vector<std::pair<char, int>>> moves;
+	this->generateBlackMoves(configurationMetadata, moves);
+
+	return moves.empty() && !this->isBlackKingInCheck(configurationMetadata);
 }
 
 //
@@ -2957,6 +3308,33 @@ void BoardManager::printBitBoard(unsigned long long bitBoard) const
 	}
 
 	std::cout << std::endl;
+}
+
+void BoardManager::setPiecesConfiguration(const std::string& piecesConfiguration)
+{
+	this->configurationMetadata.initialize(piecesConfiguration);
+
+	std::cout << "Warning : BoardManager : setPiecesConfiguration : Function has been called, attention to Zobrist Hashing frequencies" << std::endl;
+}
+
+void BoardManager::popLastConfigurationMetadataFromHistory()
+{
+	if (!this->configurationMetadataHistory.empty())
+	{
+		if (this->zobristHashingValuesFrequency.find(this->configurationMetadata.zobristHashingValue) != this->zobristHashingValuesFrequency.end())
+		{
+			--this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue];
+			if (this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] == 0)
+				this->zobristHashingValuesFrequency.erase(this->configurationMetadata.zobristHashingValue);
+		}
+		else
+		{
+			std::cout << "Warning : BoardManager : popLastConfigurationMetadataFromHistory : Zobrist Hashing Value Frequency is 0" << std::endl;
+		}
+
+		this->configurationMetadata.initialize(this->configurationMetadataHistory.back());
+		this->configurationMetadataHistory.pop_back();
+	}
 }
 
 ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationString)
@@ -3027,6 +3405,10 @@ ConfigurationMetadata::ConfigurationMetadata(const std::string& configurationStr
 	this->allPieces = this->allWhitePieces | this->allBlackPieces;
 
 	this->emptyTiles = (~this->allPieces);
+
+	// Zobrist Hashing
+
+	BoardManager::get().calculateZobristHashingValue(*this);
 }
 
 ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata)
@@ -3063,6 +3445,10 @@ ConfigurationMetadata::ConfigurationMetadata(const ConfigurationMetadata& config
 	this->allPieces = this->allWhitePieces | this->allBlackPieces;
 
 	this->emptyTiles = (~this->allPieces);
+
+	// Zobrist Hashing
+
+	BoardManager::get().calculateZobristHashingValue(*this);
 }
 
 void ConfigurationMetadata::initialize(const std::string& configurationString)
@@ -3133,6 +3519,10 @@ void ConfigurationMetadata::initialize(const std::string& configurationString)
 	this->allPieces = this->allWhitePieces | this->allBlackPieces;
 
 	this->emptyTiles = (~this->allPieces);
+
+	// Zobrist Hashing
+
+	BoardManager::get().calculateZobristHashingValue(*this);
 }
 
 void ConfigurationMetadata::initialize(const ConfigurationMetadata& configurationMetadata)
@@ -3172,6 +3562,10 @@ void ConfigurationMetadata::initialize(const ConfigurationMetadata& configuratio
 	this->allPieces = this->allWhitePieces | this->allBlackPieces;
 
 	this->emptyTiles = (~this->allPieces);
+
+	// Zobrist Hashing
+
+	BoardManager::get().calculateZobristHashingValue(*this);
 }
 
 

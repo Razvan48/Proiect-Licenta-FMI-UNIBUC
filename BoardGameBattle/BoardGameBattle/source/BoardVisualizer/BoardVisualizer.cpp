@@ -174,6 +174,12 @@ void BoardVisualizer::initialize()
 	this->gameHasEnded = false;
 
 	this->pawnPromotionMenuActive = false;
+
+
+	// Daca Agentul este activ trebuie retetat
+	GameAgentSelector::get().setIsRunningTask(false);
+	GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+	GameAgentSelector::get().isTaskCancelled.store(true);
 }
 
 void BoardVisualizer::draw()
@@ -305,7 +311,7 @@ void BoardVisualizer::update()
 			{
 				// Adaugare in Istoric pentru BoardManager
 				BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata());
-				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove));
+				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove, BoardManager::get().getZobristHashingValuesFrequency()));
 
 				// Resetare
 				GameAgentSelector::get().setIsRunningTask(false);
@@ -538,16 +544,7 @@ void BoardVisualizer::update()
 			}
 		}
 	}
-	else if
-		(
-			(
-				BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isWhiteKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedWhiteMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
-			)
-				||
-			(
-				!BoardManager::get().getConfigurationMetadata().whiteTurn && !BoardManager::get().isBlackKingInCheck(BoardManager::get().getConfigurationMetadata()) && BoardManager::get().getGeneratedBlackMovesCount(BoardManager::get().getConfigurationMetadata()) == 0
-			)
-		)
+	else if (BoardManager::get().isWhiteKingInDraw(BoardManager::get().getConfigurationMetadata()) || BoardManager::get().isBlackKingInDraw(BoardManager::get().getConfigurationMetadata()))
 	{
 		if (!this->gameHasEnded)
 		{
@@ -562,6 +559,15 @@ void BoardVisualizer::update()
 				else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
 					JoinedMultiplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(JoinedMultiplayerGameVisualInterface::FinalMessage::DRAW);
 			}
+		}
+	}
+	else if (BoardManager::get().isDrawByRepetition(BoardManager::get().getConfigurationMetadata()) && Game::get().getMode() == Game::Mode::SINGLEPLAYER) // INFO: Doar pentru Singleplayer se verifica daca e Draw by Repetition. Implementarea de mai jos este doar pentru Singleplayer.
+	{
+		if (!this->gameHasEnded)
+		{
+			this->gameHasEnded = true;
+
+			SingleplayerGameVisualInterface::get().get()->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::DRAW);
 		}
 	}
 	else

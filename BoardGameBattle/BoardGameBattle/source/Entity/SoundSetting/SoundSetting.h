@@ -6,12 +6,11 @@
 class SoundSetting : virtual public TextEntity
 {
 protected:
-	Button buttonOn;
-	Button buttonOff;
+	Button buttonOnOff;
 
 public:
 	SoundSetting(float centerPosX, float centerPosY, float width, float height, float rotateAngle
-		, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOn, Button buttonOff);
+		, const glm::vec3& color, const std::string& fontName, const std::string& text, Button buttonOnOff);
 	virtual ~SoundSetting();
 
 	virtual void draw() override;

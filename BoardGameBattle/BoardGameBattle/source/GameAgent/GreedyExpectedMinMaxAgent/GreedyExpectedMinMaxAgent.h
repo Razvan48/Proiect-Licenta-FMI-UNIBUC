@@ -8,15 +8,15 @@
 
 #include <map>
 
-class GreedyMinMaxAgent : virtual public GameAgent
+class GreedyExpectedMinMaxAgent : virtual public GameAgent
 {
 private:
-	GreedyMinMaxAgent();
-	virtual ~GreedyMinMaxAgent();
-	GreedyMinMaxAgent(const GreedyMinMaxAgent& other) = delete;
-	GreedyMinMaxAgent& operator= (const GreedyMinMaxAgent& other) = delete;
-	GreedyMinMaxAgent(const GreedyMinMaxAgent&& other) = delete;
-	GreedyMinMaxAgent& operator= (const GreedyMinMaxAgent&& other) = delete;
+	GreedyExpectedMinMaxAgent();
+	virtual ~GreedyExpectedMinMaxAgent();
+	GreedyExpectedMinMaxAgent(const GreedyExpectedMinMaxAgent& other) = delete;
+	GreedyExpectedMinMaxAgent& operator= (const GreedyExpectedMinMaxAgent& other) = delete;
+	GreedyExpectedMinMaxAgent(const GreedyExpectedMinMaxAgent&& other) = delete;
+	GreedyExpectedMinMaxAgent& operator= (const GreedyExpectedMinMaxAgent&& other) = delete;
 
 protected:
 	static const int MAX_DEPTH;
@@ -57,10 +57,12 @@ protected:
 	static const float BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
-	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente
+	static const int EXPECTED_NUM_NODES_VISITED;
+
+	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente
 
 public:
-	static GreedyMinMaxAgent& get();
+	static GreedyExpectedMinMaxAgent& get();
 
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;

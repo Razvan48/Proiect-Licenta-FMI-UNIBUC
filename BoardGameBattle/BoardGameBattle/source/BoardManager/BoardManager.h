@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "../GameMetadata/GameMetadata.h"
 
@@ -75,8 +76,14 @@ struct ConfigurationMetadata
 
 	//
 
+	unsigned long long zobristHashingValue;
+
+	//
+
 	ConfigurationMetadata(const std::string& configurationString);
 	ConfigurationMetadata(const ConfigurationMetadata& configurationMetadata);
+
+	ConfigurationMetadata() = default; // Doar in constructorul BoardManager-ului trebuie folosit, exista doar ca sa nu loopeze la infinit acel constructor.
 
 	void initialize(const std::string& configurationString);
 	void initialize(const ConfigurationMetadata& configurationMetadata);
@@ -145,6 +152,45 @@ private:
 	int blackRookTopLeftPos;
 	int blackRookTopRightPos;
 
+	// Zobrist Hashing
+	
+	unsigned long long zobristHashingWhitePawn[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteRook[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteKnight[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteBishop[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteQueen[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingWhiteKing[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingBlackPawn[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackRook[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackKnight[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackBishop[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackQueen[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+	unsigned long long zobristHashingBlackKing[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingWhiteTurn;
+
+	unsigned long long zobristHashingCapturableEnPassant[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
+	unsigned long long zobristHashingWhiteKingMoved;
+	unsigned long long zobristHashingWhiteRookBottomLeftMoved;
+	unsigned long long zobristHashingWhiteRookBottomRightMoved;
+
+	unsigned long long zobristHashingBlackKingMoved;
+	unsigned long long zobristHashingBlackRookTopLeftMoved;
+	unsigned long long zobristHashingBlackRookTopRightMoved;
+
+	void generateZobristHashing();
+
+	std::map<unsigned long long, int> zobristHashingValuesFrequency;
+
+public:
+	void calculateZobristHashingValue(ConfigurationMetadata& configurationMetadata) const;
+
+private:
+
+	//
+
 	ConfigurationMetadata configurationMetadata;
 
 	std::vector<ConfigurationMetadata> configurationMetadataHistory;
@@ -203,12 +249,15 @@ public:
 	bool isWhiteKingInCheckmate(ConfigurationMetadata& configurationMetadata);
 	bool isBlackKingInCheckmate(ConfigurationMetadata& configurationMetadata);
 
+	bool isWhiteKingInDraw(ConfigurationMetadata& configurationMetadata);
+	bool isBlackKingInDraw(ConfigurationMetadata& configurationMetadata);
+
 public: // INFO: Board Visualizer are nevoie pentru conversii.
 	std::string convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const;
 
 public: // INFO: Trebuie sa fie publica pentru a putea fi apelata din GameAgent.
 	ConfigurationMetadata& getConfigurationMetadata() { return this->configurationMetadata; }
-	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove);
+	ConfigurationMetadata applyMoveInternal(const ConfigurationMetadata& configurationMetadata, const std::vector<std::pair<char, int>>& internalMove, std::map<unsigned long long, int>& zobristHashingValuesFrequency) const;
 
 public:
 	static BoardManager& get();
@@ -217,27 +266,23 @@ public:
 
 	std::string getPiecesConfiguration() const;
 
-	std::vector<std::pair<char, int>> convertToInternalMove(const ConfigurationMetadata& configurationMetadata, const std::string& externalMove) const;
+	std::vector<std::pair<char, int>> convertToInternalMove(const std::string& externalMove) const;
 	void applyMoveExternal(const std::string& externalMove);
 
 	inline bool getWhiteTurn() const { return this->configurationMetadata.whiteTurn; }
 
 	std::vector<std::string> generateMovesForPiecePosition(const std::string& piecePosition);
 
-	void setPiecesConfiguration(const std::string& piecesConfiguration) { this->configurationMetadata.initialize(piecesConfiguration); }
+	void setPiecesConfiguration(const std::string& piecesConfiguration);
 
-	inline void addNewConfigurationMetadataInHistory(const ConfigurationMetadata& configurationMetadata) { this->configurationMetadataHistory.push_back(configurationMetadata); }
-	inline void popLastConfigurationMetadataFromHistory()
-	{
-		if (!this->configurationMetadataHistory.empty())
-		{
-			this->configurationMetadata.initialize(this->configurationMetadataHistory.back());
-			this->configurationMetadataHistory.pop_back();
-		}
-	}
+	inline void addNewConfigurationMetadataInHistory(const ConfigurationMetadata& configurationMetadata) { this->configurationMetadataHistory.push_back(configurationMetadata); } // INFO: Atentie ca nu populeaza map-ul de frecvente de hashing. Stiva de istoric nu contine niciodata configuratia curenta.
+	void popLastConfigurationMetadataFromHistory();
 
 	int getGeneratedWhiteMovesCount(ConfigurationMetadata& configurationMetadata);
 	int getGeneratedBlackMovesCount(ConfigurationMetadata& configurationMetadata);
+
+	inline bool isDrawByRepetition(ConfigurationMetadata& configurationMetadata) { return this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION; }
+	inline std::map<unsigned long long, int>& getZobristHashingValuesFrequency() { return this->zobristHashingValuesFrequency; }
 
 	void printBitBoard(unsigned long long bitBoard) const;
 };

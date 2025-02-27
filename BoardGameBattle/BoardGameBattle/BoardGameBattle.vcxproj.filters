@@ -121,6 +121,9 @@
     <Filter Include="Source Files\Entity\Button\PawnPromotionButton">
       <UniqueIdentifier>{218ba7f6-1cc1-445b-8da8-118e85ad5c32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameAgent\GreedyExpectedMinMaxAgent">
+      <UniqueIdentifier>{8cd1d09f-e4c3-4d7a-b746-437dedcb179b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -231,6 +234,9 @@
     <ClCompile Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.cpp">
       <Filter>Source Files\Entity\Button\PawnPromotionButton</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.cpp">
+      <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -337,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="source\Entity\Button\PawnPromotionButton\PawnPromotionButton.h">
       <Filter>Source Files\Entity\Button\PawnPromotionButton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.h">
+      <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
