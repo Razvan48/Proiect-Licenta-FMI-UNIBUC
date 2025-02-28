@@ -281,7 +281,7 @@ public:
 	int getGeneratedWhiteMovesCount(ConfigurationMetadata& configurationMetadata);
 	int getGeneratedBlackMovesCount(ConfigurationMetadata& configurationMetadata);
 
-	inline bool isDrawByRepetition(ConfigurationMetadata& configurationMetadata) { return this->zobristHashingValuesFrequency[this->configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION; }
+	inline bool isDrawByRepetition(ConfigurationMetadata& configurationMetadata) { return this->zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION; }
 	inline std::map<unsigned long long, int>& getZobristHashingValuesFrequency() { return this->zobristHashingValuesFrequency; }
 
 	void printBitBoard(unsigned long long bitBoard) const;
