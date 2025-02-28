@@ -1673,13 +1673,13 @@ void BoardManager::generateWhiteRookAttackZone(ConfigurationMetadata& configurat
 
 
 		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
+			configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
 		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
+			configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
 		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
+			configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
 		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
+			configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
 
 		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
@@ -1757,13 +1757,13 @@ void BoardManager::generateWhiteBishopAttackZone(ConfigurationMetadata& configur
 
 
 		if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 
 		if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].first & configurationMetadata.blackKing)
 		{
@@ -1834,21 +1834,21 @@ void BoardManager::generateWhiteQueenAttackZone(ConfigurationMetadata& configura
 
 
 		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
+			configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
 		else if (this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
+			configurationMetadata.blackPiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].second.first;
 		else if (this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
+			configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
 		else if (this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
+			configurationMetadata.blackPiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][whitePiecesSameFile][blackPiecesSameFile].second.first;
 		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][whitePiecesSameDiagonal0][blackPiecesSameDiagonal0].second.first;
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.second & configurationMetadata.blackKing)
-			this->configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
+			configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][whitePiecesSameDiagonal1][blackPiecesSameDiagonal1].second.first;
 
 		if (this->precalculatedLeftAttackZones[pos][whitePiecesSameRank][blackPiecesSameRank].first & configurationMetadata.blackKing)
 		{
@@ -1970,13 +1970,13 @@ void BoardManager::generateBlackRookAttackZone(ConfigurationMetadata& configurat
 
 
 		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
+			configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
 		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
+			configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
 		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
+			configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
 		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
+			configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
 
 		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
@@ -2054,13 +2054,13 @@ void BoardManager::generateBlackBishopAttackZone(ConfigurationMetadata& configur
 
 
 		if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 
 		if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].first & configurationMetadata.whiteKing)
 		{
@@ -2131,21 +2131,21 @@ void BoardManager::generateBlackQueenAttackZone(ConfigurationMetadata& configura
 
 
 		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
+			configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
 		else if (this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
+			configurationMetadata.whitePiecesPinnedOnRank |= this->precalculatedRightAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].second.first;
 		else if (this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
+			configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedTopAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
 		else if (this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
+			configurationMetadata.whitePiecesPinnedOnFile |= this->precalculatedBottomAttackZones[pos][blackPiecesSameFile][whitePiecesSameFile].second.first;
 		else if (this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedTopLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
 		else if (this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal |= this->precalculatedBottomRightDiagonalAttackZones[pos][blackPiecesSameDiagonal0][whitePiecesSameDiagonal0].second.first;
 		else if (this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedTopRightDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 		else if (this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.second & configurationMetadata.whiteKing)
-			this->configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
+			configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal |= this->precalculatedBottomLeftDiagonalAttackZones[pos][blackPiecesSameDiagonal1][whitePiecesSameDiagonal1].second.first;
 
 		if (this->precalculatedLeftAttackZones[pos][blackPiecesSameRank][whitePiecesSameRank].first & configurationMetadata.whiteKing)
 		{
