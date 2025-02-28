@@ -4,11 +4,9 @@ int main()
 {
     Game::get().start();
 
-	// exista o remiza nasoala care se poate obtine cand oponentul nu e in sah, dar nu mai poate muta nimic
+	// INFO: La BoardManager.cpp de evitat this->configurationMetadata, trebuie doar configurationMetadata, ca sa afecteze doar instanta locala.
 
-	// hyperparameter tuning pentru attack zones (pare ca ii pasa prea mult de ele si pierde piese inutil) (deci sa le scadem putin valoarea)
-	// max depth dinamic (daca branching factor-ul e mic, putem sa mergem mai adanc) (sigur va ajuta in endgame, unde branching factor-ul e mic)
-	// de monitorizat repetitiile de pozitii (daca se repeta o pozitie de 3 ori, e remiza)
+	// de facut un agent singlethreaded, ca sa nu mai blocheze dispozitivul cand ruleaza
 
 
 
