@@ -168,7 +168,7 @@ float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetad
 	if (zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION)
 		return 0.0f; // Remiza, aceasta configuratie s-a repetat de FREQUENCY_UNTIL_DRAW_REPETITION ori.
 
-	if (depth <= 0 && expectedNumNodesVisited <= 0) // INFO: Trebuie <= 0 pentru expectedNumNodesVisited
+	if (depth >= GreedyExpectedMinMaxAgent::MAX_DEPTH && expectedNumNodesVisited <= 0) // INFO: Trebuie <= 0 pentru expectedNumNodesVisited
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);
 		BoardManager::get().generateBlackAttackZones(configurationMetadata);
@@ -188,7 +188,7 @@ float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetad
 		{
 			ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 			int numNodesVisitedBefore = numNodesVisited;
-			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allWhiteMoves.size() - i));
+			float currentScore = this->minMax(newConfigurationMetadata, depth + 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allWhiteMoves.size() - i));
 			expectedRemainingNumNodesVisited -= (numNodesVisited - numNodesVisitedBefore);
 			--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
@@ -208,7 +208,7 @@ float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetad
 		if (maximumScore == -GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
 		{
 			if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
-				maximumScore = -GreedyExpectedMinMaxAgent::REACHABLE_INF;
+				maximumScore = -GreedyExpectedMinMaxAgent::REACHABLE_INF + 1.0f * depth; // INFO: Se penalizeaza mai mult din cauza ca este mai adanc in cadrul arborelui MinMax.
 			else
 				maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
 		}
@@ -228,7 +228,7 @@ float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetad
 		{
 			ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 			int numNodesVisitedBefore = numNodesVisited;
-			float currentScore = this->minMax(newConfigurationMetadata, depth - 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allBlackMoves.size() - i));
+			float currentScore = this->minMax(newConfigurationMetadata, depth + 1, alpha, beta, zobristHashingValuesFrequency, numNodesVisited, expectedRemainingNumNodesVisited / ((int)allBlackMoves.size() - i));
 			expectedRemainingNumNodesVisited -= (numNodesVisited - numNodesVisitedBefore);
 			--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
@@ -248,7 +248,7 @@ float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetad
 		if (minimumScore == GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
 		{
 			if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
-				minimumScore = GreedyExpectedMinMaxAgent::REACHABLE_INF;
+				minimumScore = GreedyExpectedMinMaxAgent::REACHABLE_INF - 1.0f * depth; // INFO: Se penalizeaza mai mult din cauza ca este mai adanc in cadrul arborelui MinMax.
 			else
 				minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 		}
@@ -293,7 +293,7 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 						{
 							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, GreedyExpectedMinMaxAgent::MAX_DEPTH - 1, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
 							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
@@ -340,7 +340,7 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 						{
 							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, GreedyExpectedMinMaxAgent::MAX_DEPTH - 1, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
 							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
@@ -374,10 +374,10 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 	findBestMoveThread.detach();
 }
 
-const int GreedyExpectedMinMaxAgent::MAX_DEPTH = 5;
+const int GreedyExpectedMinMaxAgent::MAX_DEPTH = 4;
 
-const float GreedyExpectedMinMaxAgent::UNREACHABLE_INF = 65536.0f;
-const float GreedyExpectedMinMaxAgent::REACHABLE_INF = GreedyExpectedMinMaxAgent::UNREACHABLE_INF - 1.0f;
+const float GreedyExpectedMinMaxAgent::UNREACHABLE_INF = 524288.0; // INFO: 2 ^ 19
+const float GreedyExpectedMinMaxAgent::REACHABLE_INF = GreedyExpectedMinMaxAgent::UNREACHABLE_INF / 2.0f;
 
 const float GreedyExpectedMinMaxAgent::PAWN_SCORE = 1.0f;
 const float GreedyExpectedMinMaxAgent::ROOK_SCORE = 5.0f;
