@@ -21,7 +21,7 @@ git clone https://github.com/Razvan48/Proiect-Licenta-FMI-UNIBUC
 <br/>
 <br/>
 
-## Demos (YouTube)
+## Demo-uri (YouTube)
 
 ### [Demo Multiplayer](https://www.youtube.com/watch?v=b2uM6Mkn8E0)
 
