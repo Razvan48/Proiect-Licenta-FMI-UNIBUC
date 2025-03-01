@@ -24,14 +24,11 @@ git clone https://github.com/Razvan48/Proiect-Licenta-FMI-UNIBUC
 ## Demos
 
 ### [Demo Multiplayer](https://www.youtube.com/watch?v=b2uM6Mkn8E0)
-<br/>
-<br/>
+
 ### [Demo Singleplayer (vs. Bot, 1600 rating)](https://www.youtube.com/watch?v=Fa7U4N-Ah20)
-<br/>
-<br/>
+
 ### [Demo Singleplayer (vs. Bot, 1800 rating)](https://www.youtube.com/watch?v=6eb28QZ9re0)
-<br/>
-<br/>
+
 
 <br/>
 <br/>
