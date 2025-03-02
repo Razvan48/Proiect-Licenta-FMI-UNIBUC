@@ -41,7 +41,6 @@
     <ClCompile Include="source\GameAgent\GameAgent.cpp" />
     <ClCompile Include="source\GameAgent\GameAgentSelector\GameAgentSelector.cpp" />
     <ClCompile Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.cpp" />
-    <ClCompile Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.cpp" />
     <ClCompile Include="source\GameMetadata\GameMetadata.cpp" />
     <ClCompile Include="source\Game\Game.cpp" />
     <ClCompile Include="source\GlobalClock\GlobalClock.cpp" />
@@ -80,7 +79,6 @@
     <ClInclude Include="source\GameAgent\GameAgent.h" />
     <ClInclude Include="source\GameAgent\GameAgentSelector\GameAgentSelector.h" />
     <ClInclude Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.h" />
-    <ClInclude Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.h" />
     <ClInclude Include="source\GameMetadata\GameMetadata.h" />
     <ClInclude Include="source\Game\Game.h" />
     <ClInclude Include="source\GlobalClock\GlobalClock.h" />
