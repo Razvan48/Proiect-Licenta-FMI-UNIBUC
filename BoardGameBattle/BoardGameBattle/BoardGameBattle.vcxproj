@@ -38,6 +38,7 @@
     <ClCompile Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.cpp" />
     <ClCompile Include="source\Entity\TexturableEntity\TexturableEntity.cpp" />
     <ClCompile Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.cpp" />
+    <ClCompile Include="source\GameAgent\CachedGreedyExpectedMinMaxAgent\CachedGreedyExpectedMinMaxAgent.cpp" />
     <ClCompile Include="source\GameAgent\GameAgent.cpp" />
     <ClCompile Include="source\GameAgent\GameAgentSelector\GameAgentSelector.cpp" />
     <ClCompile Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.cpp" />
@@ -76,6 +77,7 @@
     <ClInclude Include="source\Entity\TextOnBackgroundEntity\TextOnBackgroundEntity.h" />
     <ClInclude Include="source\Entity\TexturableEntity\TexturableEntity.h" />
     <ClInclude Include="source\Entity\TextureOnBackgroundEntity\TextureOnBackgroundEntity.h" />
+    <ClInclude Include="source\GameAgent\CachedGreedyExpectedMinMaxAgent\CachedGreedyExpectedMinMaxAgent.h" />
     <ClInclude Include="source\GameAgent\GameAgent.h" />
     <ClInclude Include="source\GameAgent\GameAgentSelector\GameAgentSelector.h" />
     <ClInclude Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.h" />
