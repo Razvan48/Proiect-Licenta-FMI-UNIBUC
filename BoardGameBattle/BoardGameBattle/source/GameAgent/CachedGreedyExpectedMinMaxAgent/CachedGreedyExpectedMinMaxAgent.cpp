@@ -217,6 +217,46 @@ void CachedGreedyExpectedMinMaxAgent::addEntryInCache(unsigned long long zobrist
 	}
 }
 
+void CachedGreedyExpectedMinMaxAgent::combineCaches(unsigned long long cacheTime, std::map<unsigned long long, unsigned long long>& lastTimeAccessedCache, std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>& cache)
+{
+	this->cacheTime = std::max(this->cacheTime, cacheTime);
+
+	for (auto itOutside = cache.begin(); itOutside != cache.end(); ++itOutside)
+	{
+		auto itInside = this->cache.find(itOutside->first);
+		if (itInside == this->cache.end())
+		{
+			if (this->cache.size() >= CachedGreedyExpectedMinMaxAgent::MAXIMUM_CACHE_SIZE)
+			{
+				auto it = this->lastTimeAccessedCache.begin();
+				this->cache.erase(it->second);
+				this->lastTimeAccessedCache.erase(it);
+			}
+
+			this->lastTimeAccessedCache[lastTimeAccessedCache[itOutside->first]] = itOutside->first;
+			this->cache[itOutside->first] = itOutside->second;
+		}
+		else
+		{
+			// if (itOutside->second.second.first < itInside->second.second.first) // INFO: Aceasta conditie ar trebui sa fie mereu adevarata.
+			// {
+				this->lastTimeAccessedCache.erase(itInside->second.second.second);
+				this->lastTimeAccessedCache[lastTimeAccessedCache[itOutside->first]] = itOutside->first;
+				itInside->second.first = itOutside->second.first;
+				itInside->second.second.first = itOutside->second.second.first;
+				itInside->second.second.second = lastTimeAccessedCache[itOutside->first];
+			// }
+			/*
+			else
+			{
+				this->lastTimeAccessedCache.erase(lastTimeAccessedCache[itOutside->first]);
+				this->lastTimeAccessedCache[lastTimeAccessedCache[itOutside->first]] = itOutside->first;
+			}
+			*/
+		}
+	}
+}
+
 float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, unsigned long long& cacheTime, std::map<unsigned long long, unsigned long long>& lastTimeAccessedCache, std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>& cache) // INFO: minMax primeste o copie a configuratiei.
 {
 	++numNodesVisited;
@@ -347,6 +387,11 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 		{
 			std::vector<std::future<float>> scoreFutures;
 			std::vector<std::future<int>> numNodesVisitedFutures;
+
+			std::vector<std::future<unsigned long long>> cacheTimeFutures;
+			std::vector<std::future<std::map<unsigned long long, unsigned long long>>> lastTimeAccessedCacheFutures;
+			std::vector<std::future<std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>>> cacheFutures;
+
 			std::vector<std::thread> threads;
 
 			int numNodesVisitedTotal = 0;
@@ -365,19 +410,31 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 					scoreFutures.push_back(scorePromise.get_future());
 					std::promise<int> numNodesVisitedPromise;
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
+					std::promise<unsigned long long> cacheTimePromise;
+					cacheTimeFutures.push_back(cacheTimePromise.get_future());
+					std::promise<std::map<unsigned long long, unsigned long long>> lastTimeAccessedCachePromise;
+					lastTimeAccessedCacheFutures.push_back(lastTimeAccessedCachePromise.get_future());
+					std::promise<std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>> cachePromise;
+					cacheFutures.push_back(cachePromise.get_future());
 
-					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allWhiteMoves.size()]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequency, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allWhiteMoves.size(), cacheTimePromise = std::move(cacheTimePromise), lastTimeAccessedCachePromise = std::move(lastTimeAccessedCachePromise), cachePromise = std::move(cachePromise)]() mutable
 						{
-							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, 0, -CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
-							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+							unsigned long long cacheTime = this->cacheTime;
+							std::map<unsigned long long, unsigned long long> lastTimeAccessedCache(this->lastTimeAccessedCache);
+							std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>> cache(this->cache);
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequency, numNodesVisited, expectedNumNodesVisitedThisThread, cacheTime, lastTimeAccessedCache, cache);
+							--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
 
 							scorePromise.set_value(currentScore);
 							numNodesVisitedPromise.set_value(numNodesVisited);
+
+							cacheTimePromise.set_value(cacheTime);
+							lastTimeAccessedCachePromise.set_value(lastTimeAccessedCache);
+							cachePromise.set_value(cache);
 						}));
 				}
 
@@ -393,6 +450,11 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 					}
 
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
+
+					// Cache
+					std::map<unsigned long long, unsigned long long> lastTimeAccessedCache(lastTimeAccessedCacheFutures[i].get());
+					std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>> cache(cacheFutures[i].get());
+					this->combineCaches(cacheTimeFutures[i].get(), lastTimeAccessedCache, cache);
 				}
 
 				if (!this->isTaskCancelled.load())
@@ -412,19 +474,31 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 					scoreFutures.push_back(scorePromise.get_future());
 					std::promise<int> numNodesVisitedPromise;
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
+					std::promise<unsigned long long> cacheTimePromise;
+					cacheTimeFutures.push_back(cacheTimePromise.get_future());
+					std::promise<std::map<unsigned long long, unsigned long long>> lastTimeAccessedCachePromise;
+					lastTimeAccessedCacheFutures.push_back(lastTimeAccessedCachePromise.get_future());
+					std::promise<std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>> cachePromise;
+					cacheFutures.push_back(cachePromise.get_future());
 
-					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allBlackMoves.size()]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequency, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allBlackMoves.size(), cacheTimePromise = std::move(cacheTimePromise), lastTimeAccessedCachePromise = std::move(lastTimeAccessedCachePromise), cachePromise = std::move(cachePromise)]() mutable
 						{
-							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, 0, -CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
-							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+							unsigned long long cacheTime = this->cacheTime;
+							std::map<unsigned long long, unsigned long long> lastTimeAccessedCache(this->lastTimeAccessedCache);
+							std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>> cache(this->cache);
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, CachedGreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequency, numNodesVisited, expectedNumNodesVisitedThisThread, cacheTime, lastTimeAccessedCache, cache);
+							--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
 
 							scorePromise.set_value(currentScore);
 							numNodesVisitedPromise.set_value(numNodesVisited);
+
+							cacheTimePromise.set_value(cacheTime);
+							lastTimeAccessedCachePromise.set_value(lastTimeAccessedCache);
+							cachePromise.set_value(cache);
 						}));
 				}
 
@@ -440,6 +514,11 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 					}
 
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
+
+					// Cache
+					std::map<unsigned long long, unsigned long long> lastTimeAccessedCache(lastTimeAccessedCacheFutures[i].get());
+					std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>> cache(cacheFutures[i].get());
+					this->combineCaches(cacheTimeFutures[i].get(), lastTimeAccessedCache, cache);
 				}
 
 				if (!this->isTaskCancelled.load())
@@ -711,5 +790,5 @@ const float CachedGreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMeta
 
 const int CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 20000000;
 
-const int CachedGreedyExpectedMinMaxAgent::MAXIMUM_CACHE_SIZE = 5000000;
+const int CachedGreedyExpectedMinMaxAgent::MAXIMUM_CACHE_SIZE = 100000;
 

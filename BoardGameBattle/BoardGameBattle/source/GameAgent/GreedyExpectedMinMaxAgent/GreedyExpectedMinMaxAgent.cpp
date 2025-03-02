@@ -288,13 +288,12 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 					std::promise<int> numNodesVisitedPromise;
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
 
-					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allWhiteMoves.size()]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allWhiteMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequency, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allWhiteMoves.size()]() mutable
 						{
-							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allWhiteMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
-							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequency, numNodesVisited, expectedNumNodesVisitedThisThread);
+							--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
 
@@ -335,13 +334,12 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 					std::promise<int> numNodesVisitedPromise;
 					numNodesVisitedFutures.push_back(numNodesVisitedPromise.get_future());
 
-					std::map<unsigned long long, int> zobristHashingValuesFrequencyCopy(zobristHashingValuesFrequency);
-					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequencyCopy, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allBlackMoves.size()]() mutable
+					threads.push_back(std::thread([this, configurationMetadata, allBlackMoves, i, scorePromise = std::move(scorePromise), zobristHashingValuesFrequency, numNodesVisitedPromise = std::move(numNodesVisitedPromise), expectedNumNodesVisitedThisThread = GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED / (int)allBlackMoves.size()]() mutable
 						{
-							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequencyCopy); // INFO: Se incrementeaza in apel frecventa.
+							ConfigurationMetadata newConfigurationMetadata = BoardManager::get().applyMoveInternal(configurationMetadata, allBlackMoves[i], zobristHashingValuesFrequency); // INFO: Se incrementeaza in apel frecventa.
 							int numNodesVisited = 0;
-							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequencyCopy, numNodesVisited, expectedNumNodesVisitedThisThread);
-							--zobristHashingValuesFrequencyCopy[newConfigurationMetadata.zobristHashingValue];
+							float currentScore = this->minMax(newConfigurationMetadata, 0, -GreedyExpectedMinMaxAgent::UNREACHABLE_INF, GreedyExpectedMinMaxAgent::UNREACHABLE_INF, zobristHashingValuesFrequency, numNodesVisited, expectedNumNodesVisitedThisThread);
+							--zobristHashingValuesFrequency[newConfigurationMetadata.zobristHashingValue];
 
 							// INFO: Entry-ul in map ramane si daca e pe 0 frecventa.
 
