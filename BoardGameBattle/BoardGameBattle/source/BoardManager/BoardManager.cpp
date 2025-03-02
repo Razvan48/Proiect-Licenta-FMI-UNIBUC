@@ -1363,6 +1363,7 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 		{
 			unsigned long long lsb = (capturedBlackKing & ((~capturedBlackKing) + 1));
 			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingBlackKingMoved; // INFO: Nu ar fi necesar, deoarece regele nu poate fi capturat.
 			capturedBlackKing ^= lsb;
 		}
 	}
@@ -1436,6 +1437,7 @@ ConfigurationMetadata BoardManager::applyMoveInternal(const ConfigurationMetadat
 		{
 			unsigned long long lsb = (capturedWhiteKing & ((~capturedWhiteKing) + 1));
 			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKing[this->logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
+			newConfigurationMetadata.zobristHashingValue ^= this->zobristHashingWhiteKingMoved; // INFO: Nu ar fi necesar, deoarece regele nu poate fi capturat.
 			capturedWhiteKing ^= lsb;
 		}
 	}
