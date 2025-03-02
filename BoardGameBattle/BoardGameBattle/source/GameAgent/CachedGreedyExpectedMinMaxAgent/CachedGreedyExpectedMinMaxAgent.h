@@ -8,6 +8,8 @@
 
 #include <map>
 
+#include <mutex>
+
 class CachedGreedyExpectedMinMaxAgent : virtual public GameAgent
 {
 private:
@@ -59,13 +61,25 @@ protected:
 
 	static const int EXPECTED_NUM_NODES_VISITED;
 
-	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente
+	static const int MAXIMUM_CACHE_SIZE;
+
+	std::mutex cacheMutex;
+	unsigned long long cacheTime;
+	std::map<unsigned long long, unsigned long long> lastTimeAccessedCache;
+	std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>> cache;
+
+	void clearCache();
+	std::pair<bool, std::pair<float, int>> getEntryFromCache(unsigned long long zobristHashingValue);
+	void addEntryInCache(unsigned long long zobristHashingValue, float evaluationScore, int depth);
+
+	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited); // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente
 
 public:
 	static CachedGreedyExpectedMinMaxAgent& get();
 
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
+	virtual void reset() override;
 };
 
 

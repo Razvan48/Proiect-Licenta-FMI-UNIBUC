@@ -66,6 +66,7 @@ public:
 
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
+	virtual void reset() override;
 };
 
 

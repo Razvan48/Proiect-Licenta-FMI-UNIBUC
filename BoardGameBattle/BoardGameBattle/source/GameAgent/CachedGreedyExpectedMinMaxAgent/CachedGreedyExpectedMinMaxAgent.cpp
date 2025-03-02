@@ -12,6 +12,7 @@
 
 CachedGreedyExpectedMinMaxAgent::CachedGreedyExpectedMinMaxAgent()
 	: GameAgent()
+	, cacheTime(0ull)
 {
 
 }
@@ -155,7 +156,81 @@ float CachedGreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetada
 	return evaluationScore;
 }
 
-float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const // INFO: minMax primeste o copie a configuratiei.
+void CachedGreedyExpectedMinMaxAgent::clearCache()
+{
+	// INFO: Nu ar fi nevoie de lock/unlock daca nu apelam aceasta metoda in alt thread.
+
+	this->cacheMutex.lock();
+
+	this->cacheTime = 0ull;
+	this->lastTimeAccessedCache.clear();
+	this->cache.clear();
+
+	this->cacheMutex.unlock();
+}
+
+std::pair<bool, std::pair<float, int>> CachedGreedyExpectedMinMaxAgent::getEntryFromCache(unsigned long long zobristHashingValue)
+{
+	this->cacheMutex.lock();
+
+	auto it = this->cache.find(zobristHashingValue);
+	if (it != this->cache.end())
+	{
+		this->lastTimeAccessedCache.erase(it->second.second.second);
+		++this->cacheTime;
+		this->lastTimeAccessedCache[this->cacheTime] = zobristHashingValue;
+		it->second.second.second = this->cacheTime;
+
+		this->cacheMutex.unlock();
+		return std::make_pair(true, std::make_pair(it->second.first, it->second.second.first));
+	}
+
+	this->cacheMutex.unlock();
+	return std::make_pair(false, std::make_pair(0.0f, 0));
+}
+
+void CachedGreedyExpectedMinMaxAgent::addEntryInCache(unsigned long long zobristHashingValue, float evaluationScore, int depth)
+{
+	this->cacheMutex.lock();
+
+	auto it = this->cache.find(zobristHashingValue);
+	if (it != this->cache.end())
+	{
+		if (depth < it->second.second.first)
+		{
+			this->lastTimeAccessedCache.erase(it->second.second.second);
+			++this->cacheTime;
+			this->lastTimeAccessedCache[this->cacheTime] = zobristHashingValue;
+			it->second.first = evaluationScore;
+			it->second.second.first = depth;
+			it->second.second.second = this->cacheTime;
+		}
+		else
+		{
+			this->lastTimeAccessedCache.erase(it->second.second.second);
+			++this->cacheTime;
+			this->lastTimeAccessedCache[this->cacheTime] = zobristHashingValue;
+			it->second.second.second = this->cacheTime;
+		}
+	}
+	else
+	{
+		if (this->cache.size() >= CachedGreedyExpectedMinMaxAgent::MAXIMUM_CACHE_SIZE)
+		{
+			auto it = this->lastTimeAccessedCache.begin();
+			this->cache.erase(it->second);
+			this->lastTimeAccessedCache.erase(it);
+		}
+
+		++this->cacheTime;
+		this->lastTimeAccessedCache[this->cacheTime] = zobristHashingValue;
+		this->cache[zobristHashingValue] = std::make_pair(evaluationScore, std::make_pair(depth, this->cacheTime));
+	}
+
+	this->cacheMutex.unlock();
+}
+
+float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) // INFO: minMax primeste o copie a configuratiei.
 {
 	++numNodesVisited;
 
@@ -168,11 +243,21 @@ float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configuratio
 	if (zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION)
 		return 0.0f; // Remiza, aceasta configuratie s-a repetat de FREQUENCY_UNTIL_DRAW_REPETITION ori.
 
+	// Cache
+	std::pair<bool, std::pair<float, int>> entryFromCache = this->getEntryFromCache(configurationMetadata.zobristHashingValue);
+	if (entryFromCache.first && entryFromCache.second.second <= depth)
+		return entryFromCache.second.first;
+
 	if (depth >= CachedGreedyExpectedMinMaxAgent::MAX_DEPTH && expectedNumNodesVisited <= 0) // INFO: Trebuie <= 0 pentru expectedNumNodesVisited
 	{
 		BoardManager::get().generateWhiteAttackZones(configurationMetadata);
 		BoardManager::get().generateBlackAttackZones(configurationMetadata);
-		return this->evaluateConfiguration(configurationMetadata);
+		float evaluationScore = this->evaluateConfiguration(configurationMetadata);
+
+		// Cache
+		this->addEntryInCache(configurationMetadata.zobristHashingValue, evaluationScore, depth);
+
+		return evaluationScore;
 	}
 
 	if (configurationMetadata.whiteTurn) // Maximizing
@@ -213,6 +298,9 @@ float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configuratio
 				maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
 		}
 
+		// Cache
+		this->addEntryInCache(configurationMetadata.zobristHashingValue, maximumScore, depth);
+
 		return maximumScore;
 	}
 	else // Minimizing
@@ -252,6 +340,9 @@ float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configuratio
 			else
 				minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 		}
+
+		// Cache
+		this->addEntryInCache(configurationMetadata.zobristHashingValue, minimumScore, depth);
 
 		return minimumScore;
 	}
@@ -372,6 +463,11 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 		});
 
 	findBestMoveThread.detach();
+}
+
+void CachedGreedyExpectedMinMaxAgent::reset()
+{
+	this->clearCache();
 }
 
 const int CachedGreedyExpectedMinMaxAgent::MAX_DEPTH = 4;
@@ -627,4 +723,6 @@ const float CachedGreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMeta
 };
 
 const int CachedGreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED = 20000000;
+
+const int CachedGreedyExpectedMinMaxAgent::MAXIMUM_CACHE_SIZE = 5000000;
 

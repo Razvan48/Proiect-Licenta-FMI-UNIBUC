@@ -180,6 +180,8 @@ void BoardVisualizer::initialize()
 	GameAgentSelector::get().setIsRunningTask(false);
 	GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
 	GameAgentSelector::get().isTaskCancelled.store(true);
+
+	GameAgentSelector::get().reset(); // INFO: Pentru a curata cache-ul la CachedGreedyExpectedMinMaxAgent
 }
 
 void BoardVisualizer::draw()

@@ -27,6 +27,7 @@ public:
 public:
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const = 0;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) = 0;
+	virtual void reset() = 0;
 
 	inline bool getIsRunningTask()
 	{

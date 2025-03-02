@@ -374,6 +374,11 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 	findBestMoveThread.detach();
 }
 
+void GreedyExpectedMinMaxAgent::reset()
+{
+
+}
+
 const int GreedyExpectedMinMaxAgent::MAX_DEPTH = 4;
 
 const float GreedyExpectedMinMaxAgent::UNREACHABLE_INF = 524288.0; // INFO: 2 ^ 19
