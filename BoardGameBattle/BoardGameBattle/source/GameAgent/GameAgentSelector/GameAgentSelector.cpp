@@ -5,7 +5,7 @@
 
 GameAgent& GameAgentSelector::get()
 {
-	return CachedGreedyExpectedMinMaxAgent::get();
+	return GreedyExpectedMinMaxAgent::get();
 }
 
 

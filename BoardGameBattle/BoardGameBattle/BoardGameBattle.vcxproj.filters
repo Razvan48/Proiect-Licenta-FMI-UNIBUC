@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -97,9 +93,6 @@
     <Filter Include="Source Files\GameAgent">
       <UniqueIdentifier>{9cc2571a-dbf7-41b3-a6c9-4e2f359a7a91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GameAgent\GreedyMinMaxAgent">
-      <UniqueIdentifier>{879156ce-7be6-4cd7-9679-f2ca66a105a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Entity\Button\UndoMoveButton">
       <UniqueIdentifier>{d60ef1d3-a81b-444a-b67e-59cf8bca4d3c}</UniqueIdentifier>
     </Filter>
@@ -123,6 +116,9 @@
     </Filter>
     <Filter Include="Source Files\GameAgent\GreedyExpectedMinMaxAgent">
       <UniqueIdentifier>{8cd1d09f-e4c3-4d7a-b746-437dedcb179b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameAgent\CachedGreedyExpectedMinMaxAgent">
+      <UniqueIdentifier>{41524846-183a-4625-b96d-410628fe84cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +209,6 @@
     <ClCompile Include="source\GameAgent\GameAgent.cpp">
       <Filter>Source Files\GameAgent</Filter>
     </ClCompile>
-    <ClCompile Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.cpp">
-      <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
-    </ClCompile>
     <ClCompile Include="source\Entity\Button\UndoMoveButton\UndoMoveButton.cpp">
       <Filter>Source Files\Entity\Button\UndoMoveButton</Filter>
     </ClCompile>
@@ -236,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.cpp">
       <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameAgent\CachedGreedyExpectedMinMaxAgent\CachedGreedyExpectedMinMaxAgent.cpp">
+      <Filter>Source Files\GameAgent\CachedGreedyExpectedMinMaxAgent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +313,6 @@
     <ClInclude Include="source\GameAgent\GameAgent.h">
       <Filter>Source Files\GameAgent</Filter>
     </ClInclude>
-    <ClInclude Include="source\GameAgent\GreedyMinMaxAgent\GreedyMinMaxAgent.h">
-      <Filter>Source Files\GameAgent\GreedyMinMaxAgent</Filter>
-    </ClInclude>
     <ClInclude Include="source\BoardManager\BoardManager.h">
       <Filter>Source Files\BoardManager</Filter>
     </ClInclude>
@@ -346,6 +339,9 @@
     </ClInclude>
     <ClInclude Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.h">
       <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameAgent\CachedGreedyExpectedMinMaxAgent\CachedGreedyExpectedMinMaxAgent.h">
+      <Filter>Source Files\GameAgent\CachedGreedyExpectedMinMaxAgent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

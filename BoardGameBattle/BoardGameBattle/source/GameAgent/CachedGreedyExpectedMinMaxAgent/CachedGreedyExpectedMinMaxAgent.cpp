@@ -257,7 +257,7 @@ void CachedGreedyExpectedMinMaxAgent::combineCaches(unsigned long long cacheTime
 	}
 }
 
-float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, unsigned long long& cacheTime, std::map<unsigned long long, unsigned long long>& lastTimeAccessedCache, std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>& cache) // INFO: minMax primeste o copie a configuratiei.
+float CachedGreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, unsigned long long& cacheTime, std::map<unsigned long long, unsigned long long>& lastTimeAccessedCache, std::map<unsigned long long, std::pair<float, std::pair<int, unsigned long long>>>& cache) // INFO: minMax primeste o copie a configuratiei. 
 {
 	++numNodesVisited;
 
@@ -404,6 +404,14 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 				std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
 				BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
 
+				if (allWhiteMoves.size() == 1)
+				{
+					if (!this->isTaskCancelled.load())
+						this->setBestMove(allWhiteMoves[0]);
+					std::cout << "CachedGreedyExpectedMinMaxAgent: Only one move available." << std::endl;
+					return;
+				}
+
 				for (int i = 0; i < allWhiteMoves.size(); ++i)
 				{
 					std::promise<float> scorePromise;
@@ -467,6 +475,14 @@ void CachedGreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& config
 
 				std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
 				BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
+
+				if (allBlackMoves.size() == 1)
+				{
+					if (!this->isTaskCancelled.load())
+						this->setBestMove(allBlackMoves[0]);
+					std::cout << "CachedGreedyExpectedMinMaxAgent: Only one move available." << std::endl;
+					return;
+				}
 
 				for (int i = 0; i < allBlackMoves.size(); ++i)
 				{

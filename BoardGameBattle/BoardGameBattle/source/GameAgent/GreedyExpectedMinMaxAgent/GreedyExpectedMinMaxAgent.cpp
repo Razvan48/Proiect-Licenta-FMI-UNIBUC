@@ -155,7 +155,7 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 	return evaluationScore;
 }
 
-float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const // INFO: minMax primeste o copie a configuratiei.
+float GreedyExpectedMinMaxAgent::minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const // INFO: minMax primeste o copie a configuratiei. 
 {
 	++numNodesVisited;
 
@@ -281,6 +281,14 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 				std::vector<std::vector<std::pair<char, int>>> allWhiteMoves;
 				BoardManager::get().generateWhiteMoves(configurationMetadata, allWhiteMoves);
 
+				if (allWhiteMoves.size() == 1)
+				{
+					if (!this->isTaskCancelled.load())
+						this->setBestMove(allWhiteMoves[0]);
+					std::cout << "GreedyExpectedMinMaxAgent: Only one move available." << std::endl;
+					return;
+				}
+
 				for (int i = 0; i < allWhiteMoves.size(); ++i)
 				{
 					std::promise<float> scorePromise;
@@ -326,6 +334,14 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 
 				std::vector<std::vector<std::pair<char, int>>> allBlackMoves;
 				BoardManager::get().generateBlackMoves(configurationMetadata, allBlackMoves);
+
+				if (allBlackMoves.size() == 1)
+				{
+					if (!this->isTaskCancelled.load())
+						this->setBestMove(allBlackMoves[0]);
+					std::cout << "GreedyExpectedMinMaxAgent: Only one move available." << std::endl;
+					return;
+				}
 
 				for (int i = 0; i < allBlackMoves.size(); ++i)
 				{
