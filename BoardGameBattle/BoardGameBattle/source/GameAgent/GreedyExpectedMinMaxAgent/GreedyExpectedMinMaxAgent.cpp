@@ -508,7 +508,10 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 	while (whiteAttackZones)
 	{
 		unsigned long long lsb = (whiteAttackZones & ((~whiteAttackZones) + 1));
-		evaluationScore += GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
+		if ((lsb & configurationMetadata.allBlackPieces) != 0ull)
+			evaluationScore += GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
+		else
+			evaluationScore += GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE;
 		whiteAttackZones ^= lsb;
 	}
 
@@ -516,7 +519,10 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 	while (blackAttackZones)
 	{
 		unsigned long long lsb = (blackAttackZones & ((~blackAttackZones) + 1));
-		evaluationScore -= GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
+		if ((lsb & configurationMetadata.allWhitePieces) != 0ull)
+			evaluationScore -= GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
+		else
+			evaluationScore -= GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE;
 		blackAttackZones ^= lsb;
 	}
 
@@ -810,10 +816,11 @@ const float GreedyExpectedMinMaxAgent::BISHOP_SCORE = 3.15f;
 const float GreedyExpectedMinMaxAgent::QUEEN_SCORE = 9.0f;
 const float GreedyExpectedMinMaxAgent::KING_SCORE = 100.0f;
 
-const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.05f;
-const float GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE = 0.05f;
+const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.01f;
+const float GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE = 0.015f;
+const float GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE = 0.05f;
 const float GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE = 0.1f;
-const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.25f;
+const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.05f;
 
 const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
 const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.1f;

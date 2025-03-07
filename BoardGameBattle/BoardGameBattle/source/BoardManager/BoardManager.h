@@ -151,6 +151,11 @@ private:
 	unsigned long long precalculatedFullCastleBottomLeft;
 	unsigned long long precalculatedFullCastleBottomRight;
 
+	unsigned long long precalculatedUsefulCastleTopLeft;
+	unsigned long long precalculatedUsefulCastleTopRight;
+	unsigned long long precalculatedUsefulCastleBottomLeft;
+	unsigned long long precalculatedUsefulCastleBottomRight;
+
 	int whiteKingPos;
 	int whiteRookBottomLeftPos;
 	int whiteRookBottomRightPos;

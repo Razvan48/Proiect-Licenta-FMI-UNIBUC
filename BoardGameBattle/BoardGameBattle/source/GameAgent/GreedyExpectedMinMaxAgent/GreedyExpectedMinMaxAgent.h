@@ -49,6 +49,7 @@ protected:
 
 	static const float ATTACK_ZONE_SCORE;
 	static const float DEFENSE_ZONE_SCORE;
+	static const float COVER_ZONE_SCORE;
 	static const float CHAIN_CAPTURE_SCORE;
 	static const float CHECK_SCORE;
 

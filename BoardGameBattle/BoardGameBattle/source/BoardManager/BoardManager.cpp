@@ -848,6 +848,11 @@ BoardManager::BoardManager()
 	this->precalculatedFullCastleBottomLeft = ((1ull << 56) | (1ull << 57) | (1ull << 58) | (1ull << 59) | (1ull << 60));
 	this->precalculatedFullCastleBottomRight = ((1ull << 60) | (1ull << 61) | (1ull << 62) | (1ull << 63));
 
+	this->precalculatedUsefulCastleTopLeft = ((1ull << 2) | (1ull << 3) | (1ull << 4));
+	this->precalculatedUsefulCastleTopRight = ((1ull << 4) | (1ull << 5) | (1ull << 6));
+	this->precalculatedUsefulCastleBottomLeft = ((1ull << 58) | (1ull << 59) | (1ull << 60));
+	this->precalculatedUsefulCastleBottomRight = ((1ull << 60) | (1ull << 61) | (1ull << 62));
+
 	this->whiteKingPos = 60;
 	this->whiteRookBottomLeftPos = 56;
 	this->whiteRookBottomRightPos = 63;
@@ -2707,7 +2712,7 @@ void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMe
 	// Castling
 	if (!configurationMetadata.whiteKingMoved)
 	{
-		if (!configurationMetadata.whiteRookBottomLeftMoved && (configurationMetadata.blackAttackZones & this->precalculatedFullCastleBottomLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomLeft) == 0ull)
+		if (!configurationMetadata.whiteRookBottomLeftMoved && (configurationMetadata.blackAttackZones & this->precalculatedUsefulCastleBottomLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomLeft) == 0ull)
 		{
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('K', posKing));
@@ -2716,7 +2721,7 @@ void BoardManager::generateWhiteKingMoves(ConfigurationMetadata& configurationMe
 			moves.back().emplace_back(std::make_pair('R', posKing - 1));
 		}
 
-		if (!configurationMetadata.whiteRookBottomRightMoved && (configurationMetadata.blackAttackZones & this->precalculatedFullCastleBottomRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomRight) == 0ull)
+		if (!configurationMetadata.whiteRookBottomRightMoved && (configurationMetadata.blackAttackZones & this->precalculatedUsefulCastleBottomRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleBottomRight) == 0ull)
 		{
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('K', posKing));
@@ -3181,7 +3186,7 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 	// Castling
 	if (!configurationMetadata.blackKingMoved)
 	{
-		if (!configurationMetadata.blackRookTopLeftMoved && (configurationMetadata.whiteAttackZones & this->precalculatedFullCastleTopLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopLeft) == 0ull)
+		if (!configurationMetadata.blackRookTopLeftMoved && (configurationMetadata.whiteAttackZones & this->precalculatedUsefulCastleTopLeft) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopLeft) == 0ull)
 		{
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('k', posKing));
@@ -3189,7 +3194,7 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 			moves.back().emplace_back(std::make_pair('r', posKing - 4));
 			moves.back().emplace_back(std::make_pair('r', posKing - 1));
 		}
-		if (!configurationMetadata.blackRookTopRightMoved && (configurationMetadata.whiteAttackZones & this->precalculatedFullCastleTopRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopRight) == 0ull)
+		if (!configurationMetadata.blackRookTopRightMoved && (configurationMetadata.whiteAttackZones & this->precalculatedUsefulCastleTopRight) == 0ull && (configurationMetadata.allPieces & this->precalculatedEmptyCastleTopRight) == 0ull)
 		{
 			moves.emplace_back();
 			moves.back().emplace_back(std::make_pair('k', posKing));
