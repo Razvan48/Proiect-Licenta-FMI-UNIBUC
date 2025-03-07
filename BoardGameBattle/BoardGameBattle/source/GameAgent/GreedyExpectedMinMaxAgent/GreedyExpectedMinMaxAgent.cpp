@@ -818,8 +818,8 @@ const float GreedyExpectedMinMaxAgent::KING_SCORE = 100.0f;
 
 const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.01f;
 const float GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE = 0.015f;
-const float GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE = 0.05f;
-const float GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE = 0.1f;
+const float GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE = 0.035f;
+const float GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE = 0.035f;
 const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.05f;
 
 const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
