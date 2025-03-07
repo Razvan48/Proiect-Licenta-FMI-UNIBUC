@@ -34,6 +34,8 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 
 	float evaluationScore = 0.0f;
 
+	CellPressure cellPressure[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
+
 	// White Pieces
 
 	unsigned long long whitePawns = configurationMetadata.whitePawns;
@@ -42,6 +44,24 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		unsigned long long lsb = (whitePawns & ((~whitePawns) + 1));
 		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::PAWN_SCORE + GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whitePawns ^= lsb;
+	}
+
+	// Atac Stanga Pioni Albi
+	unsigned long long whitePawnLeftAttack = (((configurationMetadata.whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal) & (~BoardManager::get().getFileBitMasks(0))) >> (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.whiteKingDefenseZone);
+	while (whitePawnLeftAttack)
+	{
+		unsigned long long lsb = (whitePawnLeftAttack & ((~whitePawnLeftAttack) + 1));
+		++cellPressure[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]].whitePressureCount;
+		whitePawnLeftAttack ^= lsb;
+	}
+
+	// Atac Dreapta Pioni Albi
+	unsigned long long whitePawnRightAttack = (((configurationMetadata.whitePawns & (~configurationMetadata.whitePiecesPinnedOnRank) & (~configurationMetadata.whitePiecesPinnedOnFile) & (~configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal) & (~BoardManager::get().getFileBitMasks(GameMetadata::NUM_TILES_WIDTH - 1))) >> (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.whiteKingDefenseZone);
+	while (whitePawnRightAttack)
+	{
+		unsigned long long lsb = (whitePawnRightAttack & ((~whitePawnRightAttack) + 1));
+		++cellPressure[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]].whitePressureCount;
+		whitePawnRightAttack ^= lsb;
 	}
 
 	unsigned long long whiteRooks = configurationMetadata.whiteRooks;
@@ -58,6 +78,32 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		unsigned long long lsb = (whiteKnights & ((~whiteKnights) + 1));
 		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::KNIGHT_SCORE + GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteKnights ^= lsb;
+	}
+
+	// Atac Cai Albi
+	whiteKnights = configurationMetadata.whiteKnights;
+	while (whiteKnights)
+	{
+		unsigned long long lsbKnight = (whiteKnights & ((~whiteKnights) + 1));
+
+		if (!(lsbKnight & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile | configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)))
+		{
+			int posKnight = BoardManager::get().logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+			unsigned long long knightAttackZone = (BoardManager::get().getPrecalculatedKnightAttackZones(posKnight) & configurationMetadata.whiteKingDefenseZone);
+
+			while (knightAttackZone)
+			{
+				unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].whitePressureCount;
+
+				knightAttackZone ^= lsbAttack;
+			}
+		}
+
+		whiteKnights ^= lsbKnight;
 	}
 
 	unsigned long long whiteBishops = configurationMetadata.whiteBishops;
@@ -78,6 +124,23 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 
 	evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::KING_SCORE + GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
 
+	// Atac Rege Alb
+	unsigned long long lsbWhiteKing = configurationMetadata.whiteKing;
+	int posWhiteKing = BoardManager::get().logPower2[lsbWhiteKing % BoardManager::MODULO_LOG_POWER_2];
+	unsigned long long whiteKingAttackZone = BoardManager::get().getPrecalculatedKingAttackZones(posWhiteKing);
+
+	while (whiteKingAttackZone)
+	{
+		unsigned long long lsbAttack = (whiteKingAttackZone & ((~whiteKingAttackZone) + 1));
+
+		int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+		++cellPressure[posAttack].whitePressureCount;
+		cellPressure[posAttack].whiteKingInvolved = true;
+
+		whiteKingAttackZone ^= lsbAttack;
+	}
+
 	// Black Pieces
 
 	unsigned long long blackPawns = configurationMetadata.blackPawns;
@@ -86,6 +149,24 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		unsigned long long lsb = (blackPawns & ((~blackPawns) + 1));
 		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::PAWN_SCORE - GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_PAWN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackPawns ^= lsb;
+	}
+
+	// Atac Stanga Pioni Negri
+	unsigned long long blackPawnLeftAttack = (((configurationMetadata.blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal) & (~BoardManager::get().getFileBitMasks(0))) << (GameMetadata::NUM_TILES_WIDTH - 1)) & configurationMetadata.blackKingDefenseZone);
+	while (blackPawnLeftAttack)
+	{
+		unsigned long long lsb = (blackPawnLeftAttack & ((~blackPawnLeftAttack) + 1));
+		++cellPressure[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]].blackPressureCount;
+		blackPawnLeftAttack ^= lsb;
+	}
+
+	// Atac Dreapta Pioni Negri
+	unsigned long long blackPawnRightAttack = (((configurationMetadata.blackPawns & (~configurationMetadata.blackPiecesPinnedOnRank) & (~configurationMetadata.blackPiecesPinnedOnFile) & (~configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal) & (~BoardManager::get().getFileBitMasks(GameMetadata::NUM_TILES_WIDTH - 1))) << (GameMetadata::NUM_TILES_WIDTH + 1)) & configurationMetadata.blackKingDefenseZone);
+	while (blackPawnRightAttack)
+	{
+		unsigned long long lsb = (blackPawnRightAttack & ((~blackPawnRightAttack) + 1));
+		++cellPressure[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]].blackPressureCount;
+		blackPawnRightAttack ^= lsb;
 	}
 
 	unsigned long long blackRooks = configurationMetadata.blackRooks;
@@ -102,6 +183,32 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		unsigned long long lsb = (blackKnights & ((~blackKnights) + 1));
 		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::KNIGHT_SCORE - GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_KNIGHT_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackKnights ^= lsb;
+	}
+
+	// Atac Cai Negri
+	blackKnights = configurationMetadata.blackKnights;
+	while (blackKnights)
+	{
+		unsigned long long lsbKnight = (blackKnights & ((~blackKnights) + 1));
+
+		if (!(lsbKnight & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile | configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)))
+		{
+			int posKnight = BoardManager::get().logPower2[lsbKnight % BoardManager::MODULO_LOG_POWER_2];
+			unsigned long long knightAttackZone = (BoardManager::get().getPrecalculatedKnightAttackZones(posKnight) & configurationMetadata.blackKingDefenseZone);
+
+			while (knightAttackZone)
+			{
+				unsigned long long lsbAttack = (knightAttackZone & ((~knightAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].blackPressureCount;
+
+				knightAttackZone ^= lsbAttack;
+			}
+		}
+
+		blackKnights ^= lsbKnight;
 	}
 
 	unsigned long long blackBishops = configurationMetadata.blackBishops;
@@ -122,6 +229,23 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 
 	evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::KING_SCORE - GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
 
+	// Atac Rege Negru
+	unsigned long long lsbBlackKing = configurationMetadata.blackKing;
+	int posBlackKing = BoardManager::get().logPower2[lsbBlackKing % BoardManager::MODULO_LOG_POWER_2];
+	unsigned long long blackKingAttackZone = BoardManager::get().getPrecalculatedKingAttackZones(posBlackKing);
+
+	while (blackKingAttackZone)
+	{
+		unsigned long long lsbAttack = (blackKingAttackZone & ((~blackKingAttackZone) + 1));
+
+		int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+		++cellPressure[posAttack].blackPressureCount;
+		cellPressure[posAttack].blackKingInvolved = true;
+
+		blackKingAttackZone ^= lsbAttack;
+	}
+
 	// Attack Zones
 
 	unsigned long long whiteAttackZones = configurationMetadata.whiteAttackZones;
@@ -138,6 +262,31 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		unsigned long long lsb = (blackAttackZones & ((~blackAttackZones) + 1));
 		evaluationScore -= GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE;
 		blackAttackZones ^= lsb;
+	}
+
+	// Defense Zones + Chain Captures
+
+	for (int i = 0; i < GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH; ++i)
+	{
+		if (((1ull << i) & configurationMetadata.allPieces) == 0ull)
+			continue;
+
+		if (((1ull << i) & configurationMetadata.whiteKing) != 0ull)
+			continue;
+		if (((1ull << i) & configurationMetadata.blackKing) != 0ull)
+			continue;
+
+		if (cellPressure[i].whitePressureCount > 0 && cellPressure[i].blackPressureCount == 0 && ((1ull << i) & configurationMetadata.allWhitePieces) != 0ull)
+			evaluationScore += GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE;
+		else if (cellPressure[i].whitePressureCount == 0 && cellPressure[i].blackPressureCount > 0 && ((1ull << i) & configurationMetadata.allBlackPieces) != 0ull)
+			evaluationScore -= GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE;
+		else if (cellPressure[i].whitePressureCount > 0 && cellPressure[i].blackPressureCount > 0) // INFO: Stim deja ca celula este ocupata (ori de alb, ori de negru).
+		{
+			if (cellPressure[i].whitePressureCount - (int)cellPressure[i].whiteKingInvolved > cellPressure[i].blackPressureCount - (int)cellPressure[i].blackKingInvolved)
+				evaluationScore += GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE;
+			else if (cellPressure[i].whitePressureCount - (int)cellPressure[i].whiteKingInvolved < cellPressure[i].blackPressureCount - (int)cellPressure[i].blackKingInvolved)
+				evaluationScore -= GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE;
+		}
 	}
 
 	// Checks
@@ -406,7 +555,9 @@ const float GreedyExpectedMinMaxAgent::QUEEN_SCORE = 9.0f;
 const float GreedyExpectedMinMaxAgent::KING_SCORE = 100.0f;
 
 const float GreedyExpectedMinMaxAgent::ATTACK_ZONE_SCORE = 0.05f;
-const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.1f;
+const float GreedyExpectedMinMaxAgent::DEFENSE_ZONE_SCORE = 0.05f;
+const float GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE = 0.1f;
+const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.25f;
 
 const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
 const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.1f;

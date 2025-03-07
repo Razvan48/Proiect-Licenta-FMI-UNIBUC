@@ -8,6 +8,22 @@
 
 #include <map>
 
+struct CellPressure
+{
+	int whitePressureCount;
+	int blackPressureCount;
+	bool whiteKingInvolved;
+	bool blackKingInvolved;
+
+	CellPressure()
+	{
+		this->whitePressureCount = 0;
+		this->blackPressureCount = 0;
+		this->whiteKingInvolved = false;
+		this->blackKingInvolved = false;
+	}
+};
+
 class GreedyExpectedMinMaxAgent : virtual public GameAgent
 {
 private:
@@ -32,6 +48,8 @@ protected:
 	static const float KING_SCORE;
 
 	static const float ATTACK_ZONE_SCORE;
+	static const float DEFENSE_ZONE_SCORE;
+	static const float CHAIN_CAPTURE_SCORE;
 	static const float CHECK_SCORE;
 
 	static const float PAWN_POSITION_SCORE_FACTOR;

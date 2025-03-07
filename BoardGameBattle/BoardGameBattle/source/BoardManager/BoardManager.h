@@ -109,6 +109,13 @@ private:
 	unsigned long long topLeftBottomRightDiagonalBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	unsigned long long topRightBottomLeftDiagonalBitMasks[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
+public: // INFO: Functiile de mai jos pot fi folosite in evaluarea Greedy a agentilor.
+	inline unsigned long long getRankBitMasks(int pos) const { return this->rankBitMasks[pos]; }
+	inline unsigned long long getFileBitMasks(int pos) const { return this->fileBitMasks[pos]; }
+	inline unsigned long long getTopLeftBottomRightDiagonalBitMasks(int pos) const { return this->topLeftBottomRightDiagonalBitMasks[pos]; }
+	inline unsigned long long getTopRightBottomLeftDiagonalBitMasks(int pos) const { return this->topRightBottomLeftDiagonalBitMasks[pos]; }
+
+private:
 	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnRank[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_WIDTH];
 	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnTopLeftBottomRightDiagonal[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT];
 	std::pair<unsigned long long, unsigned long long> precalculatedNearestPiecesOnTopRightBottomLeftDiagonal[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH][1 << GameMetadata::NUM_TILES_HEIGHT];
@@ -195,13 +202,27 @@ private:
 
 	std::vector<ConfigurationMetadata> configurationMetadataHistory;
 
+public: // INFO: Functiile de mai jos pot fi folosite in evaluarea Greedy a agentilor.
 	unsigned long long extractRank(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractFile(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractTopLeftBottomRightDiagonal(unsigned long long bitBoard, int pos) const;
 	unsigned long long extractTopRightBottomLeftDiagonal(unsigned long long bitBoard, int pos) const;
 
+	inline unsigned long long getPrecalculatedRawLeftAttackZones(int pos, unsigned long long rankBitMask) const { return this->precalculatedRawLeftAttackZones[pos][rankBitMask]; }
+	inline unsigned long long getPrecalculatedRawRightAttackZones(int pos, unsigned long long rankBitMask) const { return this->precalculatedRawRightAttackZones[pos][rankBitMask]; }
+	inline unsigned long long getPrecalculatedRawTopAttackZones(int pos, unsigned long long fileBitMask) const { return this->precalculatedRawTopAttackZones[pos][fileBitMask]; }
+	inline unsigned long long getPrecalculatedRawBottomAttackZones(int pos, unsigned long long fileBitMask) const { return this->precalculatedRawBottomAttackZones[pos][fileBitMask]; }
+	inline unsigned long long getPrecalculatedRawTopLeftDiagonalAttackZones(int pos, unsigned long long topLeftBottomRightDiagonalBitMask) const { return this->precalculatedRawTopLeftDiagonalAttackZones[pos][topLeftBottomRightDiagonalBitMask]; }
+	inline unsigned long long getPrecalculatedRawTopRightDiagonalAttackZones(int pos, unsigned long long topRightBottomLeftDiagonalBitMask) const { return this->precalculatedRawTopRightDiagonalAttackZones[pos][topRightBottomLeftDiagonalBitMask]; }
+	inline unsigned long long getPrecalculatedRawBottomLeftDiagonalAttackZones(int pos, unsigned long long topRightBottomLeftDiagonalBitMask) const { return this->precalculatedRawBottomLeftDiagonalAttackZones[pos][topRightBottomLeftDiagonalBitMask]; }
+	inline unsigned long long getPrecalculatedRawBottomRightDiagonalAttackZones(int pos, unsigned long long topLeftBottomRightDiagonalBitMask) const { return this->precalculatedRawBottomRightDiagonalAttackZones[pos][topLeftBottomRightDiagonalBitMask]; }
+
+	inline unsigned long long getPrecalculatedKingAttackZones(int pos) const { return this->precalculatedKingAttackZones[pos]; }
+	inline unsigned long long getPrecalculatedKnightAttackZones(int pos) const { return this->precalculatedKnightAttackZones[pos]; }
 
 
+
+private:
 	void generateWhitePawnAttackZone(ConfigurationMetadata& configurationMetadata);
 	void generateWhiteRookAttackZone(ConfigurationMetadata& configurationMetadata);
 	void generateWhiteKnightAttackZone(ConfigurationMetadata& configurationMetadata);
