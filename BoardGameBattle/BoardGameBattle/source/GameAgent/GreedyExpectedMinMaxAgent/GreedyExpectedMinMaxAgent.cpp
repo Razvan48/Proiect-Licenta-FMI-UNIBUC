@@ -72,6 +72,48 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		whiteRooks ^= lsb;
 	}
 
+	// Atac Ture Albe
+	whiteRooks = configurationMetadata.whiteRooks;
+	while (whiteRooks)
+	{
+		unsigned long long lsbRook = (whiteRooks & ((~whiteRooks) + 1));
+
+		if (!
+			(
+				(lsbRook & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+				||
+				(lsbRook & (configurationMetadata.whitePiecesPinnedOnRank & configurationMetadata.whitePiecesPinnedOnFile))
+				)
+			)
+		{
+			int posRook = BoardManager::get().logPower2[lsbRook % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long piecesSameRank = BoardManager::get().extractRank(configurationMetadata.allPieces, posRook);
+			unsigned long long piecesSameFile = BoardManager::get().extractFile(configurationMetadata.allPieces, posRook);
+
+			unsigned long long rookAttackZone = (BoardManager::get().getPrecalculatedRawLeftAttackZones(posRook, piecesSameRank) | BoardManager::get().getPrecalculatedRawRightAttackZones(posRook, piecesSameRank) | BoardManager::get().getPrecalculatedRawTopAttackZones(posRook, piecesSameFile) | BoardManager::get().getPrecalculatedRawBottomAttackZones(posRook, piecesSameFile));
+			rookAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+			if (lsbRook & configurationMetadata.whitePiecesPinnedOnRank)
+				rookAttackZone &= BoardManager::get().getRankBitMasks(posRook);
+			if (lsbRook & configurationMetadata.whitePiecesPinnedOnFile)
+				rookAttackZone &= BoardManager::get().getFileBitMasks(posRook);
+
+			while (rookAttackZone)
+			{
+				unsigned long long lsbAttack = (rookAttackZone & ((~rookAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].whitePressureCount;
+
+				rookAttackZone ^= lsbAttack;
+			}
+		}
+
+		whiteRooks ^= lsbRook;
+	}
+
 	unsigned long long whiteKnights = configurationMetadata.whiteKnights;
 	while (whiteKnights)
 	{
@@ -114,12 +156,98 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		whiteBishops ^= lsb;
 	}
 
+	// Atac Nebuni Albi
+	whiteBishops = configurationMetadata.whiteBishops;
+	while (whiteBishops)
+	{
+		unsigned long long lsbBishop = (whiteBishops & ((~whiteBishops) + 1));
+
+		if (!
+			(
+				(lsbBishop & (configurationMetadata.whitePiecesPinnedOnRank | configurationMetadata.whitePiecesPinnedOnFile))
+				||
+				(lsbBishop & (configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal))
+				)
+			)
+		{
+			int posBishop = BoardManager::get().logPower2[lsbBishop % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long piecesSameDiagonal0 = BoardManager::get().extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, posBishop);
+			unsigned long long piecesSameDiagonal1 = BoardManager::get().extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, posBishop);
+
+			unsigned long long bishopAttackZone = (BoardManager::get().getPrecalculatedRawTopLeftDiagonalAttackZones(posBishop, piecesSameDiagonal0) | BoardManager::get().getPrecalculatedRawBottomRightDiagonalAttackZones(posBishop, piecesSameDiagonal0) | BoardManager::get().getPrecalculatedRawTopRightDiagonalAttackZones(posBishop, piecesSameDiagonal1) | BoardManager::get().getPrecalculatedRawBottomLeftDiagonalAttackZones(posBishop, piecesSameDiagonal1));
+			bishopAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+			if (lsbBishop & configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal)
+				bishopAttackZone &= BoardManager::get().getTopLeftBottomRightDiagonalBitMasks(posBishop);
+			if (lsbBishop & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)
+				bishopAttackZone &= BoardManager::get().getTopRightBottomLeftDiagonalBitMasks(posBishop);
+
+			while (bishopAttackZone)
+			{
+				unsigned long long lsbAttack = (bishopAttackZone & ((~bishopAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].whitePressureCount;
+
+				bishopAttackZone ^= lsbAttack;
+			}
+		}
+
+		whiteBishops ^= lsbBishop;
+	}
+
 	unsigned long long whiteQueens = configurationMetadata.whiteQueens;
 	while (whiteQueens)
 	{
 		unsigned long long lsb = (whiteQueens & ((~whiteQueens) + 1));
 		evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::QUEEN_SCORE + GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		whiteQueens ^= lsb;
+	}
+
+	// Atac Regine Albe
+	whiteQueens = configurationMetadata.whiteQueens;
+	while (whiteQueens)
+	{
+		unsigned long long lsbQueen = (whiteQueens & ((~whiteQueens) + 1));
+
+		int posQueen = BoardManager::get().logPower2[lsbQueen % BoardManager::MODULO_LOG_POWER_2];
+
+		unsigned long long piecesSameRank = BoardManager::get().extractRank(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameFile = BoardManager::get().extractFile(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameDiagonal0 = BoardManager::get().extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameDiagonal1 = BoardManager::get().extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, posQueen);
+
+		unsigned long long queenAttackZone = (BoardManager::get().getPrecalculatedRawLeftAttackZones(posQueen, piecesSameRank) | BoardManager::get().getPrecalculatedRawRightAttackZones(posQueen, piecesSameRank)
+			| BoardManager::get().getPrecalculatedRawTopAttackZones(posQueen, piecesSameFile) | BoardManager::get().getPrecalculatedRawBottomAttackZones(posQueen, piecesSameFile)
+			| BoardManager::get().getPrecalculatedRawTopLeftDiagonalAttackZones(posQueen, piecesSameDiagonal0)
+			| BoardManager::get().getPrecalculatedRawBottomRightDiagonalAttackZones(posQueen, piecesSameDiagonal0)
+			| BoardManager::get().getPrecalculatedRawTopRightDiagonalAttackZones(posQueen, piecesSameDiagonal1)
+			| BoardManager::get().getPrecalculatedRawBottomLeftDiagonalAttackZones(posQueen, piecesSameDiagonal1));
+		queenAttackZone &= configurationMetadata.whiteKingDefenseZone;
+
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnRank)
+			queenAttackZone &= BoardManager::get().getRankBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnFile)
+			queenAttackZone &= BoardManager::get().getFileBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnTopLeftBottomRightDiagonal)
+			queenAttackZone &= BoardManager::get().getTopLeftBottomRightDiagonalBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.whitePiecesPinnedOnTopRightBottomLeftDiagonal)
+			queenAttackZone &= BoardManager::get().getTopRightBottomLeftDiagonalBitMasks(posQueen);
+
+		while (queenAttackZone)
+		{
+			unsigned long long lsbAttack = (queenAttackZone & ((~queenAttackZone) + 1));
+
+			int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			++cellPressure[posAttack].whitePressureCount;
+
+			queenAttackZone ^= lsbAttack;
+		}
+
+		whiteQueens ^= lsbQueen;
 	}
 
 	evaluationScore = evaluationScore + GreedyExpectedMinMaxAgent::KING_SCORE + GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::WHITE_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.whiteKing % BoardManager::MODULO_LOG_POWER_2]];
@@ -177,6 +305,48 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		blackRooks ^= lsb;
 	}
 
+	// Atac Ture Negre
+	blackRooks = configurationMetadata.blackRooks;
+	while (blackRooks)
+	{
+		unsigned long long lsbRook = (blackRooks & ((~blackRooks) + 1));
+
+		if (!
+			(
+				(lsbRook & (configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal | configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
+				||
+				(lsbRook & (configurationMetadata.blackPiecesPinnedOnRank & configurationMetadata.blackPiecesPinnedOnFile))
+				)
+			)
+		{
+			int posRook = BoardManager::get().logPower2[lsbRook % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long piecesSameRank = BoardManager::get().extractRank(configurationMetadata.allPieces, posRook);
+			unsigned long long piecesSameFile = BoardManager::get().extractFile(configurationMetadata.allPieces, posRook);
+
+			unsigned long long rookAttackZone = (BoardManager::get().getPrecalculatedRawLeftAttackZones(posRook, piecesSameRank) | BoardManager::get().getPrecalculatedRawRightAttackZones(posRook, piecesSameRank) | BoardManager::get().getPrecalculatedRawTopAttackZones(posRook, piecesSameFile) | BoardManager::get().getPrecalculatedRawBottomAttackZones(posRook, piecesSameFile));
+			rookAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+			if (lsbRook & configurationMetadata.blackPiecesPinnedOnRank)
+				rookAttackZone &= BoardManager::get().getRankBitMasks(posRook);
+			if (lsbRook & configurationMetadata.blackPiecesPinnedOnFile)
+				rookAttackZone &= BoardManager::get().getFileBitMasks(posRook);
+
+			while (rookAttackZone)
+			{
+				unsigned long long lsbAttack = (rookAttackZone & ((~rookAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].blackPressureCount;
+
+				rookAttackZone ^= lsbAttack;
+			}
+		}
+
+		blackRooks ^= lsbRook;
+	}
+
 	unsigned long long blackKnights = configurationMetadata.blackKnights;
 	while (blackKnights)
 	{
@@ -219,12 +389,98 @@ float GreedyExpectedMinMaxAgent::evaluateConfiguration(ConfigurationMetadata& co
 		blackBishops ^= lsb;
 	}
 
+	// Atac Nebuni Negri
+	blackBishops = configurationMetadata.blackBishops;
+	while (blackBishops)
+	{
+		unsigned long long lsbBishop = (blackBishops & ((~blackBishops) + 1));
+
+		if (!
+			(
+				(lsbBishop & (configurationMetadata.blackPiecesPinnedOnRank | configurationMetadata.blackPiecesPinnedOnFile))
+				||
+				(lsbBishop & (configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal))
+				)
+			)
+		{
+			int posBishop = BoardManager::get().logPower2[lsbBishop % BoardManager::MODULO_LOG_POWER_2];
+
+			unsigned long long piecesSameDiagonal0 = BoardManager::get().extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, posBishop);
+			unsigned long long piecesSameDiagonal1 = BoardManager::get().extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, posBishop);
+
+			unsigned long long bishopAttackZone = (BoardManager::get().getPrecalculatedRawTopLeftDiagonalAttackZones(posBishop, piecesSameDiagonal0) | BoardManager::get().getPrecalculatedRawBottomRightDiagonalAttackZones(posBishop, piecesSameDiagonal0) | BoardManager::get().getPrecalculatedRawTopRightDiagonalAttackZones(posBishop, piecesSameDiagonal1) | BoardManager::get().getPrecalculatedRawBottomLeftDiagonalAttackZones(posBishop, piecesSameDiagonal1));
+			bishopAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+			if (lsbBishop & configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal)
+				bishopAttackZone &= BoardManager::get().getTopLeftBottomRightDiagonalBitMasks(posBishop);
+			if (lsbBishop & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)
+				bishopAttackZone &= BoardManager::get().getTopRightBottomLeftDiagonalBitMasks(posBishop);
+
+			while (bishopAttackZone)
+			{
+				unsigned long long lsbAttack = (bishopAttackZone & ((~bishopAttackZone) + 1));
+
+				int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+				++cellPressure[posAttack].blackPressureCount;
+
+				bishopAttackZone ^= lsbAttack;
+			}
+		}
+
+		blackBishops ^= lsbBishop;
+	}
+
 	unsigned long long blackQueens = configurationMetadata.blackQueens;
 	while (blackQueens)
 	{
 		unsigned long long lsb = (blackQueens & ((~blackQueens) + 1));
 		evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::QUEEN_SCORE - GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_QUEEN_POSITION_SCORES[BoardManager::get().logPower2[lsb % BoardManager::MODULO_LOG_POWER_2]];
 		blackQueens ^= lsb;
+	}
+
+	// Atac Regine Negre
+	blackQueens = configurationMetadata.blackQueens;
+	while (blackQueens)
+	{
+		unsigned long long lsbQueen = (blackQueens & ((~blackQueens) + 1));
+
+		int posQueen = BoardManager::get().logPower2[lsbQueen % BoardManager::MODULO_LOG_POWER_2];
+
+		unsigned long long piecesSameRank = BoardManager::get().extractRank(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameFile = BoardManager::get().extractFile(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameDiagonal0 = BoardManager::get().extractTopLeftBottomRightDiagonal(configurationMetadata.allPieces, posQueen);
+		unsigned long long piecesSameDiagonal1 = BoardManager::get().extractTopRightBottomLeftDiagonal(configurationMetadata.allPieces, posQueen);
+
+		unsigned long long queenAttackZone = (BoardManager::get().getPrecalculatedRawLeftAttackZones(posQueen, piecesSameRank) | BoardManager::get().getPrecalculatedRawRightAttackZones(posQueen, piecesSameRank)
+			| BoardManager::get().getPrecalculatedRawTopAttackZones(posQueen, piecesSameFile) | BoardManager::get().getPrecalculatedRawBottomAttackZones(posQueen, piecesSameFile)
+			| BoardManager::get().getPrecalculatedRawTopLeftDiagonalAttackZones(posQueen, piecesSameDiagonal0)
+			| BoardManager::get().getPrecalculatedRawBottomRightDiagonalAttackZones(posQueen, piecesSameDiagonal0)
+			| BoardManager::get().getPrecalculatedRawTopRightDiagonalAttackZones(posQueen, piecesSameDiagonal1)
+			| BoardManager::get().getPrecalculatedRawBottomLeftDiagonalAttackZones(posQueen, piecesSameDiagonal1));
+		queenAttackZone &= configurationMetadata.blackKingDefenseZone;
+
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnRank)
+			queenAttackZone &= BoardManager::get().getRankBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnFile)
+			queenAttackZone &= BoardManager::get().getFileBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnTopLeftBottomRightDiagonal)
+			queenAttackZone &= BoardManager::get().getTopLeftBottomRightDiagonalBitMasks(posQueen);
+		if (lsbQueen & configurationMetadata.blackPiecesPinnedOnTopRightBottomLeftDiagonal)
+			queenAttackZone &= BoardManager::get().getTopRightBottomLeftDiagonalBitMasks(posQueen);
+
+		while (queenAttackZone)
+		{
+			unsigned long long lsbAttack = (queenAttackZone & ((~queenAttackZone) + 1));
+
+			int posAttack = BoardManager::get().logPower2[lsbAttack % BoardManager::MODULO_LOG_POWER_2];
+
+			++cellPressure[posAttack].blackPressureCount;
+
+			queenAttackZone ^= lsbAttack;
+		}
+
+		blackQueens ^= lsbQueen;
 	}
 
 	evaluationScore = evaluationScore - GreedyExpectedMinMaxAgent::KING_SCORE - GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR * GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[BoardManager::get().logPower2[configurationMetadata.blackKing % BoardManager::MODULO_LOG_POWER_2]];
