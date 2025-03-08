@@ -822,12 +822,12 @@ const float GreedyExpectedMinMaxAgent::COVER_ZONE_SCORE = 0.035f;
 const float GreedyExpectedMinMaxAgent::CHAIN_CAPTURE_SCORE = 0.035f;
 const float GreedyExpectedMinMaxAgent::CHECK_SCORE = 0.05f;
 
-const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.1f;
-const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.1f;
-const float GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.1f;
-const float GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.1f;
-const float GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.1f;
-const float GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.1f;
+const float GreedyExpectedMinMaxAgent::PAWN_POSITION_SCORE_FACTOR = 0.05f;
+const float GreedyExpectedMinMaxAgent::ROOK_POSITION_SCORE_FACTOR = 0.05f;
+const float GreedyExpectedMinMaxAgent::KNIGHT_POSITION_SCORE_FACTOR = 0.05f;
+const float GreedyExpectedMinMaxAgent::BISHOP_POSITION_SCORE_FACTOR = 0.05f;
+const float GreedyExpectedMinMaxAgent::QUEEN_POSITION_SCORE_FACTOR = 0.05f;
+const float GreedyExpectedMinMaxAgent::KING_POSITION_SCORE_FACTOR = 0.05f;
 
 const float GreedyExpectedMinMaxAgent::WHITE_TURN_SCORE = 0.1f;
 
