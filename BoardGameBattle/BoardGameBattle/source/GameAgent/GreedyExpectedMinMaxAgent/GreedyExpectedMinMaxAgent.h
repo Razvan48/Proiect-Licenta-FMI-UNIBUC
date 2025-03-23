@@ -6,6 +6,7 @@
 
 #include "../../GameMetadata/GameMetadata.h"
 
+#include <vector>
 #include <map>
 
 struct CellPressure
@@ -78,7 +79,9 @@ protected:
 
 	static const int EXPECTED_NUM_NODES_VISITED;
 
-	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente. 
+	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMaps;
+	void updateAlreadyCalculatedNodes(std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes, unsigned long long zobristHashingValue, int depth, float value) const;
+	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente. 
 
 public:
 	static GreedyExpectedMinMaxAgent& get();
