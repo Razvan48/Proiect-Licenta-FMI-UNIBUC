@@ -335,15 +335,20 @@ void CreatedMultiplayerGameVisualInterface::update()
 
 	if (Client::get().getLastKnownBoardConfiguration() != "" && BoardManager::get().getPiecesConfiguration() != Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE))
 	{
+		// INFO: Aici sunt 2 if-uri identice, deoarece estimarea configuratiei se bazeaza pe faptul ca noua configuratie este deja setata.
 		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
 		{
-			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
 			BoardManager::get().addNewConfigurationMetadataInHistory(BoardManager::get().getConfigurationMetadata()); // INFO: Asta nu ar fi necesara, din cauza ca butonul de Undo nu exista pentru Multiplayer. Partial utila pentru Debug totusi.
 		}
 
 		BoardManager::get().setPiecesConfiguration(Client::get().getLastKnownBoardConfiguration().substr(0, GameMetadata::STRING_SIZE_WITHOUT_MOVE));
 
 		AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
+
+		if (Client::get().getLastKnownBoardConfiguration().size() == GameMetadata::STRING_SIZE_WITH_MOVE)
+		{
+			BoardVisualizer::get().addNewMoveInHistory(Client::get().getLastKnownBoardConfiguration().substr(GameMetadata::STRING_SIZE_WITHOUT_MOVE));
+		}
 	}
 
 	// BoardVisualizer::get().initialize(); // Nu trebuie pentru CreatedMultiplayerGame pentru ca deja stie culoarea.

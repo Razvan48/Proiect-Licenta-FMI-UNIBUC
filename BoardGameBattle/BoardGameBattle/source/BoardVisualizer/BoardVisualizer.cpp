@@ -50,6 +50,8 @@ BoardVisualizer::BoardVisualizer()
 	, newMoveAtTopOfHistory(false)
 	, gameHasEnded(false)
 	, pawnPromotionMenuActive(false)
+	, estimationCalculated(false)
+	, estimation(0.0f)
 {
 
 }
@@ -177,9 +179,9 @@ void BoardVisualizer::initialize()
 
 
 	// Daca Agentul este activ trebuie retetat
-	GameAgentSelector::get().setIsRunningTask(false);
+	GameAgentSelector::get().setIsFindingBestMove(false);
 	GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
-	GameAgentSelector::get().isTaskCancelled.store(true);
+	GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 
 	GameAgentSelector::get().reset(); // INFO: Pentru a curata cache-ul la CachedGreedyExpectedMinMaxAgent
 }
@@ -303,7 +305,7 @@ void BoardVisualizer::update()
 	{
 		if (SingleplayerGameVisualInterface::get().get()->getFinalMessage() == SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED)
 		{
-			if (!GameAgentSelector::get().getIsRunningTask())
+			if (!GameAgentSelector::get().getIsFindingBestMove())
 				GameAgentSelector::get().findBestMove(BoardManager::get().getConfigurationMetadata());
 
 
@@ -316,22 +318,25 @@ void BoardVisualizer::update()
 				BoardManager::get().getConfigurationMetadata().initialize(BoardManager::get().applyMoveInternal(BoardManager::get().getConfigurationMetadata(), bestMove, BoardManager::get().getZobristHashingValuesFrequency()));
 
 				// Resetare
-				GameAgentSelector::get().setIsRunningTask(false);
+				GameAgentSelector::get().setIsFindingBestMove(false);
 				GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+				GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 
 				// Sunet
 				AssetManager::get().playSound(this->pieceMoveSoundName, false, true);
 
 				// Adaugare Mutare in Istoric pentru BoardVisualizer
 				std::string historyMove = BoardManager::get().convertToExternalMove(bestMove);
+
+				// INFO: Apelul de mai jos trebuie sa ramana ultimul, deoarece se bazeaza pe faptul ca noua configuratie este deja setata (estimarea se bazeaza).
 				this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
 			}
 		}
 		else
 		{
-			GameAgentSelector::get().setIsRunningTask(false);
+			GameAgentSelector::get().setIsFindingBestMove(false);
 			GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
-			GameAgentSelector::get().isTaskCancelled.store(true);
+			GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 		}
 	}
 
@@ -476,10 +481,10 @@ void BoardVisualizer::update()
 
 		if (!this->movesHistory.empty()) // Poate this->newMoveAtTopOfHistory era pe true din cauza ca s-a dat pop de la Butonul de Undo.
 		{
-			int row0 = (int)(this->movesHistory.back()[1] - '1');
-			int column0 = (int)(this->movesHistory.back()[0] - 'a');
-			int row1 = (int)(this->movesHistory.back()[3] - '1');
-			int column1 = (int)(this->movesHistory.back()[2] - 'a');
+			int row0 = (int)(this->movesHistory.back().first[1] - '1');
+			int column0 = (int)(this->movesHistory.back().first[0] - 'a');
+			int row1 = (int)(this->movesHistory.back().first[3] - '1');
+			int column1 = (int)(this->movesHistory.back().first[2] - 'a');
 
 			this->resetSelectedTiles();
 
@@ -589,20 +594,77 @@ void BoardVisualizer::update()
 			}
 		}
 	}
+
+	// Estimare
+	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
+	{
+		SingleplayerGameVisualInterface::get().get()->setEstimationValue(this->estimation);
+		SingleplayerGameVisualInterface::get().get()->setEstimationObsolete(!this->estimationCalculated);
+	}
+	else // if (Game::get().getMode() == Game::Mode::MULTIPLAYER) 
+	{
+		if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::CREATE_GAME)
+		{
+			CreatedMultiplayerGameVisualInterface::get().get()->setEstimationValue(this->estimation);
+			CreatedMultiplayerGameVisualInterface::get().get()->setEstimationObsolete(!this->estimationCalculated);
+		}
+		else // if (Game::get().getMultiplayerStatus() == Game::MultiplayerStatus::JOIN_GAME)
+		{
+			JoinedMultiplayerGameVisualInterface::get().get()->setEstimationValue(this->estimation);
+			JoinedMultiplayerGameVisualInterface::get().get()->setEstimationObsolete(!this->estimationCalculated);
+		}
+	}
+
+	if (!this->estimationCalculated)
+	{
+		if (!GameAgentSelector::get().getIsEstimating())
+			GameAgentSelector::get().estimateConfiguration(BoardManager::get().getConfigurationMetadata());
+
+		float estimation = GameAgentSelector::get().getEstimation();
+		if (estimation != GameAgentSelector::get().getUnreachableEstimation())
+		{
+			this->estimation = estimation;
+			this->estimationCalculated = true;
+		}
+	}
 }
 
 void BoardVisualizer::addNewMoveInHistory(const std::string& move)
 {
-	this->movesHistory.push_back(move);
+	this->movesHistory.push_back(std::make_pair(move, std::make_pair(this->estimation, this->estimationCalculated)));
 	this->newMoveAtTopOfHistory = true;
+
+	// this->estimation = 0.0f; // INFO: Nu facem asta ca sa ramana vechea estimare pe ecran.
+	this->estimationCalculated = false;
+
+	// INFO: Daca se adauga o noua mutare in istoric atunci estimarea anterioara nu mai este cea mai recenta.
+	GameAgentSelector::get().setIsEstimating(false);
+	GameAgentSelector::get().resetEstimation();
+	GameAgentSelector::get().setIsEstimateCancelled(true);
+
+	GameAgentSelector::get().estimateConfiguration(BoardManager::get().getConfigurationMetadata());
 }
 
 void BoardVisualizer::popLastMoveFromHistory()
 {
 	if (!this->movesHistory.empty())
 	{
+		this->estimationCalculated = this->movesHistory.back().second.second;
+		if (this->estimationCalculated) // INFO: Facem asta ca sa ramana vechea estimare pe ecran.
+			this->estimation = this->movesHistory.back().second.first;
+
 		this->movesHistory.pop_back();
 		this->newMoveAtTopOfHistory = true;
+	}
+
+	// INFO: Daca se elimina o mutare din istoric atunci estimarea anterioara nu mai este cea mai recenta.
+	if (!this->estimationCalculated)
+	{
+		GameAgentSelector::get().setIsEstimating(false);
+		GameAgentSelector::get().resetEstimation();
+		GameAgentSelector::get().setIsEstimateCancelled(true);
+
+		GameAgentSelector::get().estimateConfiguration(BoardManager::get().getConfigurationMetadata());
 	}
 }
 
@@ -624,6 +686,7 @@ void BoardVisualizer::sendMoveToBoardManager(const std::string& move)
 	std::string moveInHistory = "";
 	for (int i = 1; i < 5; ++i)
 		moveInHistory.push_back(move[i]);
+	// INFO: Mai intai aplicam mutarea pe tabla si apoi adaugam noua configuratie in istoric (estimarea are nevoie ca tabla sa fie actualizata).
 	this->addNewMoveInHistory(moveInHistory); // Fara caracterul piesei + Fara ultimul caracter in caz de promovare pion
 
 	this->resetSelectedTiles();

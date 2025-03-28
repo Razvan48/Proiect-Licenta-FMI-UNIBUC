@@ -52,9 +52,13 @@ void UndoMoveButton::update()
 				)
 			{
 				// Marcam Agentul ca fiind inactiv + Resetare
-				GameAgentSelector::get().setIsRunningTask(false);
+				GameAgentSelector::get().setIsFindingBestMove(false);
 				GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
-				GameAgentSelector::get().isTaskCancelled.store(true);
+				GameAgentSelector::get().setIsFindBestMoveCancelled(true);
+
+				GameAgentSelector::get().setIsEstimating(false);
+				GameAgentSelector::get().resetEstimation();
+				GameAgentSelector::get().setIsEstimateCancelled(true);
 
 				BoardVisualizer::get().popLastMoveFromHistory();
 				BoardManager::get().popLastConfigurationMetadataFromHistory();

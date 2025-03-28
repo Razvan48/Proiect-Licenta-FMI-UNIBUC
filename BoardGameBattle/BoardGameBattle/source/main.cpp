@@ -4,6 +4,12 @@ int main()
 {
     Game::get().start();
 
+	// TODO: de vazut daca game.setStatus este ok
+
+
+
+
+
 	// INFO: La BoardManager.cpp de evitat this->configurationMetadata, trebuie doar configurationMetadata, ca sa afecteze doar instanta locala.
 
 	// de facut un agent singlethreaded, ca sa nu mai blocheze dispozitivul cand ruleaza

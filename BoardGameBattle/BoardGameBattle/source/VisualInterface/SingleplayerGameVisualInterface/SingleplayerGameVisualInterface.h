@@ -19,10 +19,12 @@ protected:
 	TextEntity turnLabelTextEntity;
 	TextEntity playerNameLabelTextEntity;
 	TextEntity opponentNameLabelTextEntity;
+	TextEntity estimationLabelTextEntity;
 
 	TextEntity turnTextEntity;
 	TextEntity playerNameTextEntity;
 	TextEntity opponentNameTextEntity;
+	TextEntity estimationTextEntity;
 
 	UndoMoveButton undoMoveButton;
 
@@ -64,6 +66,8 @@ public:
 	inline const TextEntity& getFinalMessageTextEntity() const { return this->finalMessageTextEntity; }
 
 	void setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage finalMessage);
+	void setEstimationObsolete(bool isObsolete);
+	void setEstimationValue(float estimation);
 
 	inline FinalMessage getFinalMessage() const { return this->finalMessage; }
 };

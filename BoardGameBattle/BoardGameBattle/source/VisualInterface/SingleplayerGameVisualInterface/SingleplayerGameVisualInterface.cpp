@@ -1,3 +1,6 @@
+#include <sstream>
+#include <iomanip>
+
 #include "SingleplayerGameVisualInterface.h"
 
 #include "../../BoardVisualizer/BoardVisualizer.h"
@@ -19,14 +22,39 @@ SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntit
 	, turnLabelTextEntity(turnLabelTextEntity)
 	, playerNameLabelTextEntity(playerNameLabelTextEntity)
 	, opponentNameLabelTextEntity(opponentNameLabelTextEntity)
+
+	, estimationLabelTextEntity
+	(
+		9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+		5.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.75f * WindowManager::get().getWindowHeight() / 10.0f,
+		0.1f * WindowManager::get().getWindowWidth(),
+		0.05f * WindowManager::get().getWindowHeight(),
+		0.0f,
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		"arialFont",
+		"Estimation:"
+	)
+
 	, turnTextEntity(turnTextEntity)
 	, playerNameTextEntity(playerNameTextEntity)
 	, opponentNameTextEntity(opponentNameTextEntity)
 
+	, estimationTextEntity
+	(
+		9.0f * WindowManager::get().getWindowWidth() / 10.0f + 0.5f * WindowManager::get().getWindowWidth() / 10.0f,
+		5.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.25f * WindowManager::get().getWindowHeight() / 10.0f,
+		0.1f * WindowManager::get().getWindowWidth(),
+		0.05f * WindowManager::get().getWindowHeight(),
+		0.0f,
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		"arialFont",
+		"ERROR"
+	)
+
 	, undoMoveButton
 	(
 		19.0f * WindowManager::get().getWindowWidth() / 20.0f,
-		WindowManager::get().getWindowHeight() / 2.0f,
+		4.0f * WindowManager::get().getWindowHeight() / 10.0f + 0.5f * WindowManager::get().getWindowHeight() / 10.0f,
 		0.075f * WindowManager::get().getWindowWidth(),
 		0.075f * WindowManager::get().getWindowHeight(),
 		0.0f,
@@ -199,6 +227,9 @@ void SingleplayerGameVisualInterface::initialize()
 	this->opponentNameTextEntity.setText("BOT");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
+	this->estimationTextEntity.setText("0");
+	this->setEstimationObsolete(true);
+
 	this->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
 
 	AssetManager::get().playSound(this->boardStartSoundName, false, false);
@@ -211,10 +242,12 @@ void SingleplayerGameVisualInterface::draw()
 	this->turnLabelTextEntity.draw();
 	this->playerNameLabelTextEntity.draw();
 	this->opponentNameLabelTextEntity.draw();
+	this->estimationLabelTextEntity.draw();
 
 	this->turnTextEntity.draw();
 	this->playerNameTextEntity.draw();
 	this->opponentNameTextEntity.draw();
+	this->estimationTextEntity.draw();
 
 	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER)
 		this->undoMoveButton.draw();
@@ -232,10 +265,12 @@ void SingleplayerGameVisualInterface::update()
 	this->turnLabelTextEntity.update();
 	this->playerNameLabelTextEntity.update();
 	this->opponentNameLabelTextEntity.update();
+	this->estimationLabelTextEntity.update();
 
 	this->turnTextEntity.update();
 	this->playerNameTextEntity.update();
 	this->opponentNameTextEntity.update();
+	this->estimationTextEntity.update();
 
 	if (Game::get().getMode() == Game::Mode::SINGLEPLAYER && !BoardVisualizer::get().getPawnPromotionMenuActive())
 		this->undoMoveButton.update();
@@ -301,6 +336,39 @@ void SingleplayerGameVisualInterface::setFinalMessageTextEntity(SingleplayerGame
 	}
 
 	this->finalMessage = finalMessage;
+}
+
+void SingleplayerGameVisualInterface::setEstimationObsolete(bool isObsolete)
+{
+	if (isObsolete)
+	{
+		this->estimationLabelTextEntity.setColor(glm::vec3(0.5f, 0.5f, 0.5f));
+		this->estimationTextEntity.setColor(glm::vec3(0.5f, 0.5f, 0.5f));
+	}
+	else
+	{
+		// INFO: std::stof converteste un string la float.
+		this->setEstimationValue(std::stof(this->estimationTextEntity.getText()));
+	}
+}
+
+void SingleplayerGameVisualInterface::setEstimationValue(float estimation)
+{
+	this->estimationLabelTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	if (estimation > 0.0f)
+		this->estimationTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	else if (estimation < 0.0f)
+		this->estimationTextEntity.setColor(glm::vec3(0.0f, 0.0f, 0.0f));
+	else
+		this->estimationTextEntity.setColor(glm::vec3(0.5f, 0.5f, 0.5f));
+
+
+	const int MAX_ESTIMATION_LENGTH = 6;
+	std::ostringstream outputStream;
+	outputStream << std::fixed << std::setprecision(MAX_ESTIMATION_LENGTH) << estimation;
+	std::string estimationString = outputStream.str();
+	this->estimationTextEntity.setText(estimationString);
 }
 
 

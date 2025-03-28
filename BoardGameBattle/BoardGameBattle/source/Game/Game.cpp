@@ -19,11 +19,14 @@
 #include "../VisualInterface/JoinedMultiplayerGameVisualInterface/JoinedMultiplayerGameVisualInterface.h"
 #include "../VisualInterface/MultiplayerColorMenuVisualInterface/MultiplayerColorMenuVisualInterface.h"
 
+#include "../GameAgent/GameAgentSelector/GameAgentSelector.h"
+
 #include <enet/enet.h>
 
 #include <iostream>
-#include <memory>
+#include <vector>
 
+#include <memory>
 #include <thread>
 
 Game::Game()
@@ -809,6 +812,25 @@ void Game::start()
 
 void Game::setStatus(const Game::Status& status)
 {
+	if (this->status == Game::Status::IN_SINGLEPLAYER_GAME && status != Game::Status::IN_SINGLEPLAYER_GAME)
+	{
+		// INFO: Oprim task-ul de AI daca iesim din joc.
+		GameAgentSelector::get().setIsFindingBestMove(false);
+		GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
+		GameAgentSelector::get().setIsFindBestMoveCancelled(true);
+	}
+	if (
+		(this->status == Game::Status::IN_SINGLEPLAYER_GAME || this->status == Game::Status::IN_CREATED_MULTIPLAYER_GAME || this->status == Game::Status::IN_JOINED_MULTIPLAYER_GAME)
+		&&
+		(status != Game::Status::IN_SINGLEPLAYER_GAME && status != Game::Status::IN_CREATED_MULTIPLAYER_GAME && status != Game::Status::IN_JOINED_MULTIPLAYER_GAME)
+		)
+	{
+		// INFO: Resetam task-ul evaluatorului de configuratie aici.
+		GameAgentSelector::get().setIsEstimating(false);
+		GameAgentSelector::get().resetEstimation();
+		GameAgentSelector::get().setIsEstimateCancelled(true);
+	}
+
 	this->status = status;
 
 	if (this->status == Game::Status::EXITING)

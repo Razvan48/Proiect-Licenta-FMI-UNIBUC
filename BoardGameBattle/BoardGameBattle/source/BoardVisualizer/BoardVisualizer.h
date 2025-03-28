@@ -49,12 +49,15 @@ private:
 
 	std::string pieceMoveSoundName;
 
-	std::vector<std::string> movesHistory;
+	std::vector<std::pair<std::string, std::pair<float, bool>>> movesHistory;
 	bool newMoveAtTopOfHistory;
 
 	bool gameHasEnded;
 
 	bool pawnPromotionMenuActive;
+
+	bool estimationCalculated;
+	float estimation;
 
 	void resetSelectedTiles();
 
@@ -71,7 +74,7 @@ public:
 	{
 		if (this->movesHistory.empty())
 			return "";
-		return this->movesHistory.back();
+		return this->movesHistory.back().first;
 	}
 	inline int getLastMoveFromHistorySize() const { return (int)this->movesHistory.size(); }
 

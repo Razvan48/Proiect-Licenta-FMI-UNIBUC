@@ -36,7 +36,8 @@ private:
 	GreedyExpectedMinMaxAgent& operator= (const GreedyExpectedMinMaxAgent&& other) = delete;
 
 protected:
-	static const int MAX_DEPTH;
+	static const int MAX_DEPTH_FIND_BEST_MOVE;
+	static const int MAX_DEPTH_ESTIMATE_CONFIGURATION;
 
 	static const float UNREACHABLE_INF;
 	static const float REACHABLE_INF;
@@ -77,11 +78,14 @@ protected:
 	static const float BLACK_QUEEN_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 	static const float BLACK_KING_POSITION_SCORES[GameMetadata::NUM_TILES_HEIGHT * GameMetadata::NUM_TILES_WIDTH];
 
-	static const int EXPECTED_NUM_NODES_VISITED;
+	static const int EXPECTED_NUM_NODES_VISITED_FIND_BEST_MOVE;
+	static const int EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION;
 
-	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMaps;
+	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMapsFindBestMove;
+	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMapsEstimateConfiguration;
 	void updateAlreadyCalculatedNodes(std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes, unsigned long long zobristHashingValue, int depth, float value) const;
-	float minMax(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes) const; // INFO: minMax primeste o copie a configuratiei si a map-ului de frecvente. 
+	float minMaxFindBestMove(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes) const; // INFO: minMaxFindBestMove primeste o copie a configuratiei si a map-ului de frecvente.
+	float minMaxEstimateConfiguration(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes) const; // INFO: minMaxEstimateConfiguration primeste o copie a configuratiei si a map-ului de frecvente.
 
 public:
 	static GreedyExpectedMinMaxAgent& get();
@@ -89,6 +93,7 @@ public:
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
 	virtual void reset() override;
+	virtual float estimateConfiguration(ConfigurationMetadata& configurationMetadata) override;
 };
 
 
