@@ -5,6 +5,11 @@ int main()
     Game::get().start();
 
 	// TODO: de vazut daca game.setStatus este ok
+	// de revazut codul scris, pare ca s-au rezolvat bug-urile
+	// de vazut daca e necesar sa apelam direct estimarea din pop_move from history si push move in history (ar fi suficient ca e in apelul de update din board visualizer)
+	// de vazut daca in cazul de mai sus e adevarat, atunci poate putem reveni la ordinea initiala din interfetele de multiplayer + ceva prin board visualizer (send move to manager)
+
+	// de testat mai mult
 
 
 

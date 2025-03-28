@@ -824,7 +824,7 @@ float GreedyExpectedMinMaxAgent::minMaxFindBestMove(ConfigurationMetadata config
 
 float GreedyExpectedMinMaxAgent::minMaxEstimateConfiguration(ConfigurationMetadata configurationMetadata, int depth, float alpha, float beta, std::map<unsigned long long, int>& zobristHashingValuesFrequency, int& numNodesVisited, int expectedNumNodesVisited, std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes) const // INFO: minMaxEstimateConfiguration primeste o copie a configuratiei. 
 {
-	if (this->isFindBestMoveCancelled.load())
+	if (this->isEstimateCancelled.load())
 	{
 		std::cout << "MinMaxEstimateConfiguration Thread was cancelled." << std::endl;
 		return 0.0f;
@@ -1188,7 +1188,7 @@ float GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& co
 }
 
 const int GreedyExpectedMinMaxAgent::MAX_DEPTH_FIND_BEST_MOVE = 4;
-const int GreedyExpectedMinMaxAgent::MAX_DEPTH_ESTIMATE_CONFIGURATION = 3;
+const int GreedyExpectedMinMaxAgent::MAX_DEPTH_ESTIMATE_CONFIGURATION = 2;
 
 const float GreedyExpectedMinMaxAgent::UNREACHABLE_INF = GreedyExpectedMinMaxAgent::UNREACHABLE_ESTIMATION / 2.0f; // INFO: 2 ^ 20 / 2 = 2^ 19
 const float GreedyExpectedMinMaxAgent::REACHABLE_INF = GreedyExpectedMinMaxAgent::UNREACHABLE_INF / 2.0f;
@@ -1444,5 +1444,5 @@ const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::
 };
 
 const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_FIND_BEST_MOVE = 27500000;
-const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION = 10000000;
+const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION = 3000000;
 

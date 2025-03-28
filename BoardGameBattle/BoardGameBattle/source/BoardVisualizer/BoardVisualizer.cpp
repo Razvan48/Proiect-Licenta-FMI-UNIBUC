@@ -178,12 +178,17 @@ void BoardVisualizer::initialize()
 	this->pawnPromotionMenuActive = false;
 
 
-	// Daca Agentul este activ trebuie retetat
+	// INFO: Estimarea este resetata la fiecare inceput de joc.
+	this->estimationCalculated = false;
+	this->estimation = 0.0f;
+
+
+	// Daca Agentul este activ trebuie resetat
 	GameAgentSelector::get().setIsFindingBestMove(false);
 	GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
 	GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 
-	GameAgentSelector::get().reset(); // INFO: Pentru a curata cache-ul la CachedGreedyExpectedMinMaxAgent
+	GameAgentSelector::get().reset(); // INFO: Nu face nimic momentan.
 }
 
 void BoardVisualizer::draw()

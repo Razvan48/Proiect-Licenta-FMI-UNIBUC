@@ -230,6 +230,7 @@ void SingleplayerGameVisualInterface::initialize()
 	this->estimationTextEntity.setText("0");
 	this->setEstimationObsolete(true);
 
+
 	this->setFinalMessageTextEntity(SingleplayerGameVisualInterface::FinalMessage::NOT_FINISHED);
 
 	AssetManager::get().playSound(this->boardStartSoundName, false, false);
@@ -368,6 +369,21 @@ void SingleplayerGameVisualInterface::setEstimationValue(float estimation)
 	std::ostringstream outputStream;
 	outputStream << std::fixed << std::setprecision(MAX_ESTIMATION_LENGTH) << estimation;
 	std::string estimationString = outputStream.str();
+
+	int numZerosEnd = 0;
+	for (int i = estimationString.size() - 1; i >= 0; --i)
+	{
+		if (estimationString[i] == '0')
+			++numZerosEnd;
+		else
+		{
+			if (estimationString[i] == '.')
+				--numZerosEnd;
+			break;
+		}
+	}
+	estimationString = estimationString.substr(0, estimationString.size() - numZerosEnd);
+
 	this->estimationTextEntity.setText(estimationString);
 }
 
