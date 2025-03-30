@@ -2,9 +2,7 @@
 
 int main()
 {
-    Game::get().start();
-
-	// de uitat doar pe metodele generale din agent
+	Game::get().start();
 
 	// TODO: de vazut daca game.setStatus este ok
 	// de revazut codul scris, pare ca s-au rezolvat bug-urile
