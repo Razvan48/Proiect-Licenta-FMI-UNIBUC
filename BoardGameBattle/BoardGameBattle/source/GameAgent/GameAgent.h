@@ -137,8 +137,5 @@ public:
 		}
 	}
 
-	inline float getUnreachableEstimation() const
-	{
-		return GameAgent::UNREACHABLE_ESTIMATION;
-	}
+	inline float getUnreachableEstimation() const { return GameAgent::UNREACHABLE_ESTIMATION; }
 };

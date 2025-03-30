@@ -4,6 +4,8 @@ int main()
 {
     Game::get().start();
 
+	// de uitat doar pe metodele generale din agent
+
 	// TODO: de vazut daca game.setStatus este ok
 	// de revazut codul scris, pare ca s-au rezolvat bug-urile
 	// de vazut daca e necesar sa apelam direct estimarea din pop_move from history si push move in history (ar fi suficient ca e in apelul de update din board visualizer)
