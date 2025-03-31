@@ -50,8 +50,8 @@ BoardVisualizer::BoardVisualizer()
 	, newMoveAtTopOfHistory(false)
 	, gameHasEnded(false)
 	, pawnPromotionMenuActive(false)
+	, estimation(GameAgentSelector::get().getUnreachableEstimation())
 	, estimationCalculated(false)
-	, estimation(0.0f)
 {
 
 }
@@ -179,8 +179,8 @@ void BoardVisualizer::initialize()
 
 
 	// INFO: Estimarea este resetata la fiecare inceput de joc.
+	this->estimation = GameAgentSelector::get().getUnreachableEstimation();
 	this->estimationCalculated = false;
-	this->estimation = 0.0f;
 
 
 	// Daca Agentul este activ trebuie resetat
@@ -189,6 +189,10 @@ void BoardVisualizer::initialize()
 	GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 
 	GameAgentSelector::get().reset(); // INFO: Nu face nimic momentan.
+
+	GameAgentSelector::get().setIsEstimating(false);
+	GameAgentSelector::get().resetEstimation();
+	GameAgentSelector::get().setIsEstimateCancelled(true);
 }
 
 void BoardVisualizer::draw()

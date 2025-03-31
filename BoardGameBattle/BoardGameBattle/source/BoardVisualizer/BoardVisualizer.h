@@ -56,8 +56,8 @@ private:
 
 	bool pawnPromotionMenuActive;
 
-	bool estimationCalculated;
 	float estimation;
+	bool estimationCalculated;
 
 	void resetSelectedTiles();
 

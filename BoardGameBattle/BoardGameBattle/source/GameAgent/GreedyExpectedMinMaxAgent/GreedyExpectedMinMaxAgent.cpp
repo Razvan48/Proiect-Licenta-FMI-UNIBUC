@@ -1077,7 +1077,7 @@ void GreedyExpectedMinMaxAgent::reset()
 
 }
 
-float GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& configurationMetadata)
+void GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& configurationMetadata)
 {
 	this->setIsEstimating(true);
 	this->resetEstimation();
@@ -1186,6 +1186,8 @@ float GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& co
 			std::cout << "GreedyExpectedMinMaxAgent: EstimateConfiguration: Total Number of Nodes Visited: " << numNodesVisitedTotal << std::endl;
 		}));
 }
+
+float GreedyExpectedMinMaxAgent::getMaxDisplayEstimation() const { return GreedyExpectedMinMaxAgent::MAX_DISPLAY_ESTIMATION; }
 
 const int GreedyExpectedMinMaxAgent::MAX_DEPTH_FIND_BEST_MOVE = 4;
 const int GreedyExpectedMinMaxAgent::MAX_DEPTH_ESTIMATE_CONFIGURATION = 2;
@@ -1445,4 +1447,6 @@ const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::
 
 const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_FIND_BEST_MOVE = 25000000;
 const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION = 1000000;
+
+const float GreedyExpectedMinMaxAgent::MAX_DISPLAY_ESTIMATION = GreedyExpectedMinMaxAgent::REACHABLE_INF / 2.0f;
 

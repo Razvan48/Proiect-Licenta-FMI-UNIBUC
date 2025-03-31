@@ -14,6 +14,8 @@
 
 #include "../../RandomGenerator/RandomGenerator.h"
 
+#include "../../GameAgent/GameAgentSelector/GameAgentSelector.h"
+
 SingleplayerGameVisualInterface::SingleplayerGameVisualInterface(TexturableEntity backgroundEntity, bool respondsToEscapeKey
 	, TextEntity turnLabelTextEntity, TextEntity playerNameLabelTextEntity, TextEntity opponentNameLabelTextEntity
 	, TextEntity turnTextEntity
@@ -227,7 +229,7 @@ void SingleplayerGameVisualInterface::initialize()
 	this->opponentNameTextEntity.setText("BOT");
 	this->opponentNameTextEntity.setColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	this->estimationTextEntity.setText("0");
+	this->setEstimationValue(0.0f);
 	this->setEstimationObsolete(true);
 
 
@@ -364,27 +366,42 @@ void SingleplayerGameVisualInterface::setEstimationValue(float estimation)
 	else
 		this->estimationTextEntity.setColor(glm::vec3(0.5f, 0.5f, 0.5f));
 
-
-	const int MAX_ESTIMATION_LENGTH = 6;
-	std::ostringstream outputStream;
-	outputStream << std::fixed << std::setprecision(MAX_ESTIMATION_LENGTH) << estimation;
-	std::string estimationString = outputStream.str();
-
-	int numZerosEnd = 0;
-	for (int i = estimationString.size() - 1; i >= 0; --i)
+	if (estimation > GameAgentSelector::get().getMaxDisplayEstimation())
 	{
-		if (estimationString[i] == '0')
-			++numZerosEnd;
-		else
-		{
-			if (estimationString[i] == '.')
-				--numZerosEnd;
-			break;
-		}
+		this->estimationTextEntity.setText("+inf");
 	}
-	estimationString = estimationString.substr(0, estimationString.size() - numZerosEnd);
+	else if (estimation < -GameAgentSelector::get().getMaxDisplayEstimation())
+	{
+		this->estimationTextEntity.setText("-inf");
+	}
+	else // include si estimation == 0.0f
+	{
+		const int MAX_ESTIMATION_LENGTH = 6;
+		std::ostringstream outputStream;
+		outputStream << std::fixed << std::setprecision(MAX_ESTIMATION_LENGTH) << estimation;
+		std::string estimationString = outputStream.str();
 
-	this->estimationTextEntity.setText(estimationString);
+		int numZerosEnd = 0;
+		for (int i = estimationString.size() - 1; i >= 0; --i)
+		{
+			if (estimationString[i] == '0')
+				++numZerosEnd;
+			else
+			{
+				if (estimationString[i] == '.')
+					--numZerosEnd;
+				break;
+			}
+		}
+		estimationString = estimationString.substr(0, estimationString.size() - numZerosEnd);
+
+		if (estimation > 0.0 && estimationString[0] != '+')
+			estimationString = "+" + estimationString;
+		else if (estimation < 0.0 && estimationString[0] != '-')
+			estimationString = "-" + estimationString;
+
+		this->estimationTextEntity.setText(estimationString);
+	}
 }
 
 

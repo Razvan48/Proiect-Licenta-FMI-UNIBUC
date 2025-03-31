@@ -45,7 +45,8 @@ public:
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const = 0;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) = 0;
 	virtual void reset() = 0;
-	virtual float estimateConfiguration(ConfigurationMetadata& configurationMetadata) = 0;
+	virtual void estimateConfiguration(ConfigurationMetadata& configurationMetadata) = 0;
+	virtual float getMaxDisplayEstimation() const = 0;
 
 	inline bool getIsFindingBestMove()
 	{

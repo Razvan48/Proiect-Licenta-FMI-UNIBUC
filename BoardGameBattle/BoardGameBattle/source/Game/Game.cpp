@@ -818,6 +818,8 @@ void Game::setStatus(const Game::Status& status)
 		GameAgentSelector::get().setIsFindingBestMove(false);
 		GameAgentSelector::get().setBestMove(std::vector<std::pair<char, int>>());
 		GameAgentSelector::get().setIsFindBestMoveCancelled(true);
+
+		GameAgentSelector::get().reset(); // INFO: Nu face nimic momentan.
 	}
 	if (
 		(this->status == Game::Status::IN_SINGLEPLAYER_GAME || this->status == Game::Status::IN_CREATED_MULTIPLAYER_GAME || this->status == Game::Status::IN_JOINED_MULTIPLAYER_GAME)

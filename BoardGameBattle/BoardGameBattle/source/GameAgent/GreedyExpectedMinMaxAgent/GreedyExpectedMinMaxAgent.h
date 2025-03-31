@@ -81,6 +81,8 @@ protected:
 	static const int EXPECTED_NUM_NODES_VISITED_FIND_BEST_MOVE;
 	static const int EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION;
 
+	static const float MAX_DISPLAY_ESTIMATION;
+
 	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMapsFindBestMove;
 	std::vector<std::map<unsigned long long, std::pair<int, float>>> alreadyCalculatedNodesMapsEstimateConfiguration;
 	void updateAlreadyCalculatedNodes(std::map<unsigned long long, std::pair<int, float>>& alreadyCalculatedNodes, unsigned long long zobristHashingValue, int depth, float value) const;
@@ -93,7 +95,8 @@ public:
 	virtual float evaluateConfiguration(ConfigurationMetadata& configurationMetadata) const override;
 	virtual void findBestMove(ConfigurationMetadata& configurationMetadata) override;
 	virtual void reset() override;
-	virtual float estimateConfiguration(ConfigurationMetadata& configurationMetadata) override;
+	virtual void estimateConfiguration(ConfigurationMetadata& configurationMetadata) override;
+	virtual float getMaxDisplayEstimation() const override;
 };
 
 
