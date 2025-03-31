@@ -4,12 +4,6 @@ int main()
 {
 	Game::get().start();
 
-	// de vazut daca e necesar sa apelam direct estimarea din pop_move from history si push move in history (ar fi suficient ca e in apelul de update din board visualizer)
-	// de vazut daca in cazul de mai sus e adevarat, atunci poate putem reveni la ordinea initiala din interfetele de multiplayer + ceva prin board visualizer (send move to manager)
-
-
-
-
 
 	// INFO: La BoardManager.cpp de evitat this->configurationMetadata, trebuie doar configurationMetadata, ca sa afecteze doar instanta locala.
 
