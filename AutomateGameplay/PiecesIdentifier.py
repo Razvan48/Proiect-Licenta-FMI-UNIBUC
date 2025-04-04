@@ -5,7 +5,6 @@ import Utilities
 
 
 is_white_above = None
-board_configuration = 'RNBKQBNRPPPPPPPP................................pppppppprnbkqbnr'
 
 white_pawn_features = None
 white_rook_features = None
@@ -43,7 +42,6 @@ def find_if_white_above(screenshot, bounding_box):  # left, right, top, bottom
 
 def find_pieces_features(screenshot, bounding_box):
     global is_white_above
-    global board_configuration
 
     global white_pawn_features
     global white_rook_features
@@ -89,29 +87,29 @@ def find_pieces_features(screenshot, bounding_box):
             else:
                 pos_in_board = (Constants.NUM_TILES_HEIGHT - 1 - tile_i) * Constants.NUM_TILES_WIDTH + tile_j
 
-            if board_configuration[pos_in_board] == 'P':
+            if Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'P':
                 white_pawn_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'R':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'R':
                 white_rook_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'N':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'N':
                 white_knight_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'B':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'B':
                 white_bishop_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'Q':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'Q':
                 white_queen_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'K':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'K':
                 white_king_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'p':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'p':
                 black_pawn_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'r':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'r':
                 black_rook_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'n':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'n':
                 black_knight_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'b':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'b':
                 black_bishop_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'q':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'q':
                 black_queen_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
-            elif board_configuration[pos_in_board] == 'k':
+            elif Constants.INITIAL_BOARD_CONFIGURATION[pos_in_board] == 'k':
                 black_king_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
 
 
@@ -235,4 +233,52 @@ def find_info_about_board(screenshot, bounding_box):  # left, right, top, bottom
 
     if is_white_above is not None:
         find_pieces_features(screenshot, bounding_box)
+
+
+def get_board_configuration(screenshot, bounding_box):
+    global is_white_above
+
+    if is_white_above is None:
+        return None
+
+    tile_width = (bounding_box[1] - bounding_box[0]) // Constants.NUM_TILES_WIDTH
+    tile_height = (bounding_box[3] - bounding_box[2]) // Constants.NUM_TILES_HEIGHT
+
+    board_configuration = ''
+
+    for tile_i in range(Constants.NUM_TILES_HEIGHT):
+        for tile_j in range(Constants.NUM_TILES_WIDTH):
+            tile_left = bounding_box[0] + tile_j * tile_width
+            tile_right = bounding_box[0] + (tile_j + 1) * tile_width
+            tile_top = bounding_box[2] + tile_i * tile_height
+            tile_bottom = bounding_box[2] + (tile_i + 1) * tile_height
+
+            piece = find_piece_on_board(screenshot, (tile_left, tile_right, tile_top, tile_bottom))
+
+            board_configuration += piece
+
+    if not is_white_above:
+        board_configuration = board_configuration[::-1]
+
+    return board_configuration
+
+
+def get_changed_board_pos(last_screenshot, last_bounding_box, current_screenshot, current_bounding_box):  # left, right, top, bottom
+    global is_white_above
+
+    if is_white_above is None:
+        return None
+
+    last_board_configuration = get_board_configuration(last_screenshot, last_bounding_box)
+    current_board_configuration = get_board_configuration(current_screenshot, current_bounding_box)
+
+    changed_board_pos = []
+
+    for i in range(len(last_board_configuration)):
+        if last_board_configuration[i] != current_board_configuration[i]:
+            changed_board_pos.append((i, last_board_configuration[i], current_board_configuration[i]))
+
+    return changed_board_pos
+
+
 
