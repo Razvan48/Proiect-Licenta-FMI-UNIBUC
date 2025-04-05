@@ -38,16 +38,11 @@ while True:
 # - de implementat metoda care primeste screenshot curent + bounding box curent (si atat) si compara cu board-ul curent stocat in PiecesIdentifier
 # - de obtinut din functia de mai sus mutarea facuta (asta pare cea mai grea chestie din todo)
 # - nu ar mai fi nevoie de last_screenshot si last_bounding_box
-# - o sa existe 2 fisiere de comunicare intre script si aplicatie, pentru ambele directii
-# - atat scriptul, cat si aplicatia ar trb sa se asigure ca fisierele sunt sterse atunci cand isi incep activitatea, pentru a evita scenarii neprevazute (trebuie si cu lock pe fisiere aici ca poate sterg simultan fisierele)
-# - cand aplicatia realizeaza mutarea ar fi bine sa trimita si noua configuratie a tablei, ca sa fie mai usor pentru script sa stie board-ul curent
-# - aplicatia sln ar trb sa aiba acel if cu verificat daca a primit ceva de la script in clasa BoardVisualizer, inainte sa aplice mutare din click-uri, restul functiei poate merge obisnuit,
-# deoarece apelul de mutare schimba si culoarea celui ce joaca (de verificat totusi)
 
 # Posibile Probleme:
-# - se poate da lock pe un fisier pentru care nu avem garantia ca exista inca?
-# - se poate da unlock pe un fisier dupa ce l-am sters?
 # - script-ul inca se bazeaza pe faptul ca prima poza facuta este cea cu board-ul initial, ceea ce creeaza probleme deoarece construim niste feature-uri la piese pe baza asta
-# - de mentionat totusi ca refacem acele feature-uri la fiecare screenshot, poate acest fapt ar mitiga problema (?)
+# solutie: adaugam boolean in constants
+
+
 
 

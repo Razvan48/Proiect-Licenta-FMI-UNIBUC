@@ -1151,6 +1151,17 @@ std::string BoardManager::getPiecesConfiguration() const
 	return piecesConfiguration;
 }
 
+std::string BoardManager::getPiecesConfigurationAutomateGameplay() const
+{
+	std::string piecesConfiguration = this->getPiecesConfiguration();
+	piecesConfiguration.resize(GameMetadata::STRING_SIZE_CONFIGURATION_AUTOMATE_GAMEPLAY);
+
+	for (int i = 0; i < GameMetadata::STRING_SIZE_CONFIGURATION_AUTOMATE_GAMEPLAY / 2; ++i)
+		std::swap(piecesConfiguration[i], piecesConfiguration[GameMetadata::STRING_SIZE_CONFIGURATION_AUTOMATE_GAMEPLAY - 1 - i]);
+
+	return piecesConfiguration;
+}
+
 std::string BoardManager::convertToExternalMove(const std::vector<std::pair<char, int>>& internalMove) const
 {
 	if (internalMove.empty())

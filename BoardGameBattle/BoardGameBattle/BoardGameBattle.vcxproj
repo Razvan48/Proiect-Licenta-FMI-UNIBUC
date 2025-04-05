@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AssetManager\AssetManager.cpp" />
+    <ClCompile Include="source\AutomateGameplay\AutomateGameplay.cpp" />
     <ClCompile Include="source\BoardManager\BoardManager.cpp" />
     <ClCompile Include="source\BoardVisualizer\BoardVisualizer.cpp" />
     <ClCompile Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.cpp" />
@@ -58,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AssetManager\AssetManager.h" />
+    <ClInclude Include="source\AutomateGameplay\AutomateGameplay.h" />
     <ClInclude Include="source\BoardManager\BoardManager.h" />
     <ClInclude Include="source\BoardVisualizer\BoardVisualizer.h" />
     <ClInclude Include="source\BoardVisualizer\PawnPromotionMenu\PawnPromotionMenu.h" />

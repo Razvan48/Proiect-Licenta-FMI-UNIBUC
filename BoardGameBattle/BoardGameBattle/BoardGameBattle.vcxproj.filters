@@ -117,6 +117,9 @@
     <Filter Include="Source Files\GameAgent\GreedyExpectedMinMaxAgent">
       <UniqueIdentifier>{8cd1d09f-e4c3-4d7a-b746-437dedcb179b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\AutomateGameplay">
+      <UniqueIdentifier>{acf9cb95-c04d-457e-b939-394508b0964b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -227,6 +230,9 @@
     <ClCompile Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.cpp">
       <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
     </ClCompile>
+    <ClCompile Include="source\AutomateGameplay\AutomateGameplay.cpp">
+      <Filter>Source Files\AutomateGameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\WindowManager\WindowManager.h">
@@ -333,6 +339,9 @@
     </ClInclude>
     <ClInclude Include="source\GameAgent\GreedyExpectedMinMaxAgent\GreedyExpectedMinMaxAgent.h">
       <Filter>Source Files\GameAgent\GreedyExpectedMinMaxAgent</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AutomateGameplay\AutomateGameplay.h">
+      <Filter>Source Files\AutomateGameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

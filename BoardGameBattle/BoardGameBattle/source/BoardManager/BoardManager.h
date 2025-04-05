@@ -291,6 +291,7 @@ public:
 	void initialize();
 
 	std::string getPiecesConfiguration() const;
+	std::string getPiecesConfigurationAutomateGameplay() const;
 
 	std::vector<std::pair<char, int>> convertToInternalMove(const std::string& externalMove) const;
 	void applyMoveExternal(const std::string& externalMove);

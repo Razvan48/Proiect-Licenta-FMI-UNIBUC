@@ -23,8 +23,14 @@
 
 #include "PawnPromotionMenu/PawnPromotionMenu.h" // INFO: Pawn Promotion Menu
 
+#include "../AutomateGameplay/AutomateGameplay.h"
+
 
 #include <iostream>
+
+#include <string>
+
+
 
 BoardVisualizer::BoardVisualizer()
 	: whiteBoardTileTextureName("whiteBoardTileTexture")
@@ -193,6 +199,9 @@ void BoardVisualizer::initialize()
 	GameAgentSelector::get().setIsEstimating(false);
 	GameAgentSelector::get().resetEstimation();
 	GameAgentSelector::get().setIsEstimateCancelled(true);
+
+	// Automate Gameplay
+	AutomateGameplay::get().initialize();
 }
 
 void BoardVisualizer::draw()
@@ -339,6 +348,16 @@ void BoardVisualizer::update()
 
 				// INFO: Apelul de mai jos trebuie sa ramana ultimul, deoarece se bazeaza pe faptul ca noua configuratie este deja setata (estimarea se bazeaza).
 				this->addNewMoveInHistory(historyMove.substr((int)historyMove.size() - 4));
+
+				// Automate Gameplay
+				if (AutomateGameplay::get().getConnectionAccepted())
+				{
+					std::string message = historyMove;
+					message.resize(GameMetadata::STRING_SIZE_MOVE_AUTOMATE_GAMEPLAY, '$');
+					message += BoardManager::get().getPiecesConfigurationAutomateGameplay(); // INFO: E mai mult decat trebuie, d-aia dam resize pe urmatoarea linie.
+					message.resize(GameMetadata::STRING_SIZE_MOVE_AUTOMATE_GAMEPLAY + GameMetadata::STRING_SIZE_CONFIGURATION_AUTOMATE_GAMEPLAY, '$');
+					AutomateGameplay::get().sendMessage(message);
+				}
 			}
 		}
 		else
@@ -348,7 +367,6 @@ void BoardVisualizer::update()
 			GameAgentSelector::get().setIsFindBestMoveCancelled(true);
 		}
 	}
-
 
 
 	// Logica pentru selectare celule si efectuare mutari
@@ -476,6 +494,27 @@ void BoardVisualizer::update()
 							}
 						}
 					}
+				}
+			}
+		}
+
+		// Automate Gameplay
+		if (Game::get().getMode() == Game::Mode::SINGLEPLAYER &&
+				(
+					(Game::get().getColor() == Game::Color::WHITE && BoardManager::get().getConfigurationMetadata().whiteTurn)
+					||
+					(Game::get().getColor() == Game::Color::BLACK && !BoardManager::get().getConfigurationMetadata().whiteTurn)
+				)
+			)
+		{
+			if (AutomateGameplay::get().getConnectionAccepted())
+			{
+				std::string move = AutomateGameplay::get().getMessage(); // INFO: Mutare primita de la server (se presupune ca este corecta)
+				if (move != "")
+				{
+					if (move[(int)move.size() - 1] == '$')
+						move.resize(GameMetadata::STRING_SIZE_MOVE_AUTOMATE_GAMEPLAY - 1);
+					this->sendMoveToBoardManager(move);
 				}
 			}
 		}
@@ -636,6 +675,9 @@ void BoardVisualizer::update()
 			this->estimationCalculated = true;
 		}
 	}
+
+	// Automate Gameplay Update
+	AutomateGameplay::get().update();
 }
 
 void BoardVisualizer::addNewMoveInHistory(const std::string& move)
@@ -700,6 +742,8 @@ void BoardVisualizer::sendMoveToBoardManager(const std::string& move)
 
 	this->resetSelectedTiles();
 }
+
+
 
 
 
