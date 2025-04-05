@@ -1,5 +1,6 @@
 INITIAL_SLEEP_TIME = 1.0  # in secunde
 SLEEP_TIME_BETWEEN_SCREENSHOTS = 0.5  # in secunde
+SLEEP_TIME_IN_MAIN_LOOP = 0.5  # in secunde
 
 NUM_TILES_WIDTH = 8
 NUM_TILES_HEIGHT = 8
@@ -21,4 +22,14 @@ INITIAL_BOARD_CONFIGURATION = 'RNBKQBNRPPPPPPPP................................p
 
 SLEEP_TIME_WHEN_APPLYING_MOVE = 0.25 # in secunde
 MOUSE_MOVE_DURATION = 0.1  # in secunde
+
+HOST = 'localhost'
+PORT = 10000  # Acest port trebuie sa coincida cu cel din aplicatie.
+
+SLEEP_TIME_BETWEEN_CONNECTION_RETRIES = 1.0  # in secunde
+
+STRING_SIZE_MOVE = 6
+STRING_SIZE_CONFIGURATION = NUM_TILES_HEIGHT * NUM_TILES_WIDTH
+
+START_BY_LISTENING = False
 

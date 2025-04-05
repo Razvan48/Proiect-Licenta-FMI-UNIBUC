@@ -108,9 +108,9 @@ def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie
     pag.mouseUp()
     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
 
-    if len(move) == 6:
+    if move[Constants.STRING_SIZE_MOVE - 1] != '$':
         piece = move[0]
-        promotion_piece = move[5]
+        promotion_piece = move[Constants.STRING_SIZE_MOVE - 1]
 
         if piece.isupper():
             if PiecesIdentifier.is_white_above:
