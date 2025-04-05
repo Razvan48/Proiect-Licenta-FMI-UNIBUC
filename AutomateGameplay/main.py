@@ -17,7 +17,7 @@ sock.connect((Constants.HOST, Constants.PORT))
 while True:
     try:
         sock.connect((Constants.HOST, Constants.PORT))
-        print('Trying to connect...')
+        print('Connection successful')
         break
     except ConnectionRefusedError:
         print('Connection refused. Retrying...')
@@ -81,6 +81,9 @@ while True:
             print('Current move:', current_move)
 
     time.sleep(Constants.SLEEP_TIME_IN_MAIN_LOOP)
+
+
+sock.close()
 
 
 
