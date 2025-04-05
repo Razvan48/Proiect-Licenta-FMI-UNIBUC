@@ -8,11 +8,7 @@ import Utilities
 import PiecesIdentifier
 
 
-time.sleep(Constants.INITIAL_SLEEP_TIME)
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-sock.connect((Constants.HOST, Constants.PORT))
 
 while True:
     try:
@@ -23,7 +19,7 @@ while True:
         print('Connection refused. Retrying...')
         time.sleep(Constants.SLEEP_TIME_BETWEEN_CONNECTION_RETRIES)
 
-sock.setblocking(False)  # INFO: Facem non-blocking dupa ce ne-am conectat.
+time.sleep(Constants.SLEEP_TIME_AFTER_CONNECT)
 
 current_bounding_box = None
 
@@ -36,7 +32,9 @@ while True:
         current_move = PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
         if current_move is not None:
             sock.send(current_move.encode())
+            PiecesIdentifier.should_listen = True
             print('Current move:', current_move)
+        print('Current board configuration:', PiecesIdentifier.board_configuration)
         break
 
     time.sleep(Constants.SLEEP_TIME_BETWEEN_SCREENSHOTS)
@@ -58,6 +56,8 @@ while True:
                 Utilities.apply_move_on_board(current_bounding_box, move)
                 PiecesIdentifier.board_configuration = configuration
 
+                time.sleep(Constants.SLEEP_TIME_AFTER_APPLIED_MOVE)
+
         except BlockingIOError:
             pass
 
@@ -65,8 +65,10 @@ while True:
     current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
     current_bounding_box = Utilities.find_bounding_box(current_screenshot)
 
+    # current_screenshot.show()
+
     if current_bounding_box is not None:
-        PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
+        # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent.
 
         # Utilities.show_pieces_features()  # pentru debug
 
@@ -78,9 +80,12 @@ while True:
         current_move = PiecesIdentifier.find_move(PiecesIdentifier.get_changed_board_pos(current_screenshot, current_bounding_box))
         if current_move is not None:
             sock.send(current_move.encode())
+            PiecesIdentifier.should_listen = True
             print('Current move:', current_move)
 
     time.sleep(Constants.SLEEP_TIME_IN_MAIN_LOOP)
+
+    print('Current board configuration:', PiecesIdentifier.board_configuration)
 
 
 sock.close()

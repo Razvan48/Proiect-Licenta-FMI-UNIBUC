@@ -1,3 +1,4 @@
+from PIL import Image
 import numpy as np
 
 import Constants
@@ -20,7 +21,7 @@ black_bishop_features = None
 black_queen_features = None
 black_king_features = None
 
-empty_tile_features = [0.0, 0.0]
+empty_tile_features = None
 
 board_configuration = Constants.INITIAL_BOARD_CONFIGURATION
 
@@ -133,6 +134,23 @@ def find_pieces_features(screenshot, bounding_box):
     global black_queen_features
     global black_king_features
 
+    global empty_tile_features
+
+    white_pawn_features = []
+    white_rook_features = []
+    white_knight_features = []
+    white_bishop_features = []
+    white_queen_features = []
+    white_king_features = []
+
+    black_pawn_features = []
+    black_rook_features = []
+    black_knight_features = []
+    black_bishop_features = []
+    black_queen_features = []
+    black_king_features = []
+
+    empty_tile_features = []
 
     tile_width = (bounding_box[1] - bounding_box[0]) // Constants.NUM_TILES_WIDTH
     tile_height = (bounding_box[3] - bounding_box[2]) // Constants.NUM_TILES_HEIGHT
@@ -143,58 +161,72 @@ def find_pieces_features(screenshot, bounding_box):
             tile_right = bounding_box[0] + (tile_j + 1) * tile_width
             tile_top = bounding_box[2] + tile_i * tile_height
             tile_bottom = bounding_box[2] + (tile_i + 1) * tile_height
-            tile_area = (tile_right - tile_left) * (tile_bottom - tile_top)
-
-            num_pixels_white_piece = 0
-            num_pixels_black_piece = 0
-
-            for i in range(tile_top, tile_bottom):
-                for j in range(tile_left, tile_right):
-                    pixel = screenshot.getpixel((j, i))
-                    if Utilities.is_pixel_white_piece(pixel):
-                        num_pixels_white_piece += 1
-                    elif Utilities.is_pixel_black_piece(pixel):
-                        num_pixels_black_piece += 1
-
-            pixels_white_piece_ratio = num_pixels_white_piece / tile_area
-            pixels_black_piece_ratio = num_pixels_black_piece / tile_area
 
             if is_white_above:
                 pos_in_board = tile_i * Constants.NUM_TILES_WIDTH + tile_j
             else:
                 pos_in_board = (Constants.NUM_TILES_HEIGHT - 1 - tile_i) * Constants.NUM_TILES_WIDTH + tile_j
 
+            piece_template = screenshot.crop((tile_left, tile_top, tile_right, tile_bottom))
+            piece_template = piece_template.convert('L')
+            piece_template = piece_template.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
+            piece_template = np.array(piece_template)
+
             if board_configuration[pos_in_board] == 'P':
-                white_pawn_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_pawn_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'R':
-                white_rook_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_rook_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'N':
-                white_knight_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_knight_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'B':
-                white_bishop_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_bishop_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'Q':
-                white_queen_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_queen_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'K':
-                white_king_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                white_king_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'p':
-                black_pawn_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_pawn_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'r':
-                black_rook_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_rook_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'n':
-                black_knight_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_knight_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'b':
-                black_bishop_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_bishop_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'q':
-                black_queen_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_queen_features.append(piece_template)
             elif board_configuration[pos_in_board] == 'k':
-                black_king_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+                black_king_features.append(piece_template)
+            else:
+                empty_tile_features.append(piece_template)
+
+    white_pawn_features = np.array(white_pawn_features)
+    white_rook_features = np.array(white_rook_features)
+    white_knight_features = np.array(white_knight_features)
+    white_bishop_features = np.array(white_bishop_features)
+    white_queen_features = np.array(white_queen_features)
+    white_king_features = np.array(white_king_features)
+
+    black_pawn_features = np.array(black_pawn_features)
+    black_rook_features = np.array(black_rook_features)
+    black_knight_features = np.array(black_knight_features)
+    black_bishop_features = np.array(black_bishop_features)
+    black_queen_features = np.array(black_queen_features)
+    black_king_features = np.array(black_king_features)
+
+    empty_tile_features = np.array(empty_tile_features)
 
 
-def calculate_distance(features0, features1):
-    if features0 is None or features1 is None:
+def calculate_distance(current_piece_features, template_features):
+    if current_piece_features is None or template_features is None:
         return float('inf')
 
-    return np.linalg.norm(np.array(features0) - np.array(features1))
+    reshaped_current_piece_features = current_piece_features.reshape(1, -1)
+    reshaped_template_features = template_features.reshape(template_features.shape[0], -1)
+
+    differences = reshaped_current_piece_features - reshaped_template_features
+    distances = np.linalg.norm(differences, axis=1)
+
+    return np.mean(distances)
 
 
 def find_piece_on_board(screenshot, tile_bounding_box):  # left, right, top, bottom
@@ -214,87 +246,76 @@ def find_piece_on_board(screenshot, tile_bounding_box):  # left, right, top, bot
 
     global empty_tile_features
 
-    tile_area = (tile_bounding_box[1] - tile_bounding_box[0]) * (tile_bounding_box[3] - tile_bounding_box[2])
-    num_pixels_white_piece = 0
-    num_pixels_black_piece = 0
-
-    for i in range(tile_bounding_box[2], tile_bounding_box[3]):
-        for j in range(tile_bounding_box[0], tile_bounding_box[1]):
-            pixel = screenshot.getpixel((j, i))
-            if Utilities.is_pixel_white_piece(pixel):
-                num_pixels_white_piece += 1
-            elif Utilities.is_pixel_black_piece(pixel):
-                num_pixels_black_piece += 1
-
-    pixels_white_piece_ratio = num_pixels_white_piece / tile_area
-    pixels_black_piece_ratio = num_pixels_black_piece / tile_area
-    piece_features = [pixels_white_piece_ratio, pixels_black_piece_ratio]
+    piece_template = screenshot.crop((tile_bounding_box[0], tile_bounding_box[2], tile_bounding_box[1], tile_bounding_box[3]))
+    piece_template = piece_template.convert('L')
+    piece_template = piece_template.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
+    piece_template = np.array(piece_template)
 
     piece = None
     min_distance = float('inf')
 
     if white_pawn_features is not None:
-        distance = calculate_distance(piece_features, white_pawn_features)
+        distance = calculate_distance(piece_template, white_pawn_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'P'
     if white_rook_features is not None:
-        distance = calculate_distance(piece_features, white_rook_features)
+        distance = calculate_distance(piece_template, white_rook_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'R'
     if white_knight_features is not None:
-        distance = calculate_distance(piece_features, white_knight_features)
+        distance = calculate_distance(piece_template, white_knight_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'N'
     if white_bishop_features is not None:
-        distance = calculate_distance(piece_features, white_bishop_features)
+        distance = calculate_distance(piece_template, white_bishop_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'B'
     if white_queen_features is not None:
-        distance = calculate_distance(piece_features, white_queen_features)
+        distance = calculate_distance(piece_template, white_queen_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'Q'
     if white_king_features is not None:
-        distance = calculate_distance(piece_features, white_king_features)
+        distance = calculate_distance(piece_template, white_king_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'K'
     if black_pawn_features is not None:
-        distance = calculate_distance(piece_features, black_pawn_features)
+        distance = calculate_distance(piece_template, black_pawn_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'p'
     if black_rook_features is not None:
-        distance = calculate_distance(piece_features, black_rook_features)
+        distance = calculate_distance(piece_template, black_rook_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'r'
     if black_knight_features is not None:
-        distance = calculate_distance(piece_features, black_knight_features)
+        distance = calculate_distance(piece_template, black_knight_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'n'
     if black_bishop_features is not None:
-        distance = calculate_distance(piece_features, black_bishop_features)
+        distance = calculate_distance(piece_template, black_bishop_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'b'
     if black_queen_features is not None:
-        distance = calculate_distance(piece_features, black_queen_features)
+        distance = calculate_distance(piece_template, black_queen_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'q'
     if black_king_features is not None:
-        distance = calculate_distance(piece_features, black_king_features)
+        distance = calculate_distance(piece_template, black_king_features)
         if distance < min_distance:
             min_distance = distance
             piece = 'k'
     if empty_tile_features is not None:
-        distance = calculate_distance(piece_features, empty_tile_features)
+        distance = calculate_distance(piece_template, empty_tile_features)
         if distance < min_distance:
             min_distance = distance
             piece = '.'
@@ -389,6 +410,8 @@ def get_changed_board_pos(current_screenshot, current_bounding_box):  # left, ri
 def find_move(changed_board_pos):
     if len(changed_board_pos) == 0:
         return None
+
+    print('Changed board positions:', changed_board_pos)
 
     if len(changed_board_pos) == 2:  # mutari simple, capturi simple, promovari simple sau promovari prin captura
 
