@@ -3,6 +3,7 @@ import numpy as np
 
 import Constants
 import Utilities
+import Model
 
 
 is_white_above = None
@@ -22,6 +23,9 @@ black_queen_features = None
 black_king_features = None
 
 empty_tile_features = None
+
+all_pieces_features = None
+all_pieces_labels = None
 
 board_configuration = Constants.INITIAL_BOARD_CONFIGURATION
 
@@ -136,6 +140,9 @@ def find_pieces_features(screenshot, bounding_box):
 
     global empty_tile_features
 
+    global all_pieces_features
+    global all_pieces_labels
+
     if is_white_above is None:
         return
 
@@ -155,6 +162,9 @@ def find_pieces_features(screenshot, bounding_box):
 
     empty_tile_features = []
 
+    all_pieces_features = []
+    all_pieces_labels = []
+
     tile_width = (bounding_box[1] - bounding_box[0]) // Constants.NUM_TILES_WIDTH
     tile_height = (bounding_box[3] - bounding_box[2]) // Constants.NUM_TILES_HEIGHT
 
@@ -170,37 +180,44 @@ def find_pieces_features(screenshot, bounding_box):
             else:
                 pos_in_board = (Constants.NUM_TILES_HEIGHT - 1 - tile_i) * Constants.NUM_TILES_WIDTH + tile_j
 
-            piece_template = screenshot.crop((tile_left, tile_top, tile_right, tile_bottom))
-            piece_template = piece_template.convert('L')
-            piece_template = piece_template.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
-            piece_template = np.array(piece_template)
+            piece_data = screenshot.crop((tile_left, tile_top, tile_right, tile_bottom))
+            piece_data = piece_data.convert('L')
+            piece_data = piece_data.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.BILINEAR)
+            piece_data = ((np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS) / float(Constants.MAX_VALUE_PIXEL)) - 0.5) * 2.0
+            # piece_data = np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS)
+            # INFO: np.array(piece_data) dupa conversia la grayscale sau RGB are shape-ul (height, width), nu (width, height).
 
+            # INFO: Atentie la faptul ca dataset-ul trebuie sa fie balansat.
             if board_configuration[pos_in_board] == 'P':
-                white_pawn_features.append(piece_template)
+                white_pawn_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'R':
-                white_rook_features.append(piece_template)
+                white_rook_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'N':
-                white_knight_features.append(piece_template)
+                white_knight_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'B':
-                white_bishop_features.append(piece_template)
+                white_bishop_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'Q':
-                white_queen_features.append(piece_template)
+                white_queen_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'K':
-                white_king_features.append(piece_template)
+                white_king_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'p':
-                black_pawn_features.append(piece_template)
+                black_pawn_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'r':
-                black_rook_features.append(piece_template)
+                black_rook_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'n':
-                black_knight_features.append(piece_template)
+                black_knight_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'b':
-                black_bishop_features.append(piece_template)
+                black_bishop_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'q':
-                black_queen_features.append(piece_template)
+                black_queen_features.append(piece_data)
             elif board_configuration[pos_in_board] == 'k':
-                black_king_features.append(piece_template)
+                black_king_features.append(piece_data)
             else:
-                empty_tile_features.append(piece_template)
+                empty_tile_features.append(piece_data)
+
+            if board_configuration[pos_in_board] != '.':
+                all_pieces_features.append(piece_data)
+                all_pieces_labels.append(Constants.FROM_PIECE_TO_LABEL[board_configuration[pos_in_board]])
 
     white_pawn_features = np.array(white_pawn_features)
     white_rook_features = np.array(white_rook_features)
@@ -217,6 +234,12 @@ def find_pieces_features(screenshot, bounding_box):
     black_king_features = np.array(black_king_features)
 
     empty_tile_features = np.array(empty_tile_features)
+
+    all_pieces_features = np.array(all_pieces_features)
+    all_pieces_labels = np.array(all_pieces_labels)
+
+    Model.build_dataset_and_dataloader(all_pieces_features, all_pieces_labels)
+    Model.train_model()
 
 
 def calculate_distance(current_piece_features, template_features):
@@ -249,11 +272,31 @@ def find_piece_on_board(screenshot, tile_bounding_box):  # left, right, top, bot
 
     global empty_tile_features
 
-    piece_template = screenshot.crop((tile_bounding_box[0], tile_bounding_box[2], tile_bounding_box[1], tile_bounding_box[3]))
-    piece_template = piece_template.convert('L')
-    piece_template = piece_template.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
-    piece_template = np.array(piece_template)
+    piece_data = screenshot.crop((tile_bounding_box[0], tile_bounding_box[2], tile_bounding_box[1], tile_bounding_box[3]))
+    piece_data_empty_tile_test = piece_data.copy()  # INFO: Doar pentru cele 2 for-uri de mai jos.
+    piece_data = piece_data.convert('L')
+    piece_data = piece_data.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.BILINEAR)
+    piece_data = (np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS) / float(Constants.MAX_VALUE_PIXEL) - 0.5) * 2.0
+    # piece_data = np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS)
+    # INFO: np.array(piece_data) dupa conversia la grayscale sau RGB are shape-ul (height, width), nu (width, height).
 
+    piece_data_empty_tile_test = piece_data_empty_tile_test.convert('RGB')
+    piece_data_empty_tile_test = piece_data_empty_tile_test.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.BILINEAR)
+    num_pixels_white_piece = 0
+    num_pixels_black_piece = 0
+    for i in range(Constants.TEMPLATE_HEIGHT):
+        for j in range(Constants.TEMPLATE_WIDTH):
+            pixel = piece_data[i][j]
+            if Utilities.is_pixel_white_piece(pixel):
+                num_pixels_white_piece += 1
+            elif Utilities.is_pixel_black_piece(pixel):
+                num_pixels_black_piece += 1
+    if num_pixels_white_piece == 0 and num_pixels_black_piece == 0:
+        return '.'
+
+    return Model.inference(piece_data)
+
+    '''
     piece = None
     min_distance = float('inf')
 
@@ -323,6 +366,7 @@ def find_piece_on_board(screenshot, tile_bounding_box):  # left, right, top, bot
             min_distance = distance
             piece = '.'
     return piece
+    '''
 
 
 def find_info_about_board(screenshot, bounding_box):  # left, right, top, bottom
