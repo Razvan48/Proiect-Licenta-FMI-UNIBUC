@@ -28,7 +28,7 @@ board_configuration = Constants.INITIAL_BOARD_CONFIGURATION
 should_listen = Constants.START_BY_LISTENING
 
 
-def find_if_white_above(screenshot, bounding_box):  # left, right, top, bottom
+def find_if_white_above(screenshot, bounding_box):  # left, right, top, bottom # INFO: bounding_box-ul este pentru un singur tile.
     num_pixels_white_piece = 0
     num_pixels_black_piece = 0
 
@@ -92,14 +92,14 @@ def find_initial_board_configuration(screenshot, bounding_box):
             if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH] == 'w':
                 board_configuration = board_configuration[0:1] + '.' + board_configuration[2:2 * Constants.NUM_TILES_WIDTH] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 1:]
                 return 'Ng1h3$'
-            elif piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 2] == 'w':
+            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 2] == 'w'
                 board_configuration = board_configuration[0:1] + '.' + board_configuration[2:2 * Constants.NUM_TILES_WIDTH + 2] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 3:]
                 return 'Ng1f3$'
         elif piece_color_on_board[6] == '.':
             if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 5] == 'w':
                 board_configuration = board_configuration[0:6] + '.' + board_configuration[7:2 * Constants.NUM_TILES_WIDTH + 5] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 6:]
                 return 'Nb1c3$'
-            elif piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 7] == 'w':
+            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 7] == 'w'
                 board_configuration = board_configuration[0:6] + '.' + board_configuration[7:2 * Constants.NUM_TILES_WIDTH + 7] + 'N' + board_configuration[3 * Constants.NUM_TILES_WIDTH:]
                 return 'Nb1a3$'
         else:
@@ -135,6 +135,9 @@ def find_pieces_features(screenshot, bounding_box):
     global black_king_features
 
     global empty_tile_features
+
+    if is_white_above is None:
+        return
 
     white_pawn_features = []
     white_rook_features = []
@@ -331,10 +334,8 @@ def find_info_about_board(screenshot, bounding_box):  # left, right, top, bottom
     current_move = None
     if is_white_above is None:  # INFO: Facem asta deoarece nu luam in calcul si posibilitatea ca tabla sa dea flip in timpul jocului.
         is_white_above = find_if_white_above(screenshot, (bounding_box[0], bounding_box[0] + tile_width, bounding_box[2], bounding_box[2] + tile_height))
-        current_move = find_initial_board_configuration(screenshot, bounding_box)
-
-    if is_white_above is not None:
         find_pieces_features(screenshot, bounding_box)
+        current_move = find_initial_board_configuration(screenshot, bounding_box)
 
     return current_move
 
@@ -431,6 +432,9 @@ def find_move(changed_board_pos):
             return changed_board_pos[0][2] + changed_board_pos[0][1] + changed_board_pos[1][1] + changed_board_pos[1][3]
         elif changed_board_pos[1][2] != '.' and changed_board_pos[1][3] == '.' and changed_board_pos[0][2] != '.' and changed_board_pos[0][3] != changed_board_pos[1][2]:  # promovare prin captura
             return changed_board_pos[1][2] + changed_board_pos[1][1] + changed_board_pos[0][1] + changed_board_pos[0][3]
+        else:
+            print('find_move: Invalid move')
+            return None
 
     elif len(changed_board_pos) == 3:  # en passant
 
@@ -441,7 +445,7 @@ def find_move(changed_board_pos):
                 white_pawn_freq += 1
             elif changed_board_pos[i][3] == 'P':
                 white_pawn_freq += 1
-            elif changed_board_pos[i][2] == 'p':
+            if changed_board_pos[i][2] == 'p':
                 black_pawn_freq += 1
             elif changed_board_pos[i][3] == 'p':
                 black_pawn_freq += 1
@@ -468,17 +472,12 @@ def find_move(changed_board_pos):
     elif len(changed_board_pos) == 4:  # rocade
 
         white_king_appeared = False
-        black_king_appeared = False
 
         for i in range(len(changed_board_pos)):
             if changed_board_pos[i][2] == 'K':
                 white_king_appeared = True
             elif changed_board_pos[i][3] == 'K':
                 white_king_appeared = True
-            elif changed_board_pos[i][2] == 'k':
-                black_king_appeared = True
-            elif changed_board_pos[i][3] == 'k':
-                black_king_appeared = True
 
         if white_king_appeared:
             start_pos = None
@@ -500,6 +499,7 @@ def find_move(changed_board_pos):
             return 'k' + start_pos + end_pos + '$'
 
     else:
+        print('find_move: Invalid move')
         return None
 
 

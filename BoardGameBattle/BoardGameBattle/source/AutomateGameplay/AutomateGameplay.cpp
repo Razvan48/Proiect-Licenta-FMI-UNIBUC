@@ -19,14 +19,20 @@ AutomateGameplay::AutomateGameplay()
 	int result = WSAStartup(MAKEWORD(2, 2), &this->wsaData);
 
 	if (result != 0)
-	{
 		std::cout << "AutomateGameplay: WSAStartup failed: " << result << std::endl;
-		return;
-	}
 }
 
 AutomateGameplay::~AutomateGameplay()
 {
+	closesocket(this->clientSocket);
+	closesocket(this->serverSocket);
+
+	this->serverSocket = INVALID_SOCKET;
+	this->serverAddress = sockaddr_in();
+	this->clientSocket = INVALID_SOCKET;
+
+	this->connectionAccepted = false;
+
 	WSACleanup();
 }
 

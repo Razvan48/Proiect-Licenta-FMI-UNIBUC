@@ -21,7 +21,7 @@ SCREENSHOT_SCALE_HEIGHT = 0.2
 
 INITIAL_BOARD_CONFIGURATION = 'RNBKQBNRPPPPPPPP................................pppppppprnbkqbnr'
 
-SLEEP_TIME_WHEN_APPLYING_MOVE = 0.25 # in secunde
+SLEEP_TIME_WHEN_APPLYING_MOVE = 0.25  # in secunde
 MOUSE_MOVE_DURATION = 0.1  # in secunde
 
 HOST = 'localhost'

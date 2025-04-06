@@ -8,7 +8,7 @@ import Utilities
 import PiecesIdentifier
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # IPv4, TCP
 
 while True:
     try:
@@ -26,7 +26,7 @@ current_bounding_box = None
 while True:
     current_screenshot = pag.screenshot()
     current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
-    current_bounding_box = Utilities.find_bounding_box(current_screenshot)
+    current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
         current_move = PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
@@ -47,7 +47,6 @@ while True:
             data = sock.recv(Constants.STRING_SIZE_MOVE + Constants.STRING_SIZE_CONFIGURATION)
 
             if data is not None and data.decode() != '':
-                PiecesIdentifier.should_listen = False
                 print('Received:', data.decode())
 
                 move = data.decode()[:Constants.STRING_SIZE_MOVE]
@@ -56,6 +55,8 @@ while True:
                 Utilities.apply_move_on_board(current_bounding_box, move)
                 PiecesIdentifier.board_configuration = configuration
 
+                PiecesIdentifier.should_listen = False
+
                 time.sleep(Constants.SLEEP_TIME_AFTER_APPLIED_MOVE)
 
         except BlockingIOError:
@@ -63,12 +64,10 @@ while True:
 
     current_screenshot = pag.screenshot()
     current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
-    current_bounding_box = Utilities.find_bounding_box(current_screenshot)
-
-    # current_screenshot.show()
+    current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
-        # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent.
+        # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent. Poate s-a mutat ceva intre timp si vom construi gresit feature-urile pentru piese.
 
         # Utilities.show_pieces_features()  # pentru debug
 
