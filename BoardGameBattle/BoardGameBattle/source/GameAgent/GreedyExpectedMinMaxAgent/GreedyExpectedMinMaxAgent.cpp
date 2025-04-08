@@ -1014,7 +1014,7 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 						maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
 				}
 
-				if (!this->isFindBestMoveCancelled.load())
+				if (!this->isFindBestMoveCancelled.load()) // INFO: Se seteaza un bestMove chiar daca nu exista niciun move (exemplu in caz de remiza).
 					this->setBestMove(bestMove);
 			}
 			else
@@ -1080,7 +1080,7 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 						minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 				}
 
-				if (!this->isFindBestMoveCancelled.load())
+				if (!this->isFindBestMoveCancelled.load()) // INFO: Se seteaza un bestMove chiar daca nu exista niciun move (exemplu in caz de remiza).
 					this->setBestMove(bestMove);
 			}
 
