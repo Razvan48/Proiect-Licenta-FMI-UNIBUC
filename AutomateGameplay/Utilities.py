@@ -16,11 +16,11 @@ def is_pixel_black_tile(pixel):
 
 
 def is_pixel_white_piece(pixel):
-    return (np.abs(np.array(pixel) - np.array(Constants.WHITE_PIECE_RGB)) < np.array(Constants.WHITE_PIECE_EPS)).all()
+    return (np.abs(np.array(pixel) - np.array(Constants.WHITE_PIECE_RGB)) < np.array(Constants.WHITE_PIECE_EPS)).all() and np.max(pixel) - np.min(pixel) < Constants.WHITE_PIECE_VARIANCE_EPS
 
 
 def is_pixel_black_piece(pixel):
-    return (np.abs(np.array(pixel) - np.array(Constants.BLACK_PIECE_RGB)) < np.array(Constants.BLACK_PIECE_EPS)).all()
+    return (np.abs(np.array(pixel) - np.array(Constants.BLACK_PIECE_RGB)) < np.array(Constants.BLACK_PIECE_EPS)).all() and np.max(pixel) - np.min(pixel) < Constants.BLACK_PIECE_VARIANCE_EPS
 
 
 def find_bounding_box(screenshot):
@@ -73,8 +73,8 @@ def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie
     if PiecesIdentifier.is_white_above is None:
         return
 
-    tile_width = (bounding_box[1] - bounding_box[0]) // Constants.NUM_TILES_WIDTH
-    tile_height = (bounding_box[3] - bounding_box[2]) // Constants.NUM_TILES_HEIGHT
+    tile_width = (bounding_box[1] - bounding_box[0]) / Constants.NUM_TILES_WIDTH
+    tile_height = (bounding_box[3] - bounding_box[2]) / Constants.NUM_TILES_HEIGHT
 
     start_row = int(move[2]) - 1
     start_row = Constants.NUM_TILES_HEIGHT - 1 - start_row
@@ -99,11 +99,11 @@ def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie
 
     bounding_box_scaled = (bounding_box[0] * scale_width, bounding_box[1] * scale_width, bounding_box[2] * scale_height, bounding_box[3] * scale_height)
 
-    pag.moveTo(bounding_box_scaled[0] + start_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + start_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+    pag.moveTo(bounding_box_scaled[0] + start_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + start_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
     pag.mouseDown()
     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
-    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
     pag.mouseUp()
     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
@@ -115,86 +115,86 @@ def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie
         if piece.isupper():
             if PiecesIdentifier.is_white_above:
                 if promotion_piece == 'Q':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'N':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 1) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 1) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'R':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 2) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 2) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 else:  # 'B'
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 3) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 3) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
             else:
                 if promotion_piece == 'Q':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'N':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 1) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 1) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'R':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 2) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 2) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 else:  # 'B'
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 3) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 3) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
         else:
             if PiecesIdentifier.is_white_above:
                 if promotion_piece == 'q':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'n':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 1) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 1) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'r':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 2) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 2) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 else:  # 'b'
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row + 3) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row + 3) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
             else:
                 if promotion_piece == 'q':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + end_row * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'n':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 1) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 1) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 elif promotion_piece == 'r':
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 2) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 2) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                 else:  # 'b'
-                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled // 2, bounding_box_scaled[2] + (end_row - 3) * tile_height_scaled + tile_height_scaled // 2, duration=Constants.MOUSE_MOVE_DURATION)
+                    pag.moveTo(bounding_box_scaled[0] + end_col * tile_width_scaled + tile_width_scaled / 2, bounding_box_scaled[2] + (end_row - 3) * tile_height_scaled + tile_height_scaled / 2, duration=Constants.MOUSE_MOVE_DURATION)
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)

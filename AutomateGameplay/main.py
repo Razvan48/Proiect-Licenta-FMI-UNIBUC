@@ -25,10 +25,12 @@ current_bounding_box = None
 
 while True:
     current_screenshot = pag.screenshot()
-    current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.BILINEAR)
+    current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
     current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
+        current_screenshot.crop((current_bounding_box[0], current_bounding_box[2], current_bounding_box[1], current_bounding_box[3])).save('test/initial.png')  # test
+
         current_move = PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
         if current_move is not None:
             sock.send(current_move.encode())
@@ -63,13 +65,15 @@ while True:
             pass
 
     current_screenshot = pag.screenshot()
-    current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.BILINEAR)
+    current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
     current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
+        current_screenshot.crop((current_bounding_box[0], current_bounding_box[2], current_bounding_box[1], current_bounding_box[3])).save('test/initial.png')  # test
+
         # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent. Poate s-a mutat ceva intre timp si vom construi gresit feature-urile pentru piese.
 
-        # Utilities.show_pieces_features()  # pentru debug
+        Utilities.show_pieces_features()  # pentru debug
 
         # Utilities.show_bounding_box(current_screenshot, current_bounding_box)  # pentru debug
 
