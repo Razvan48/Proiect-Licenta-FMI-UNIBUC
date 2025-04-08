@@ -1006,6 +1006,14 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
 				}
 
+				if (maximumScore == -GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
+				{
+					if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
+						maximumScore = -GreedyExpectedMinMaxAgent::REACHABLE_INF;
+					else
+						maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
+				}
+
 				if (!this->isFindBestMoveCancelled.load())
 					this->setBestMove(bestMove);
 			}
@@ -1062,6 +1070,14 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 					}
 
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
+				}
+
+				if (minimumScore == GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
+				{
+					if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
+						minimumScore = GreedyExpectedMinMaxAgent::REACHABLE_INF;
+					else
+						minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 				}
 
 				if (!this->isFindBestMoveCancelled.load())
@@ -1134,6 +1150,14 @@ void GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& con
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
 				}
 
+				if (maximumScore == -GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
+				{
+					if (BoardManager::get().isWhiteKingInCheck(configurationMetadata))
+						maximumScore = -GreedyExpectedMinMaxAgent::REACHABLE_INF;
+					else
+						maximumScore = 0.0f; // Remiza, albul nu poate face mutari, dar nu e nici in sah.
+				}
+
 				if (!this->isEstimateCancelled.load())
 					this->setEstimation(maximumScore);
 			}
@@ -1177,6 +1201,14 @@ void GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& con
 					minimumScore = std::min(minimumScore, currentScore);
 
 					numNodesVisitedTotal += numNodesVisitedFutures[i].get();
+				}
+
+				if (minimumScore == GreedyExpectedMinMaxAgent::UNREACHABLE_INF)
+				{
+					if (BoardManager::get().isBlackKingInCheck(configurationMetadata))
+						minimumScore = GreedyExpectedMinMaxAgent::REACHABLE_INF;
+					else
+						minimumScore = 0.0f; // Remiza, negrul nu poate face mutari, dar nu e nici in sah.
 				}
 
 				if (!this->isEstimateCancelled.load())

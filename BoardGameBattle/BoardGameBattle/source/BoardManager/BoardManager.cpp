@@ -3283,7 +3283,7 @@ bool BoardManager::isWhiteKingInDraw(ConfigurationMetadata& configurationMetadat
 	std::vector<std::vector<std::pair<char, int>>> moves;
 	this->generateWhiteMoves(configurationMetadata, moves);
 
-	return moves.empty() && !this->isWhiteKingInCheck(configurationMetadata);
+	return moves.empty() && !this->isWhiteKingInCheck(configurationMetadata) && configurationMetadata.whiteTurn;
 }
 
 bool BoardManager::isBlackKingInDraw(ConfigurationMetadata& configurationMetadata)
@@ -3291,7 +3291,7 @@ bool BoardManager::isBlackKingInDraw(ConfigurationMetadata& configurationMetadat
 	std::vector<std::vector<std::pair<char, int>>> moves;
 	this->generateBlackMoves(configurationMetadata, moves);
 
-	return moves.empty() && !this->isBlackKingInCheck(configurationMetadata);
+	return moves.empty() && !this->isBlackKingInCheck(configurationMetadata) && !configurationMetadata.whiteTurn;
 }
 
 //
