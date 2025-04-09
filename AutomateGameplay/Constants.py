@@ -1,4 +1,4 @@
-SLEEP_TIME_AFTER_CONNECT = 3.0  # in secunde
+SLEEP_TIME_AFTER_CONNECT = 2.5  # in secunde
 SLEEP_TIME_BETWEEN_SCREENSHOTS = 0.5  # in secunde
 SLEEP_TIME_IN_MAIN_LOOP = 0.5  # in secunde
 SLEEP_TIME_AFTER_APPLIED_MOVE = 2.5  # in secunde

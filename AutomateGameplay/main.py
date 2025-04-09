@@ -29,7 +29,6 @@ while True:
     current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
-        current_screenshot.crop((current_bounding_box[0], current_bounding_box[2], current_bounding_box[1], current_bounding_box[3])).save('test/initial.png')  # test
 
         current_move = PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
         if current_move is not None:
@@ -69,8 +68,6 @@ while True:
     current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
-        current_screenshot.crop((current_bounding_box[0], current_bounding_box[2], current_bounding_box[1], current_bounding_box[3])).save('test/initial.png')  # test
-
         # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent. Poate s-a mutat ceva intre timp si vom construi gresit feature-urile pentru piese.
 
         Utilities.show_pieces_features()  # pentru debug

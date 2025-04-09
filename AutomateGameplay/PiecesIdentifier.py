@@ -316,7 +316,6 @@ def find_piece_on_board(screenshot, tile_bounding_box):  # left, right, top, bot
     piece_data_empty_tile_test = piece_data.copy()  # INFO: Doar pentru cele 2 for-uri de mai jos.
     piece_data = piece_data.convert('RGB')
     piece_data = piece_data.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
-    piece_data.save(f'test/piece{np.random.random()}.png')  # test
     piece_data = np.array(piece_data)
     # piece_data = (np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS) / float(Constants.MAX_VALUE_PIXEL) - 0.5) * 2.0
     # piece_data = np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS)
@@ -452,9 +451,9 @@ def get_board_configuration(screenshot, bounding_box):
             color = None
             if Utilities.is_tile_empty(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
                 color = '.'
-            elif Utilities.is_tile_white(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
+            elif Utilities.is_white_piece_on_tile(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
                 color = 'W'
-            elif Utilities.is_tile_black(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
+            elif Utilities.is_black_piece_on_tile(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
                 color = 'b'
 
             board_configuration += piece
@@ -502,11 +501,119 @@ def get_changed_board_pos(current_screenshot, current_bounding_box):  # left, ri
                 or (board_configuration[i] == '.' and current_color_configuration[i] != '.') \
                 or (board_configuration[i].isupper() and current_color_configuration[i] == 'b') \
                 or (board_configuration[i].islower() and current_color_configuration[i] == 'W'):
-            changed_board_pos.append((i, convert_index_to_pos(i), board_configuration[i], current_color_configuration[i]))
+            changed_board_pos.append([i, convert_index_to_pos(i), board_configuration[i], current_color_configuration[i]])
 
     # board_configuration = current_board_configuration  # INFO: Nu ar fi nevoie, deoarece nu este mereu calculata corect si oricum primim board-ul de la aplicatie ulterior.
 
-    # TODO: transformarea mutarilor in ceva valid
+    num_white_pieces = 0
+    num_black_pieces = 0
+    for i in range(len(changed_board_pos)):
+        if changed_board_pos[i][2].isupper():
+            num_white_pieces += 1
+        elif changed_board_pos[i][2].islower():
+            num_black_pieces += 1
+        if changed_board_pos[i][3].isupper():
+            num_white_pieces += 1
+        elif changed_board_pos[i][3].islower():
+            num_black_pieces += 1
+
+    if num_white_pieces > num_black_pieces:  # Mutare Alb
+        if len(changed_board_pos) == 2:
+            white_piece = None
+            white_piece_pos = None
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][2].isupper():
+                    white_piece = changed_board_pos[i][2]
+                    white_piece_pos = changed_board_pos[i][1]
+                    break
+
+            if white_piece == 'P' and white_piece_pos[1] == '7':
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'W':
+                        changed_board_pos[i][3] = current_board_configuration[changed_board_pos[i][0]]
+
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][3] == 'W':
+                    changed_board_pos[i][3] = white_piece
+
+        elif len(changed_board_pos) == 3:  # En Passant, stim sigur ca e vorba de un P.
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][3] == 'W':
+                    changed_board_pos[i][3] = 'P'
+
+        else:  # Rocade
+            left_side_castling = None
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][1][0] == 'h':
+                    left_side_castling = True
+                    break
+                elif changed_board_pos[i][1][0] == 'a':
+                    left_side_castling = False
+                    break
+
+            if left_side_castling:
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'W':
+                        if changed_board_pos[i][1][0] == 'g':
+                            changed_board_pos[i][3] = 'K'
+                        elif changed_board_pos[i][1][0] == 'f':
+                            changed_board_pos[i][3] = 'R'
+            else:
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'W':
+                        if changed_board_pos[i][1][0] == 'c':
+                            changed_board_pos[i][3] = 'K'
+                        elif changed_board_pos[i][1][0] == 'd':
+                            changed_board_pos[i][3] = 'R'
+
+    else:  # Mutare Negru
+        if len(changed_board_pos) == 2:
+            black_piece = None
+            black_piece_pos = None
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][2].islower():
+                    black_piece = changed_board_pos[i][2]
+                    black_piece_pos = changed_board_pos[i][1]
+                    break
+
+            if black_piece == 'p' and black_piece_pos[1] == '2':
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'b':
+                        changed_board_pos[i][3] = current_board_configuration[changed_board_pos[i][0]]
+
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][3] == 'b':
+                    changed_board_pos[i][3] = black_piece
+
+        elif len(changed_board_pos) == 3:  # En Passant, stim sigur ca e vorba de un p.
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][3] == 'b':
+                    changed_board_pos[i][3] = 'p'
+
+        else:  # Rocade
+            left_side_castling = None
+            for i in range(len(changed_board_pos)):
+                if changed_board_pos[i][1][0] == 'h':
+                    left_side_castling = True
+                    break
+                elif changed_board_pos[i][1][0] == 'a':
+                    left_side_castling = False
+                    break
+
+            if left_side_castling:
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'b':
+                        if changed_board_pos[i][1][0] == 'g':
+                            changed_board_pos[i][3] = 'k'
+                        elif changed_board_pos[i][1][0] == 'f':
+                            changed_board_pos[i][3] = 'r'
+            else:
+                for i in range(len(changed_board_pos)):
+                    if changed_board_pos[i][3] == 'b':
+                        if changed_board_pos[i][1][0] == 'c':
+                            changed_board_pos[i][3] = 'k'
+                        elif changed_board_pos[i][1][0] == 'd':
+                            changed_board_pos[i][3] = 'r'
 
     return changed_board_pos
 
