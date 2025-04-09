@@ -945,6 +945,14 @@ void GreedyExpectedMinMaxAgent::findBestMove(ConfigurationMetadata& configuratio
 	std::map<unsigned long long int, int> zobristHashingValuesFrequency(BoardManager::get().getZobristHashingValuesFrequency());
 	this->findBestMoveThread = std::make_shared<std::thread>(std::thread([this, &configurationMetadata, zobristHashingValuesFrequency]() mutable
 		{
+			if (zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION)
+			{
+				if (!this->isFindBestMoveCancelled.load()) // INFO: Se seteaza un bestMove chiar daca nu exista niciun move.
+					this->setBestMove(bestMove);
+				std::cout << "GreedyExpectedMinMaxAgent: FindBestMove: Draw Repetition" << std::endl;
+				return;
+			}
+
 			std::vector<std::future<float>> scoreFutures;
 			std::vector<std::future<int>> numNodesVisitedFutures;
 			std::vector<std::thread> threads;
@@ -1102,6 +1110,14 @@ void GreedyExpectedMinMaxAgent::estimateConfiguration(ConfigurationMetadata& con
 	std::map<unsigned long long int, int> zobristHashingValuesFrequency(BoardManager::get().getZobristHashingValuesFrequency());
 	this->estimateThread = std::make_shared<std::thread>(std::thread([this, &configurationMetadata, zobristHashingValuesFrequency]() mutable
 		{
+			if (zobristHashingValuesFrequency[configurationMetadata.zobristHashingValue] >= GameMetadata::FREQUENCY_UNTIL_DRAW_REPETITION)
+			{
+				if (!this->isEstimateCancelled.load())
+					this->setEstimation(0.0f);
+				std::cout << "GreedyExpectedMinMaxAgent: EstimateConfiguration: Draw Repetition" << std::endl;
+				return;
+			}
+
 			std::vector<std::future<float>> scoreFutures;
 			std::vector<std::future<int>> numNodesVisitedFutures;
 			std::vector<std::thread> threads;
