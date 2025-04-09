@@ -84,26 +84,26 @@ def find_initial_board_configuration(screenshot, bounding_box):
             if num_pixels_white_piece == 0 and num_pixels_black_piece == 0:
                 piece_color_on_board += '.'
             elif num_pixels_white_piece > num_pixels_black_piece:
-                piece_color_on_board += 'w'
+                piece_color_on_board += 'W'
             else:
                 piece_color_on_board += 'b'
 
     if not is_white_above:
         piece_color_on_board = piece_color_on_board[::-1]
 
-    if piece_color_on_board[:2 * Constants.NUM_TILES_WIDTH].count('w') < 2 * Constants.NUM_TILES_WIDTH:
+    if piece_color_on_board[:2 * Constants.NUM_TILES_WIDTH].count('W') < 2 * Constants.NUM_TILES_WIDTH:
         if piece_color_on_board[1] == '.':
-            if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH] == 'w':
+            if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH] == 'W':
                 board_configuration = board_configuration[0:1] + '.' + board_configuration[2:2 * Constants.NUM_TILES_WIDTH] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 1:]
                 return 'Ng1h3$'
-            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 2] == 'w'
+            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 2] == 'W'
                 board_configuration = board_configuration[0:1] + '.' + board_configuration[2:2 * Constants.NUM_TILES_WIDTH + 2] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 3:]
                 return 'Ng1f3$'
         elif piece_color_on_board[6] == '.':
-            if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 5] == 'w':
+            if piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 5] == 'W':
                 board_configuration = board_configuration[0:6] + '.' + board_configuration[7:2 * Constants.NUM_TILES_WIDTH + 5] + 'N' + board_configuration[2 * Constants.NUM_TILES_WIDTH + 6:]
                 return 'Nb1c3$'
-            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 7] == 'w'
+            else:  # piece_color_on_board[2 * Constants.NUM_TILES_WIDTH + 7] == 'W'
                 board_configuration = board_configuration[0:6] + '.' + board_configuration[7:2 * Constants.NUM_TILES_WIDTH + 7] + 'N' + board_configuration[3 * Constants.NUM_TILES_WIDTH:]
                 return 'Nb1a3$'
         else:
@@ -111,10 +111,10 @@ def find_initial_board_configuration(screenshot, bounding_box):
                 if piece_color_on_board[Constants.NUM_TILES_WIDTH + i] == '.':
                     column = Constants.NUM_TILES_WIDTH - 1 - i
                     column = chr(ord('a') + column)
-                    if piece_color_on_board[Constants.NUM_TILES_WIDTH + i + Constants.NUM_TILES_WIDTH] == 'w':
+                    if piece_color_on_board[Constants.NUM_TILES_WIDTH + i + Constants.NUM_TILES_WIDTH] == 'W':
                         board_configuration = board_configuration[:Constants.NUM_TILES_WIDTH + i] + '.' + board_configuration[Constants.NUM_TILES_WIDTH + i + 1:2 * Constants.NUM_TILES_WIDTH + i] + 'P' + board_configuration[2 * Constants.NUM_TILES_WIDTH + i + 1:]
                         return 'P' + column + '2' + column + '3$'
-                    elif piece_color_on_board[Constants.NUM_TILES_WIDTH + i + 2 * Constants.NUM_TILES_WIDTH] == 'w':
+                    elif piece_color_on_board[Constants.NUM_TILES_WIDTH + i + 2 * Constants.NUM_TILES_WIDTH] == 'W':
                         board_configuration = board_configuration[:Constants.NUM_TILES_WIDTH + i] + '.' + board_configuration[Constants.NUM_TILES_WIDTH + i + 1:3 * Constants.NUM_TILES_WIDTH + i] + 'P' + board_configuration[3 * Constants.NUM_TILES_WIDTH + i + 1:]
                         return 'P' + column + '2' + column + '4$'
     else:
@@ -438,6 +438,7 @@ def get_board_configuration(screenshot, bounding_box):
     tile_height = (bounding_box[3] - bounding_box[2]) / Constants.NUM_TILES_HEIGHT
 
     board_configuration = ''
+    color_configuration = ''
 
     for tile_i in range(Constants.NUM_TILES_HEIGHT):
         for tile_j in range(Constants.NUM_TILES_WIDTH):
@@ -448,12 +449,21 @@ def get_board_configuration(screenshot, bounding_box):
 
             piece = find_piece_on_board(screenshot, (tile_left, tile_right, tile_top, tile_bottom))
 
+            color = None
+            if Utilities.is_tile_empty(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
+                color = '.'
+            elif Utilities.is_tile_white(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
+                color = 'W'
+            elif Utilities.is_tile_black(screenshot, (tile_left, tile_right, tile_top, tile_bottom)):
+                color = 'b'
+
             board_configuration += piece
+            color_configuration += color
 
     if not is_white_above:
         board_configuration = board_configuration[::-1]
 
-    return board_configuration
+    return board_configuration, color_configuration
 
 
 def convert_index_to_pos(index):
@@ -483,15 +493,20 @@ def get_changed_board_pos(current_screenshot, current_bounding_box):  # left, ri
     if is_white_above is None:
         return None
 
-    current_board_configuration = get_board_configuration(current_screenshot, current_bounding_box)
+    current_board_configuration, current_color_configuration = get_board_configuration(current_screenshot, current_bounding_box)
 
     changed_board_pos = []
 
     for i in range(len(board_configuration)):
-        if board_configuration[i] != current_board_configuration[i]:
-            changed_board_pos.append((i, convert_index_to_pos(i), board_configuration[i], current_board_configuration[i]))
+        if (board_configuration[i] != '.' and current_color_configuration[i] == '.') \
+                or (board_configuration[i] == '.' and current_color_configuration[i] != '.') \
+                or (board_configuration[i].isupper() and current_color_configuration[i] == 'b') \
+                or (board_configuration[i].islower() and current_color_configuration[i] == 'W'):
+            changed_board_pos.append((i, convert_index_to_pos(i), board_configuration[i], current_color_configuration[i]))
 
-    board_configuration = current_board_configuration
+    # board_configuration = current_board_configuration  # INFO: Nu ar fi nevoie, deoarece nu este mereu calculata corect si oricum primim board-ul de la aplicatie ulterior.
+
+    # TODO: transformarea mutarilor in ceva valid
 
     return changed_board_pos
 

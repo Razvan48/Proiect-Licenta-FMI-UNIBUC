@@ -16,11 +16,11 @@ def is_pixel_black_tile(pixel):
 
 
 def is_pixel_white_piece(pixel):
-    return (np.abs(np.array(pixel) - np.array(Constants.WHITE_PIECE_RGB)) < np.array(Constants.WHITE_PIECE_EPS)).all() and np.max(pixel) - np.min(pixel) < Constants.WHITE_PIECE_VARIANCE_EPS
+    return (np.abs(np.array(pixel) - np.array(Constants.WHITE_PIECE_RGB)) < np.array(Constants.WHITE_PIECE_EPS)).all()
 
 
 def is_pixel_black_piece(pixel):
-    return (np.abs(np.array(pixel) - np.array(Constants.BLACK_PIECE_RGB)) < np.array(Constants.BLACK_PIECE_EPS)).all() and np.max(pixel) - np.min(pixel) < Constants.BLACK_PIECE_VARIANCE_EPS
+    return (np.abs(np.array(pixel) - np.array(Constants.BLACK_PIECE_RGB)) < np.array(Constants.BLACK_PIECE_EPS)).all()
 
 
 def find_bounding_box(screenshot):
@@ -198,6 +198,51 @@ def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
                     pag.click()
                     time.sleep(Constants.SLEEP_TIME_WHEN_APPLYING_MOVE)
+
+
+def is_white_piece_on_tile(screenshot, tile_bounding_box):
+    num_pixels_white_piece = 0
+    num_pixels_black_piece = 0
+
+    for i in np.arange(tile_bounding_box[2], tile_bounding_box[3]):
+        for j in np.arange(tile_bounding_box[0], tile_bounding_box[1]):
+            pixel = screenshot.getpixel((j, i))
+            if is_pixel_white_piece(pixel):
+                num_pixels_white_piece += 1
+            elif is_pixel_black_piece(pixel):
+                num_pixels_black_piece += 1
+
+    return num_pixels_white_piece > num_pixels_black_piece and num_pixels_white_piece > 0
+
+
+def is_black_piece_on_tile(screenshot, tile_bounding_box):
+    num_pixels_white_piece = 0
+    num_pixels_black_piece = 0
+
+    for i in np.arange(tile_bounding_box[2], tile_bounding_box[3]):
+        for j in np.arange(tile_bounding_box[0], tile_bounding_box[1]):
+            pixel = screenshot.getpixel((j, i))
+            if is_pixel_white_piece(pixel):
+                num_pixels_white_piece += 1
+            elif is_pixel_black_piece(pixel):
+                num_pixels_black_piece += 1
+
+    return num_pixels_black_piece > num_pixels_white_piece and num_pixels_black_piece > 0
+
+
+def is_tile_empty(screenshot, tile_bounding_box):
+    num_pixels_white_piece = 0
+    num_pixels_black_piece = 0
+
+    for i in np.arange(tile_bounding_box[2], tile_bounding_box[3]):
+        for j in np.arange(tile_bounding_box[0], tile_bounding_box[1]):
+            pixel = screenshot.getpixel((j, i))
+            if is_pixel_white_piece(pixel):
+                num_pixels_white_piece += 1
+            elif is_pixel_black_piece(pixel):
+                num_pixels_black_piece += 1
+
+    return num_pixels_white_piece == 0 and num_pixels_black_piece == 0
 
 
 
