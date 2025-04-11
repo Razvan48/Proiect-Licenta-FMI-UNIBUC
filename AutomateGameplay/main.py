@@ -26,11 +26,11 @@ current_bounding_box = None
 while True:
     current_screenshot = pag.screenshot()
     current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
-    current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
+    current_bounding_box = PiecesIdentifier.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
 
-        current_move = PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box)
+        current_move = PiecesIdentifier.find_info_about_board(current_screenshot)
         if current_move is not None:
             sock.send(current_move.encode())
             PiecesIdentifier.should_listen = True
@@ -65,7 +65,7 @@ while True:
 
     current_screenshot = pag.screenshot()
     current_screenshot = current_screenshot.resize((int(current_screenshot.width * Constants.SCREENSHOT_SCALE_WIDTH), int(current_screenshot.height * Constants.SCREENSHOT_SCALE_HEIGHT)), Image.NEAREST)
-    current_bounding_box = Utilities.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
+    current_bounding_box = PiecesIdentifier.find_bounding_box(current_screenshot)  # INFO: E foarte important ca imaginea sa fie color aici.
 
     if current_bounding_box is not None:
         # PiecesIdentifier.find_info_about_board(current_screenshot, current_bounding_box) # INFO: Se bazeaza pe board_configuration-ul curent. Poate s-a mutat ceva intre timp si vom construi gresit feature-urile pentru piese.
@@ -77,13 +77,11 @@ while True:
         # Utilities.apply_move_on_board(current_bounding_box, 'Pg7g8B')  # pentru test
         # Utilities.apply_move_on_board(current_bounding_box, 'Pe2e4$')  # pentru test
 
-        current_move = PiecesIdentifier.find_move(PiecesIdentifier.get_changed_board_pos(current_screenshot, current_bounding_box))
+        current_move = PiecesIdentifier.find_move(PiecesIdentifier.get_changed_board_pos(current_screenshot))
         if current_move is not None:
             sock.send(current_move.encode())
             PiecesIdentifier.should_listen = True
             print('Current move:', current_move)
-
-    time.sleep(Constants.SLEEP_TIME_IN_MAIN_LOOP)
 
     print('Current board configuration:', PiecesIdentifier.board_configuration)
 
