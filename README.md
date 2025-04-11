@@ -33,6 +33,8 @@ git clone https://github.com/Razvan48/Proiect-Licenta-FMI-UNIBUC
 
 ### [Demo Singleplayer (win vs. Bot, 2200 rating)](https://www.youtube.com/watch?v=UbMmwjcPJKc)
 
+### [Demo Automatizare Gameplay](https://www.youtube.com/watch?v=4EzIWjo99Eg)
+
 
 
 <br/>
