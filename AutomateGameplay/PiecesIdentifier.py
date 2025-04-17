@@ -3,10 +3,6 @@ import numpy as np
 
 import Constants
 import Utilities
-import Model
-
-from PIL import ImageDraw
-
 
 is_white_above = None
 
@@ -25,9 +21,6 @@ black_queen_features = None
 black_king_features = None
 
 empty_tile_features = None
-
-all_pieces_features = None
-all_pieces_labels = None
 
 board_configuration = None
 
@@ -91,18 +84,8 @@ def find_bounding_box(screenshot):
     color_changed_row_pos = [pos for pos in color_changed_row_pos if pos != -1]
     color_changed_column_pos = [pos for pos in color_changed_column_pos if pos != -1]
 
-    print('color_changed_row_pos:', color_changed_row_pos)
-    print('color_changed_column_pos:', color_changed_column_pos)
-
-    '''
-    screenshot_copy = screenshot.copy()
-    draw = ImageDraw.Draw(screenshot_copy)
-    for i in range(len(color_changed_row_pos)):
-        draw.ellipse((color_changed_column_pos[0], color_changed_row_pos[i], color_changed_column_pos[0], color_changed_row_pos[i]), outline='red', width=2)
-    for i in range(len(color_changed_column_pos)):
-        draw.ellipse((color_changed_column_pos[i], color_changed_row_pos[0], color_changed_column_pos[i], color_changed_row_pos[0]), outline='red', width=2)
-    screenshot_copy.show()
-    '''
+    print('color_changed_row_pos in find_bounding_box():', color_changed_row_pos)
+    print('color_changed_column_pos in find_bounding_box():', color_changed_column_pos)
 
     for tile_i in range(Constants.NUM_TILES_HEIGHT):
         for tile_j in range(Constants.NUM_TILES_WIDTH):
@@ -219,9 +202,6 @@ def find_pieces_features(screenshot):
 
     global empty_tile_features
 
-    global all_pieces_features
-    global all_pieces_labels
-
     if is_white_above is None:
         return
 
@@ -241,10 +221,7 @@ def find_pieces_features(screenshot):
 
     empty_tile_features = []
 
-    all_pieces_features = []
-    all_pieces_labels = []
-
-    print('Board Configuration in find_pieces_features:', board_configuration)
+    print('board_configuration in find_pieces_features():', board_configuration)
 
     for tile_i in range(Constants.NUM_TILES_HEIGHT):
         for tile_j in range(Constants.NUM_TILES_WIDTH):
@@ -261,13 +238,8 @@ def find_pieces_features(screenshot):
             piece_data = screenshot.crop((tile_left, tile_top, tile_right, tile_bottom))
             piece_data = piece_data.convert('RGB')
             piece_data = piece_data.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
-            # piece_data.save(f'test/{np.random.random()}.png')
             piece_data = np.array(piece_data)
-            # piece_data = ((np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS) / float(Constants.MAX_VALUE_PIXEL)) - 0.5) * 2.0
-            # piece_data = np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS)
-            # INFO: np.array(piece_data) dupa conversia la grayscale sau RGB are shape-ul (height, width), nu (width, height).
 
-            # INFO: Ce urmeaza este abordarea veche.
             tile_area = Constants.TEMPLATE_WIDTH * Constants.TEMPLATE_HEIGHT
 
             num_pixels_white_piece = 0
@@ -281,55 +253,35 @@ def find_pieces_features(screenshot):
                         num_pixels_black_piece += 1
             print('find_piece_features(): num_pixels_white_piece:', num_pixels_white_piece, 'num_pixels_black_piece:', num_pixels_black_piece, 'tile_area:', tile_area)
             piece_features = [num_pixels_white_piece / tile_area, num_pixels_black_piece / tile_area]
-            print('find_piece_features(): piece_features:', piece_features, 'piece should be', board_configuration[pos_in_board])
+            print('find_piece_features(): piece_features:', piece_features, 'Piece should be', board_configuration[pos_in_board])
 
 
-            # INFO: Atentie la faptul ca dataset-ul trebuie sa fie balansat.
             if board_configuration[pos_in_board] == 'P':
                 white_pawn_features.append(piece_features)
-                # white_pawn_features = piece_features
             elif board_configuration[pos_in_board] == 'R':
                 white_rook_features.append(piece_features)
-                # white_rook_features = piece_features
             elif board_configuration[pos_in_board] == 'N':
                 white_knight_features.append(piece_features)
-                # white_knight_features = piece_features
             elif board_configuration[pos_in_board] == 'B':
                 white_bishop_features.append(piece_features)
-                # white_bishop_features = piece_features
             elif board_configuration[pos_in_board] == 'Q':
                 white_queen_features.append(piece_features)
-                # white_queen_features = piece_features
             elif board_configuration[pos_in_board] == 'K':
                 white_king_features.append(piece_features)
-                # white_king_features = piece_features
             elif board_configuration[pos_in_board] == 'p':
                 black_pawn_features.append(piece_features)
-                # black_pawn_features = piece_features
             elif board_configuration[pos_in_board] == 'r':
                 black_rook_features.append(piece_features)
-                # black_rook_features = piece_features
             elif board_configuration[pos_in_board] == 'n':
                 black_knight_features.append(piece_features)
-                # black_knight_features = piece_features
             elif board_configuration[pos_in_board] == 'b':
                 black_bishop_features.append(piece_features)
-                # black_bishop_features = piece_features
             elif board_configuration[pos_in_board] == 'q':
                 black_queen_features.append(piece_features)
-                # black_queen_features = piece_features
             elif board_configuration[pos_in_board] == 'k':
                 black_king_features.append(piece_features)
-                # black_king_features = piece_features
             else:
                 empty_tile_features.append(piece_features)
-                # empty_tile_features = piece_features
-
-            '''
-            if board_configuration[pos_in_board] != '.':
-                all_pieces_features.append(piece_data)
-                all_pieces_labels.append(Constants.FROM_PIECE_TO_LABEL[board_configuration[pos_in_board]])
-            '''
 
     white_pawn_features = np.array(white_pawn_features)
     white_rook_features = np.array(white_rook_features)
@@ -347,14 +299,6 @@ def find_pieces_features(screenshot):
 
     empty_tile_features = np.array(empty_tile_features)
 
-    '''
-    all_pieces_features = np.array(all_pieces_features)
-    all_pieces_labels = np.array(all_pieces_labels)
-
-    Model.build_dataset_and_dataloader(all_pieces_features, all_pieces_labels)
-    Model.train_model()
-    '''
-
 
 def calculate_distance(current_piece_features, template_features):
     if current_piece_features is None or template_features is None:
@@ -363,22 +307,13 @@ def calculate_distance(current_piece_features, template_features):
     template_features_mean = np.mean(template_features, axis=0)
     template_features_mean = template_features_mean.reshape(-1)
 
-    print('current_piece_features shape', np.array(current_piece_features).shape)
-    print('template_features_mean shape', template_features_mean.shape)
-
-    '''
-    reshaped_current_piece_features = current_piece_features.reshape(1, -1)
-    reshaped_template_features = template_features.reshape(template_features.shape[0], -1)
-
-    differences = reshaped_current_piece_features - reshaped_template_features
-    distances = np.linalg.norm(differences, axis=1)
-
-    return np.mean(distances)
-    '''
     return np.abs(current_piece_features[0] - template_features_mean[0]) + np.abs(current_piece_features[1] - template_features_mean[1])
 
 
 def find_piece_on_board(screenshot, tile_i, tile_j):
+
+    global is_white_above
+
     global white_pawn_features
     global white_rook_features
     global white_knight_features
@@ -398,17 +333,10 @@ def find_piece_on_board(screenshot, tile_i, tile_j):
     tile_bounding_box = tile_bounding_boxes[tile_i][tile_j]
 
     piece_data = screenshot.crop((tile_bounding_box[0], tile_bounding_box[2], tile_bounding_box[1], tile_bounding_box[3]))
-    piece_data_empty_tile_test = piece_data.copy()  # INFO: Doar pentru cele 2 for-uri de mai jos.
     piece_data = piece_data.convert('RGB')
     piece_data = piece_data.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
-    # piece_data.save(f'test/{np.random.random()}.png')
     piece_data = np.array(piece_data)
-    # piece_data = (np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS) / float(Constants.MAX_VALUE_PIXEL) - 0.5) * 2.0
-    # piece_data = np.array(piece_data).reshape(Constants.TEMPLATE_HEIGHT, Constants.TEMPLATE_WIDTH, Constants.NUM_COLOR_CHANNELS)
-    # INFO: np.array(piece_data) dupa conversia la grayscale sau RGB are shape-ul (height, width), nu (width, height).
 
-    piece_data_empty_tile_test = piece_data_empty_tile_test.convert('RGB')
-    piece_data_empty_tile_test = piece_data_empty_tile_test.resize((Constants.TEMPLATE_WIDTH, Constants.TEMPLATE_HEIGHT), Image.NEAREST)
     num_pixels_white_piece = 0
     num_pixels_black_piece = 0
     for i in range(Constants.TEMPLATE_HEIGHT):
@@ -419,19 +347,13 @@ def find_piece_on_board(screenshot, tile_i, tile_j):
             elif Utilities.is_pixel_black_piece(pixel):
                 num_pixels_black_piece += 1
     tile_area = Constants.TEMPLATE_WIDTH * Constants.TEMPLATE_HEIGHT
-    print('num_pixels_white_piece:', num_pixels_white_piece, 'num_pixels_black_piece:', num_pixels_black_piece, 'tile_area:', tile_area)
+    print('num_pixels_white_piece in find_piece_on_board():', num_pixels_white_piece, 'num_pixels_black_piece in find_piece_on_board():', num_pixels_black_piece, 'tile_area in find_piece_on_board():', tile_area)
     piece_features = [num_pixels_white_piece / tile_area, num_pixels_black_piece / tile_area]
 
-    global is_white_above
     pos_on_board = tile_i * Constants.NUM_TILES_WIDTH + tile_j
     if not is_white_above:
         pos_on_board = (Constants.NUM_TILES_HEIGHT - 1 - tile_i) * Constants.NUM_TILES_WIDTH + tile_j
-    print('piece_features find_piece_on_board():', piece_features, 'piece should be', board_configuration[pos_on_board])
-
-    # if num_pixels_white_piece == 0 and num_pixels_black_piece == 0:
-    #    return '.'
-
-    # return Model.inference(piece_data)
+    print('piece_features in find_piece_on_board():', piece_features, 'Piece should be', board_configuration[pos_on_board])
 
     piece = None
     min_distance = float('inf')
@@ -502,7 +424,7 @@ def find_piece_on_board(screenshot, tile_i, tile_j):
             min_distance = distance
             piece = '.'
 
-    print('piece is:', piece)
+    print('Piece in find_piece_on_board() is:', piece)
 
     return piece
 
@@ -584,8 +506,8 @@ def get_changed_board_pos(current_screenshot):
 
     current_board_configuration, current_color_configuration = get_board_configuration(current_screenshot)
 
-    print('Current board configuration:', current_board_configuration)
-    print('Current color configuration:', current_color_configuration)
+    print('current_board_configuration from get_board_configuration():', current_board_configuration)
+    print('current_color_configuration from get_board_configuration():', current_color_configuration)
 
     changed_board_pos = []
 
@@ -598,7 +520,7 @@ def get_changed_board_pos(current_screenshot):
 
     # board_configuration = current_board_configuration  # INFO: Nu ar fi nevoie, deoarece nu este mereu calculata corect si oricum primim board-ul de la aplicatie ulterior.
 
-    print('Initial changed board positions:', changed_board_pos)
+    print('changed_board_pos in the middle of get_changed_board_pos():', changed_board_pos)
 
     num_white_pieces = 0
     num_black_pieces = 0
@@ -710,7 +632,7 @@ def get_changed_board_pos(current_screenshot):
                         elif changed_board_pos[i][1][0] == 'd':
                             changed_board_pos[i][3] = 'r'
 
-    print('Changed board positions at end of get_changed_board_pos():', changed_board_pos)
+    print('changed_board_pos at end of get_changed_board_pos():', changed_board_pos)
 
     return changed_board_pos
 
@@ -719,7 +641,7 @@ def find_move(changed_board_pos):
     if len(changed_board_pos) == 0:
         return None
 
-    print('Changed board positions in find_move():', changed_board_pos)
+    print('changed_board_pos in find_move():', changed_board_pos)
 
     if len(changed_board_pos) == 2:  # mutari simple, capturi simple, promovari simple sau promovari prin captura
 

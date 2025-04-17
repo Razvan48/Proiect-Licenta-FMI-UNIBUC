@@ -32,21 +32,21 @@ def show_bounding_box(screenshot, bounding_box):  # pentru debug
 
 
 def show_pieces_features():  # pentru debug
-    print('White Pawn Features:', PiecesIdentifier.white_pawn_features)
-    print('White Rook Features:', PiecesIdentifier.white_rook_features)
-    print('White Knight Features:', PiecesIdentifier.white_knight_features)
-    print('White Bishop Features:', PiecesIdentifier.white_bishop_features)
-    print('White Queen Features:', PiecesIdentifier.white_queen_features)
-    print('White King Features:', PiecesIdentifier.white_king_features)
+    print('show_pieces_features(): white_pawn_features:', PiecesIdentifier.white_pawn_features)
+    print('show_pieces_features(): white_rook_features:', PiecesIdentifier.white_rook_features)
+    print('show_pieces_features(): white_knight_features:', PiecesIdentifier.white_knight_features)
+    print('show_pieces_features(): white_bishop_features:', PiecesIdentifier.white_bishop_features)
+    print('show_pieces_features(): white_queen_features:', PiecesIdentifier.white_queen_features)
+    print('show_pieces_features(): white_king_features:', PiecesIdentifier.white_king_features)
 
-    print('Black Pawn Features:', PiecesIdentifier.black_pawn_features)
-    print('Black Rook Features:', PiecesIdentifier.black_rook_features)
-    print('Black Knight Features:', PiecesIdentifier.black_knight_features)
-    print('Black Bishop Features:', PiecesIdentifier.black_bishop_features)
-    print('Black Queen Features:', PiecesIdentifier.black_queen_features)
-    print('Black King Features:', PiecesIdentifier.black_king_features)
+    print('show_pieces_features(): black_pawn_features:', PiecesIdentifier.black_pawn_features)
+    print('show_pieces_features(): black_rook_features:', PiecesIdentifier.black_rook_features)
+    print('show_pieces_features(): black_knight_features:', PiecesIdentifier.black_knight_features)
+    print('show_pieces_features(): black_bishop_features:', PiecesIdentifier.black_bishop_features)
+    print('show_pieces_features(): black_queen_features:', PiecesIdentifier.black_queen_features)
+    print('show_pieces_features(): black_king_features:', PiecesIdentifier.black_king_features)
 
-    print('Empty Tile Features:', PiecesIdentifier.empty_tile_features)
+    print('show_pieces_features(): empty_tile_features:', PiecesIdentifier.empty_tile_features)
 
 
 def apply_move_on_board(bounding_box, move):  #piesa/coloana/linie/coloana/linie/promovare
@@ -223,6 +223,26 @@ def is_tile_empty(screenshot, tile_bounding_box):
                 num_pixels_black_piece += 1
 
     return num_pixels_white_piece == 0 and num_pixels_black_piece == 0
+
+
+def show_modules_versions():
+    import numpy as np
+    import pyautogui as pag
+    import PIL
+    from PIL import Image
+    from PIL import ImageDraw
+
+    import sys
+    import platform
+
+    print('Python Version (also version for time and socket modules):', sys.version, platform.python_version())
+    print('NumPy Version:', np.__version__)
+    print('PyAutoGUI Version:', pag.__version__)
+    print('PIL Version:', PIL.__version__)
+    print('Image from PIL Version:', Image.__version__)
+    # print('ImageDraw from PIL Version:', ImageDraw.__version__)
+
+
 
 
 
