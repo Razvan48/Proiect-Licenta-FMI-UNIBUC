@@ -263,6 +263,7 @@ private:
 	void generateBlackKingMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 
 public:
+	void filterMoves(std::vector<std::vector<std::pair<char, int>>>& moves) const;
 	void generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 	void generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves);
 

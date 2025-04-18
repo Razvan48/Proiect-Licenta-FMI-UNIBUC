@@ -33,6 +33,16 @@ int main()
 	// Momentan am presupus ca acel client care creeaza serverul nu ii poate pica conexiunea niciodata,
 	// dar asta nu rezolva daca cel ce da join la joc face acelasi lucru cu drag and drop la fereastra.
 
+
+
+
+	// Schimbare de la tabla de 4x4 in centru la cea obisnuita:
+	// cele 2 if-uri din BoardManager::convertToInternalMove()
+	// cele 2 if-uri din BoardVisualizer unde se activeaza pawn promotion menu
+	// configuratia initiala a tablei in board manager
+	// filter moves din generate moves din board manager
+
+
 	return 0;
 }
 

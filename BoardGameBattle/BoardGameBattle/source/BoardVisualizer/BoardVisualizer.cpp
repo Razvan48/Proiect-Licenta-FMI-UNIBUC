@@ -407,7 +407,8 @@ void BoardVisualizer::update()
 							move.push_back((char)('a' + j));
 							move.push_back((char)('1' + i));
 
-							if ((move[0] == 'p' || move[0] == 'P') && (move[4] == '1' || move[4] == '8')) // INFO: Daca este o mutare de promovare. (Este pion si a ajuns la capatul tablei.)
+							// if ((move[0] == 'p' || move[0] == 'P') && (move[4] == '1' || move[4] == '8')) // INFO: Daca este o mutare de promovare. (Este pion si a ajuns la capatul tablei.)
+							if ((move[0] == 'p' || move[0] == 'P') && (move[4] == '3' || move[4] == '6')) // INFO: Pentru tabla de 4x4 in centru.
 							{
 								this->pawnPromotionMenuActive = true;
 

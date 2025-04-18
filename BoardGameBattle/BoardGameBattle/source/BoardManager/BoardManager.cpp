@@ -1078,7 +1078,9 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 
 void BoardManager::initialize()
 {
-	this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
+	// this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
+	// this->configurationMetadata.initialize("..................rkqr....pppp....PPPP....RKQR..................100111111"); // INFO: Pentru tabla de 4x4 in centru.
+	this->configurationMetadata.initialize("...................kq.....pppp....PPPP.....KQ...................100111111");
 
 	// Curatam Istoricul de la Meciul Anterior
 	this->configurationMetadataHistory.clear();
@@ -1539,7 +1541,8 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 	}
 
 	// Promovare Pion
-	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
+	// if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
+	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 2) // INFO: Pentru tabla de 4x4 in centru.
 	{
 		internalMove.pop_back();
 
@@ -1551,7 +1554,8 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 		else
 			internalMove.emplace_back(externalMove[5], pos1);
 	}
-	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
+	// else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
+	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 3) // INFO: Pentru tabla de 4x4 in centru.
 	{
 		internalMove.pop_back();
 
@@ -3216,6 +3220,73 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 	}
 }
 
+// Filter Moves INFO: Folosit pentru tabla de 4x4 in centru.
+
+void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& moves) const
+{
+	for (int i = 0; i < moves.size(); ++i)
+	{
+		bool isValidMove = true;
+
+		for (int j = 0; j < moves[i].size(); ++j)
+		{
+			int pieceRow = moves[i][j].second / GameMetadata::NUM_TILES_WIDTH;
+			int pieceColumn = moves[i][j].second % GameMetadata::NUM_TILES_WIDTH;
+
+			if (!
+				(
+					(2 <= pieceRow && pieceRow <= GameMetadata::NUM_TILES_HEIGHT - 3)
+					&&
+					(2 <= pieceColumn && pieceColumn <=  GameMetadata::NUM_TILES_WIDTH - 3)
+					)
+				)
+			{
+				isValidMove = false;
+				break;
+			}
+		}
+
+		if (!isValidMove)
+		{
+			std::swap(moves[i], moves.back());
+			moves.pop_back();
+			--i;
+		}
+	}
+
+	int currentMovesSize = (int)moves.size();
+
+	for (int i = 0; i < currentMovesSize; ++i)
+	{
+		if (moves[i][0].first == 'p' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 3)
+		{
+			moves[i][1].first = 'r';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'n';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'b';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'q';
+		}
+		else if (moves[i][0].first == 'P' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == 2)
+		{
+			moves[i][1].first = 'R';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'N';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'B';
+
+			moves.emplace_back(moves[i]);
+			moves.back()[1].first = 'Q';
+		}
+	}
+}
+
 // All Pieces Moves Generation
 
 void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -3236,6 +3307,8 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	this->generateWhiteKnightMoves(configurationMetadata, moves);
 	this->generateWhitePawnMoves(configurationMetadata, moves);
 	this->generateWhiteKingMoves(configurationMetadata, moves);
+
+	this->filterMoves(moves);
 }
 
 void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -3256,6 +3329,8 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 	this->generateBlackKnightMoves(configurationMetadata, moves);
 	this->generateBlackPawnMoves(configurationMetadata, moves);
 	this->generateBlackKingMoves(configurationMetadata, moves);
+
+	this->filterMoves(moves);
 }
 
 // Checkmates
