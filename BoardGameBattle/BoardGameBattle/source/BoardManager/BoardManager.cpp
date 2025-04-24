@@ -3224,6 +3224,9 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 
 void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& moves) const
 {
+	std::vector<std::vector<std::pair<char, int>>> filteredMoves;
+	filteredMoves.reserve(moves.size());
+
 	for (int i = 0; i < moves.size(); ++i)
 	{
 		bool isValidMove = true;
@@ -3246,45 +3249,40 @@ void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& m
 			}
 		}
 
-		if (!isValidMove)
+		if (isValidMove)
 		{
-			std::swap(moves[i], moves.back());
-			moves.pop_back();
-			--i;
+			filteredMoves.emplace_back(moves[i]);
+
+			if (moves[i][0].first == 'p' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2)
+			{
+				filteredMoves.back()[1].first = 'r';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'n';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'b';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'q';
+			}
+			else if (moves[i][0].first == 'P' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == 1)
+			{
+				filteredMoves.back()[1].first = 'R';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'N';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'B';
+
+				filteredMoves.emplace_back(filteredMoves.back());
+				filteredMoves.back()[1].first = 'Q';
+			}
 		}
 	}
 
-	int currentMovesSize = (int)moves.size();
-
-	for (int i = 0; i < currentMovesSize; ++i)
-	{
-		if (moves[i][0].first == 'p' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2)
-		{
-			moves[i][1].first = 'r';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'n';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'b';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'q';
-		}
-		else if (moves[i][0].first == 'P' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == 1)
-		{
-			moves[i][1].first = 'R';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'N';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'B';
-
-			moves.emplace_back(moves[i]);
-			moves.back()[1].first = 'Q';
-		}
-	}
+	moves = filteredMoves;
 }
 
 // All Pieces Moves Generation
