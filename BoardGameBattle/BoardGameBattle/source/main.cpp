@@ -36,9 +36,9 @@ int main()
 
 
 
-	// Schimbare de la tabla de 4x4 in centru la cea obisnuita:
+	// Schimbare de la tabla de n x m in centru la cea obisnuita:
 	// cele 2 if-uri din BoardManager::convertToInternalMove()
-	// cele 2 if-uri din BoardVisualizer unde se activeaza pawn promotion menu
+	// acel 1 if din BoardVisualizer unde se activeaza pawn promotion menu
 	// configuratia initiala a tablei in board manager
 	// filter moves din generate moves din board manager
 

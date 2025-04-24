@@ -1079,8 +1079,8 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 void BoardManager::initialize()
 {
 	// this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
-	// this->configurationMetadata.initialize("..................rkqr....pppp....PPPP....RKQR..................100111111"); // INFO: Pentru tabla de 4x4 in centru.
-	this->configurationMetadata.initialize("...................kq.....pppp....PPPP.....KQ...................100111111");
+	// this->configurationMetadata.initialize("..................rkqr....pppp....PPPP....RKQR..................100111111"); // INFO: Pentru tabla de n x m in centru.
+	this->configurationMetadata.initialize("...........kq.....pppp....................PPPP.....KQ...........100111111");
 
 	// Curatam Istoricul de la Meciul Anterior
 	this->configurationMetadataHistory.clear();
@@ -1542,7 +1542,7 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 
 	// Promovare Pion
 	// if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
-	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 2) // INFO: Pentru tabla de 4x4 in centru.
+	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 1) // INFO: Pentru tabla de n x m in centru.
 	{
 		internalMove.pop_back();
 
@@ -1555,7 +1555,7 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 			internalMove.emplace_back(externalMove[5], pos1);
 	}
 	// else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
-	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 3) // INFO: Pentru tabla de 4x4 in centru.
+	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2) // INFO: Pentru tabla de n x m in centru.
 	{
 		internalMove.pop_back();
 
@@ -3220,7 +3220,7 @@ void BoardManager::generateBlackKingMoves(ConfigurationMetadata& configurationMe
 	}
 }
 
-// Filter Moves INFO: Folosit pentru tabla de 4x4 in centru.
+// Filter Moves INFO: Folosit pentru tabla de n x m in centru.
 
 void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& moves) const
 {
@@ -3235,7 +3235,7 @@ void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& m
 
 			if (!
 				(
-					(2 <= pieceRow && pieceRow <= GameMetadata::NUM_TILES_HEIGHT - 3)
+					(1 <= pieceRow && pieceRow <= GameMetadata::NUM_TILES_HEIGHT - 2)
 					&&
 					(2 <= pieceColumn && pieceColumn <=  GameMetadata::NUM_TILES_WIDTH - 3)
 					)
@@ -3258,7 +3258,7 @@ void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& m
 
 	for (int i = 0; i < currentMovesSize; ++i)
 	{
-		if (moves[i][0].first == 'p' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 3)
+		if (moves[i][0].first == 'p' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2)
 		{
 			moves[i][1].first = 'r';
 
@@ -3271,7 +3271,7 @@ void BoardManager::filterMoves(std::vector<std::vector<std::pair<char, int>>>& m
 			moves.emplace_back(moves[i]);
 			moves.back()[1].first = 'q';
 		}
-		else if (moves[i][0].first == 'P' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == 2)
+		else if (moves[i][0].first == 'P' && moves[i][1].second / GameMetadata::NUM_TILES_WIDTH == 1)
 		{
 			moves[i][1].first = 'R';
 

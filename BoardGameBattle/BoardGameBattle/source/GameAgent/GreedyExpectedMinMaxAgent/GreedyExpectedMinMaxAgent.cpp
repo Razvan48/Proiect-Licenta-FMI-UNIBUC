@@ -1494,7 +1494,7 @@ const float GreedyExpectedMinMaxAgent::BLACK_KING_POSITION_SCORES[GameMetadata::
 };
 
 const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_FIND_BEST_MOVE = 22500000;
-const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION = 1000000;
+const int GreedyExpectedMinMaxAgent::EXPECTED_NUM_NODES_VISITED_ESTIMATE_CONFIGURATION = 20000000;
 
 const float GreedyExpectedMinMaxAgent::MAX_DISPLAY_ESTIMATION = GreedyExpectedMinMaxAgent::REACHABLE_INF / 2.0f;
 
