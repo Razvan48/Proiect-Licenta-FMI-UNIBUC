@@ -1078,9 +1078,9 @@ unsigned long long BoardManager::extractTopRightBottomLeftDiagonal(unsigned long
 
 void BoardManager::initialize()
 {
-	// this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
+	this->configurationMetadata.initialize("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR100000000");
 	// this->configurationMetadata.initialize("..................rkqr....pppp....PPPP....RKQR..................100111111"); // INFO: Pentru tabla de n x m in centru.
-	this->configurationMetadata.initialize("...........kq.....pppp....................PPPP.....KQ...........100111111");
+	// this->configurationMetadata.initialize("...........kq.....pppp....................PPPP.....KQ...........100111111");
 
 	// Curatam Istoricul de la Meciul Anterior
 	this->configurationMetadataHistory.clear();
@@ -1541,8 +1541,8 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 	}
 
 	// Promovare Pion
-	// if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
-	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 1) // INFO: Pentru tabla de n x m in centru.
+	if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 0)
+	// if (piece == 'P' && pos1 / GameMetadata::NUM_TILES_WIDTH == 1) // INFO: Pentru tabla de n x m in centru.
 	{
 		internalMove.pop_back();
 
@@ -1554,8 +1554,8 @@ std::vector<std::pair<char, int>> BoardManager::convertToInternalMove(const std:
 		else
 			internalMove.emplace_back(externalMove[5], pos1);
 	}
-	// else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
-	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2) // INFO: Pentru tabla de n x m in centru.
+	else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 1)
+	// else if (piece == 'p' && pos1 / GameMetadata::NUM_TILES_WIDTH == GameMetadata::NUM_TILES_HEIGHT - 2) // INFO: Pentru tabla de n x m in centru.
 	{
 		internalMove.pop_back();
 
@@ -3306,7 +3306,7 @@ void BoardManager::generateWhiteMoves(ConfigurationMetadata& configurationMetada
 	this->generateWhitePawnMoves(configurationMetadata, moves);
 	this->generateWhiteKingMoves(configurationMetadata, moves);
 
-	this->filterMoves(moves);
+	// this->filterMoves(moves);
 }
 
 void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetadata, std::vector<std::vector<std::pair<char, int>>>& moves)
@@ -3328,7 +3328,7 @@ void BoardManager::generateBlackMoves(ConfigurationMetadata& configurationMetada
 	this->generateBlackPawnMoves(configurationMetadata, moves);
 	this->generateBlackKingMoves(configurationMetadata, moves);
 
-	this->filterMoves(moves);
+	// this->filterMoves(moves);
 }
 
 // Checkmates
