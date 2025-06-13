@@ -113,7 +113,7 @@ void BoardVisualizer::initialize()
 				this->BOARD_TILE_HEIGHT / 2.0f,
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
-				"arialFont",
+				"defaultFont",
 				std::string(1, (char)('a' + j))
 			)
 		);
@@ -131,7 +131,7 @@ void BoardVisualizer::initialize()
 				this->BOARD_TILE_HEIGHT / 2.0f,
 				0.0f,
 				glm::vec3(1.0f, 1.0f, 1.0f),
-				"arialFont",
+				"defaultFont",
 				std::string(1, (char)('1' + i))
 			)
 		);

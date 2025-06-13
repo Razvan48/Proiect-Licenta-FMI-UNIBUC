@@ -184,7 +184,7 @@ void AssetManager::loadResources()
 	this->loadSound("draw2Sound", "assets/sounds/draw2Sound.mp3");
 	this->loadSound("draw3Sound", "assets/sounds/draw3Sound.mp3");
 
-	this->loadFont("arialFont", "assets/fonts/arialFont.ttf");
+	this->loadFont("defaultFont", "assets/fonts/OpenSans-Regular.ttf");
 }
 
 GLuint AssetManager::getTexture(const std::string& textureName)

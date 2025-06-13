@@ -51,7 +51,7 @@ JoinedMultiplayerGameVisualInterface::JoinedMultiplayerGameVisualInterface(Textu
 			0.075f * WindowManager::get().getWindowHeight(),
 			0.0f,
 			glm::vec3(1.0f, 1.0f, 1.0f),
-			"arialFont",
+			"defaultFont",
 			"Back",
 			"buttonTexture",
 			Game::Status::IN_INPUT_JOIN_MENU,
@@ -94,7 +94,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Turn:"
 						),
 
@@ -106,7 +106,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Player:"
 						),
 
@@ -118,7 +118,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Opponent:"
 						),
 
@@ -130,7 +130,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						),
 
@@ -142,7 +142,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						),
 
@@ -154,7 +154,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						),
 
@@ -166,7 +166,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.5f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR!"
 						),
 
@@ -178,7 +178,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Server Connection:"
 						),
 
@@ -190,7 +190,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Opponent Connection:"
 						),
 
@@ -202,7 +202,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 1.0f, 1.0f),
-							"arialFont",
+							"defaultFont",
 							"Server Port:"
 						),
 
@@ -214,7 +214,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						),
 
@@ -226,7 +226,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						),
 
@@ -238,7 +238,7 @@ std::shared_ptr<JoinedMultiplayerGameVisualInterface> JoinedMultiplayerGameVisua
 							0.05f * WindowManager::get().getWindowHeight(),
 							0.0f,
 							glm::vec3(1.0f, 0.0f, 0.0f),
-							"arialFont",
+							"defaultFont",
 							"ERROR"
 						)
 	);

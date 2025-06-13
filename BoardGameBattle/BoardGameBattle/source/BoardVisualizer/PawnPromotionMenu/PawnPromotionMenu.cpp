@@ -28,7 +28,7 @@ PawnPromotionMenu::PawnPromotionMenu()
 		WindowManager::get().getWindowHeight() / 7.0f,
 		0.0f,
 		glm::vec3(1.0f, 1.0f, 1.0f),
-		"arialFont",
+		"defaultFont",
 		"Cancel",
 		"buttonTexture",
 		"buttonPressedSound",
